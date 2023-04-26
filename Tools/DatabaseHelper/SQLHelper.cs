@@ -26,7 +26,7 @@ public class ReadData<T>{
                 while(reader.Read()){
                     // Create new instance of the target object
                     object obj = Activator.CreateInstance(typeof(T));
-                    Type type = git.GetType(); // Get object information
+                    Type type = obj.GetType(); // Get object information
                     PropertyInfo[] properties = type.GetProperties();
                     for(int i = 0; i < properties.Length; i++){
                         string name = properties[i].Name;
