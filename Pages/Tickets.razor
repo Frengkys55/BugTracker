@@ -1,4 +1,5 @@
 @page "/Tickets"
+@using Models.Tickets;
 
 <TicketSideMenu />
 <HeadContent>
@@ -65,13 +66,21 @@
     <div class="w3-row">
         <div class="w3-quarter w3-container">
             <div class="w3-card">
-                <h2 class="w3-container">Newest tickets</h2>
+                <div class="w3-bar">
+                    <h2 class="w3-bar-item">Newest tickets</h2>
+                    <button type="button" class="w3-bar-item w3-right w3-button w3-transparent" @onclick="RefreshNewestTickets"><span class="material-symbols-sharp">refresh</span></button>
+
+                </div>
                 <ul class="w3-ul">
-                    <li>Sample 1</li>
-                    <li>Sample 1</li>
-                    <li>Sample 1</li>
-                    <li>Sample 1</li>
-                    <li>Sample 1</li>
+                    @list
+                    @code{
+                        public string list {set; get;}
+                        private void RefreshNewestTickets(){
+                            for(int i = 0; i < 5; i++){
+                                list += "<li>New List " + i.ToString() + "</li>\n";
+                            }
+                        }
+                    }
                 </ul>
             </div>
         </div>
@@ -92,3 +101,5 @@
         </div>
     </div>
 </div>>
+
+
