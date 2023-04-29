@@ -7,8 +7,12 @@ public partial class Type{
     /// <sumary>
     /// Get a list of available types from database (guid and name)
     /// </sumary>
-    public Dictionary<Guid, string> GetTypes(){
-        throw new NotImplementedException();
+    public Dictionary<Guid, string> GetAvailableTypes(){
+        Dictionary<Guid, string> availableTypes = new ();
+        for(int i = 0; i < 5; i++){
+            availableTypes.Add(Guid.NewGuid(), "Type" + i.ToString());
+        }
+        return availableTypes;
     }
 
     /// <sumary>

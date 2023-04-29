@@ -4,8 +4,14 @@ using System.IO;
 namespace Models.Tickets;
 
 public partial class Ticket{
-    public IEnumerable<string> GetTickets(){
-        throw new NotImplementedException();
+    public Dictionary<Guid, string> GetTickets(){
+        Dictionary<Guid, string> tickets = new Dictionary<Guid, string>();
+
+        for(int i = 0; i < 5; i++){
+            tickets.Add(Guid.NewGuid(), "Ticket " + i);
+        }
+
+        return tickets;
     }
 
     public Ticket GetTicketDetail(string ticketId){
