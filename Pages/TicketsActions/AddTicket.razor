@@ -1,20 +1,59 @@
 @page "/Tickets/AddTicket"
 @using Microsoft.AspNetCore.Components.Forms;
+@using Microsoft.Data.SqlClient;
+@using System;
 
 <div class="" style="margin-left:89px;">
     <div class="w3-row">
         <div class="w3-col m5">
             <div class="w3-container">
                 <h1>Information about the ticket</h1>
-                <input type="textbox" class="w3-input" placeholder="Ticket name" />
-                <input type="text" class="w3-input" placeholder="Ticket name" multiple />
-                <select class="w3-input">
-                    <option>Ticket type</option>
+                <div>
+                    <label>Ticket name</label>
+                    <input type="textbox" class="w3-input" />
+
+                </div>
+                <select class="w3-input w3-transparent">
+                    @((MarkupString)availableTicketTypes)
                 </select>
             </div>
         </div>
         <div class="w3-col m7">
-
+            <button @onclick="GenerateType">Generate one type</button>
+            @sample
         </div>
     </div>
 </div>
+
+@code{
+    string availableTicketTypes = string.Empty;
+    string sample;
+    protected override async Task OnInitializedAsync(){
+        // Clear old variable (if available
+        availableTicketTypes = string.Empty;
+
+        foreach(var ticketType in new Models.Tickets.Type().GetAvailableTypes()){
+            availableTicketTypes += "<option value=\"" + ticketType.Key +  "\">" + ticketType.Value + "</option>\n";
+        }
+    }
+
+    public void GenerateType(){
+        sample = "Triggered";
+        string connectionString = @"Data Source=.\BugTracker.db; version=3";
+        Guid guid = Guid.NewGuid();
+        string query = "INSERT INTO TicketType (guid, Name, Description) VALUES('" + guid.ToString() + "', 'Bug', 'Bug ticket type');";
+        SqlConnection con = new SqlConnection(connectionString);
+        con.Open();
+        SqlCommand com = new SqlCommand(query, con);
+
+        try{
+            com.ExecuteNonQuery();
+        }
+        catch(Exception e){
+            Console.WriteLine(e.Message);
+        }
+        com.Dispose();
+        con.Close();
+        con.Dispose();
+    }
+}

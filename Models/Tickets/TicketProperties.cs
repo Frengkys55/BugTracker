@@ -18,4 +18,3 @@ public partial class Ticket{
     public Guid SeverityGuid {set; get;}
     public Guid TypeGuid {set; get;}
 }
-
