@@ -4,7 +4,7 @@ namespace Models.Tickets;
 
 public partial class Severity{
 
-    public IEnumerable<Dictionary<Guid, string>> GetSeverities(){
+    public Dictionary<Guid, string> GetAvailableSeverities(){
         throw new NotImplementedException();
     }
 

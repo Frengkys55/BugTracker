@@ -1,0 +1,112 @@
+@page "/Tickets/AddTicket"
+@using Microsoft.AspNetCore.Components.Forms;
+@using Microsoft.Data.SqlClient;
+@using System;
+
+<TicketSideMenu />
+
+<div class="w3-container" style="margin-left:89px;">
+    <div class="w3-row">
+        <div class="w3-col m5">
+            <div>
+                <h1>Information about the ticket</h1>
+                <p>Add new ticket</p>
+                <div class="w3-margin-top">
+                    <label>Ticket name <span class="material-symbols-sharp w3-tiny" title="Name of the ticket you want to submit">question_mark</span></label>
+                    <input type="textbox" class="w3-input w3-padding" />
+                </div>
+                <div class="w3-margin-top">
+                    <label>Project <span class="material-symbols-sharp w3-tiny" title="To which project do you want to add this ticket for?">question_mark</span></label>
+                    <input type="textbox" class="w3-input w3-padding" />
+                </div>
+                <div class="w3-margin-top">
+                    <label>Type <span class="material-symbols-sharp w3-tiny" title="Available ticket type from the server that you can use">question_mark</span></label>
+                    <input type="search" list="lstTicketType" class="w3-input w3-padding" />
+                    <datalist id="lstTicketType">
+                        @((MarkupString)availableTicketTypes)
+                    </datalist>
+                </div>
+                <div class="w3-margin-top">
+                    <label>Severity <span class="material-symbols-sharp w3-tiny" title="How severe is this ticket to the project">question_mark</span></label>
+                    <select class="w3-input w3-padding">
+                        <option>Choose one</option>
+                        @((MarkupString)availableTicketSeverityTypes)
+                    </select>
+                </div>
+                <div class="w3-margin-top">
+                    <label class="w3-bar-item">Description <span class="material-symbols-sharp w3-tiny" title="How severe is this ticket to the project">question_mark</span></label>
+                    <div>
+                        <div id="ticketDescriptionEditor">
+                            the rich text editor here
+                        </div>
+                    </div>
+                </div>
+                <div class="w3-bar w3-margin-top">
+                    <input type="button" class="w3-bar-item w3-button w3-border w3-border-black w3-round w3-hover-black w3-ripple" value="Add Ticket" />
+                </div>
+            </div>
+        </div>
+        <div class="w3-col m7">
+            <button @onclick="GenerateType">Generate one type</button>
+            @sample
+        </div>
+    </div>
+</div>
+
+@code{
+    [Inject]
+    public IJSRuntime? js {set; get;}
+
+    private IJSObjectReference? module {set; get;}
+
+    string availableTicketTypes = string.Empty;
+    string availableTicketSeverityTypes = string.Empty;
+    string sample;
+
+    protected override async Task OnInitializedAsync(){
+        // Clear old variable (if available
+        availableTicketTypes = string.Empty;
+        availableTicketSeverityTypes = string.Empty;
+
+        // Load available ticket types
+        try{
+            foreach(var ticketType in new Models.Tickets.Type().GetAvailableTypes()){
+                availableTicketTypes += "<option value=\"" + ticketType.Key +  "\">" + ticketType.Value + "</option>\n";
+            }
+        }catch(Exception e){
+            availableTicketSeverityTypes = e.Message;
+        }
+        
+        try{
+            // Load available ticket severity
+            foreach(var ticketSeverity in new Models.Tickets.Severity().GetAvailableSeverities()){
+                availableTicketTypes += "<option value=\"" + ticketSeverity.Key +  "\">" + ticketSeverity.Value + "</option>\n";
+            }
+        }catch (Exception e){
+            availableTicketSeverityTypes = e.Message;
+        }
+
+        // Load SimpleHTMLEditor/Application.js file for description
+        module = await js.InvokeAsync<IJSObjectReference>("import", "./js/SimpleHTMLEditor/Application.js");
+    }
+
+    public void GenerateType(){
+        sample = "Triggered";
+        string connectionString = @"Data Source=.\BugTracker.db; version=3";
+        Guid guid = Guid.NewGuid();
+        string query = "INSERT INTO TicketType (guid, Name, Description) VALUES('" + guid.ToString() + "', 'Bug', 'Bug ticket type');";
+        SqlConnection con = new SqlConnection(connectionString);
+        con.Open();
+        SqlCommand com = new SqlCommand(query, con);
+
+        try{
+            com.ExecuteNonQuery();
+        }
+        catch(Exception e){
+            Console.WriteLine(e.Message);
+        }
+        com.Dispose();
+        con.Close();
+        con.Dispose();
+    }
+}
