@@ -2,6 +2,9 @@ using System;
 
 namespace Models.Projects;
 
+/// <sumary>
+/// Project model for the database
+/// </sumary>
 public partial class Project{
     public int id {set; get;}
     public Guid guid {set; get;}
@@ -11,5 +14,4 @@ public partial class Project{
     public string? Description {set; get;}
     public DateTime DateCreated {set; get;}
     public DateTime DateModified {set; get;}
-
 }

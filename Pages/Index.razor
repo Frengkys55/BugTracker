@@ -1,4 +1,7 @@
 ﻿@page "/"
+@using Models;
+@using Models.Projects;
+@using Models.Tickets;
 
 <NavMenu />
 <div id="pnlWorkArea">
@@ -7,61 +10,79 @@
         <p>Overview of some of your project can be seen  here.</p>
     </div>
     <div class="w3-bar">
-        <div id="pnlProject1Container" class="w3-bar-item">
-            <div id="pnlProject1" class="w3-display-container w3-block" style="width:335px; height:442px; background-image:url('https://www.frengkysinaga.com/Sources/Background/Pardofelis.png'); background-size:cover; background-position:center; background-repeat:no-repeat;">
-                <div id="pnlProject1OverviewContainer" class="w3-display-bottomleft w3-block w3-theme-d5 backdropBlur" style="height:293px;">
-                    <header id="headProject2Title" class="w3-container">
-                        <h1 class="w3-small w3-wide">Project 1</h1>
-                    </header>
-                    <div id="pnlProject1TicketOverviewContainer" class="w3-bar w3-border-top w3-border-bottom w3-border-white">
-                        <div class="w3-left">
-                            <a href="#" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple"><span class="material-symbols-sharp">problem</span></a>
-                            <a href="#" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple"><span class="material-symbols-sharp">edit</span></a>
-                        </div>
-                        <div class="w3-right">
-                            <a href="#" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple"><span class="material-symbols-sharp">delete</span></a>
-                        </div>
-                    </div>
-                    <div id="pnlProject1LatestTicketOverviewContainer">
-                        <div class="w3-bar">
-                            <label class="w3-bar-item">Latest Tickets (10)</label>
-                        </div>
-                        <div class="w3-bar-block w3-container">
-                            <a href="#" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">A ticket from me to you to solve</a>
-                            <a href="#" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">The super long ticket title for checking if that the panel works properly</a>
-                            <a href="#" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">A ticket from me to you to solve</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="pnlProject2Container" class="w3-bar-item">
-            <div id="pnlProject2" class="w3-display-container w3-block" style="width:335px; height:442px; background-image:url('https://www.frengkysinaga.com/Sources/Background/Pardofelis.png'); background-size:cover; background-position:center; background-repeat:no-repeat;">
-                <div id="pnlProject2OverviewContainer" class="w3-display-bottomleft w3-block w3-theme-d5 backdropBlur" style="height:293px;">
-                    <header id="headProject2Title" class="w3-container">
-                        <h1 class="w3-small w3-wide">Project 1</h1>
-                    </header>
-                    <div id="pnlProject2TicketOverviewContainer" class="w3-bar w3-border-top w3-border-bottom w3-border-white">
-                        <div class="w3-left">
-                            <a href="#" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple"><span class="material-symbols-sharp">problem</span></a>
-                            <a href="#" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple"><span class="material-symbols-sharp">edit</span></a>
-                        </div>
-                        <div class="w3-right">
-                            <a href="#" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple"><span class="material-symbols-sharp">delete</span></a>
-                        </div>
-                    </div>
-                    <div id="pnlProject2LatestTicketOverviewContainer">
-                        <div class="w3-bar">
-                            <label class="w3-bar-item">Latest Tickets (10)</label>
-                        </div>
-                        <div class="w3-bar-block w3-container">
-                            <a href="#" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">A ticket from me to you to solve</a>
-                            <a href="#" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">The super long ticket title for checking if that the panel works properly</a>
-                            <a href="#" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">A ticket from me to you to solve</a>
+        @if(projects == null){
+            <div class="w3-bar-item w3-border w3-border-red w3-padding-large">No projects available</div>
+        }
+        else{
+            @foreach(var project in projects){
+                <div id="pnlProject1Container" class="w3-bar-item">
+                    <div id="pnlProject1" class="w3-display-container w3-block" style="width:335px; height:442px; background-image:url('https://www.frengkysinaga.com/Sources/Background/Pardofelis.png'); background-size:cover; background-position:center; background-repeat:no-repeat;">
+                        <div id="pnlProject1OverviewContainer" class="w3-display-bottomleft w3-block w3-theme-d5 backdropBlur" style="height:293px;">
+                            <header id="headProject2Title" class="w3-container">
+                                <h1 class="w3-small w3-wide">@project.project.Name</h1>
+                            </header>
+                            <div id="pnlProject1TicketOverviewContainer" class="w3-bar w3-border-top w3-border-bottom w3-border-white">
+                                <div class="w3-left">
+                                    <a href="/Tickets/List?id=@project.project.guid" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" title="See posted tickets"><span class="material-symbols-sharp">problem</span></a>
+                                    <a href="/Projects/Edit?id=@project.project.guid" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" title="Edit project"><span class="material-symbols-sharp">edit</span></a>
+                                </div>
+                                <div class="w3-right">
+                                    <a href="#" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple"><span class="material-symbols-sharp" title="Delete ticket">delete</span></a>
+                                </div>
+                            </div>
+                            <div id="pnlProject1LatestTicketOverviewContainer">
+                                <div class="w3-bar">
+                                    <label class="w3-bar-item">Latest Tickets (@project.tickets.Count)</label>
+                                </div>
+                                <div class="w3-bar-block w3-container">
+                                    @foreach(var ticket in project.tickets){
+                                        <a href="/tickets/manage?id=@ticket.guid" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">@ticket.Name</a>
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            }
+        }
     </div>
 </div>
+
+@code{
+    string ProjectList = string.Empty;
+    List<ProjectModel> projects = new ();
+    
+    protected override async Task OnInitializedAsync(){
+        try{
+            foreach(var project in new Models.Projects.Project().GetProjects(8)){
+                Project projectTemp = new ();
+                projectTemp.Name = project.Value;
+                projectTemp.guid = project.Key;
+
+                Dictionary<Guid, string> tickets = new Models.Tickets.Ticket().GetTickets(Guid.NewGuid());
+
+                ProjectModel projectModel = new ();
+                projectModel.project = projectTemp;
+                projectModel.tickets = new ();
+
+                int counter = 0;
+                foreach(var ticket in tickets){
+                    if(counter > 2) break;
+
+                    Ticket ticketTemp = new ();
+                    ticketTemp.Name = ticket.Value;
+                    ticketTemp.guid = ticket.Key;
+                    projectModel.tickets.Add(ticketTemp);
+                    counter++;
+                }
+
+                projects.Add(projectModel);
+            }
+
+        }catch(Exception err){
+            Console.WriteLine(err.Message);
+        }
+
+        
+    }
+}
