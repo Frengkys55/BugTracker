@@ -6,20 +6,36 @@
 <NavMenu />
 <div id="pnlWorkArea">
     <div class="w3-container">
-        <h1>Projects</h1>
+        <h1>Projects <a href="/Projects/AddProject" class="w3-button w3-transparent w3-border w3-border-black w3-round w3-hover-black w3-ripple w3-small">Add Project</a></h1>
         <p>Overview of some of your project can be seen  here.</p>
     </div>
     <div class="w3-bar">
-        @if(projects == null){
-            <div class="w3-bar-item w3-border w3-border-red w3-padding-large">No projects available</div>
+        @if(projects.Count <= 0){
+            <div class="w3-container">
+                <div class="w3-border w3-border-red">
+                    <div class="w3-cell-row">
+                        <div class="w3-cell w3-cell-middle w3-center w3-mobile" style="width: 150px; padding: 8px 8px 8px 8px; ">
+                            <img src="https://www.frengkysinaga.com/Sources/Images/bocchi_down.jpg" style="width: 100%;" class="w3-image" \>
+                        </div>
+                        <div class="w3-cell w3-cell-middle w3-mobile w3-padding">
+                            <div>
+                                <p>Could not find any projects. Do you want to <a href="/Projects/AddProject/">add</a> a new project?</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
         else{
             @foreach(var project in projects){
                 <div id="pnlProject1Container" class="w3-bar-item">
-                    <div id="pnlProject1" class="w3-display-container w3-block" style="width:335px; height:442px; background-image:url('https://www.frengkysinaga.com/Sources/Background/Pardofelis.png'); background-size:cover; background-position:center; background-repeat:no-repeat;">
-                        <div id="pnlProject1OverviewContainer" class="w3-display-bottomleft w3-block w3-theme-d5 backdropBlur" style="height:293px;">
+                    <div id="pnlProject1" class="w3-display-container w3-block backgroundCover" style="width:335px; height:442px; background-image:url('https://www.frengkysinaga.com/Sources/Background/Pardofelis.png');">
+                        <div class="w3-display-topleft w3-block backgroundCover" style="height:calc( 100% - 300px ); background-image:url('https://www.frengkysinaga.com/Sources/Background/Pardofelis.png');">
+
+                        </div>
+                        <div id="pnlProject1OverviewContainer" class="w3-display-bottomleft w3-block w3-theme-d5 backdropBlur" style="height:300px;">
                             <header id="headProject2Title" class="w3-container">
-                                <h1 class="w3-small w3-wide">@project.project.Name</h1>
+                                <h1 class="w3-medium w3-wide">@project.project.Name</h1>
                             </header>
                             <div id="pnlProject1TicketOverviewContainer" class="w3-bar w3-border-top w3-border-bottom w3-border-white">
                                 <div class="w3-left">
@@ -27,7 +43,7 @@
                                     <a href="/Projects/Edit?id=@project.project.guid" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" title="Edit project"><span class="material-symbols-sharp">edit</span></a>
                                 </div>
                                 <div class="w3-right">
-                                    <a href="#" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple"><span class="material-symbols-sharp" title="Delete ticket">delete</span></a>
+                                    <a href="#" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple"><span class="material-symbols-sharp" title="Delete this project">delete</span></a>
                                 </div>
                             </div>
                             <div id="pnlProject1LatestTicketOverviewContainer">
@@ -35,8 +51,8 @@
                                     <label class="w3-bar-item">Latest Tickets (@project.tickets.Count)</label>
                                 </div>
                                 <div class="w3-bar-block w3-container">
-                                    @foreach(var ticket in project.tickets){
-                                        <a href="/tickets/manage?id=@ticket.guid" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">@ticket.Name</a>
+                                    @for(int i = 0; i < 3; i++){
+                                        <a href="/tickets/manage?id=@project.tickets[i].guid" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">@project.tickets[i].Name</a>
                                     }
                                 </div>
                             </div>
@@ -65,15 +81,11 @@
                 projectModel.project = projectTemp;
                 projectModel.tickets = new ();
 
-                int counter = 0;
                 foreach(var ticket in tickets){
-                    if(counter > 2) break;
-
                     Ticket ticketTemp = new ();
                     ticketTemp.Name = ticket.Value;
                     ticketTemp.guid = ticket.Key;
                     projectModel.tickets.Add(ticketTemp);
-                    counter++;
                 }
 
                 projects.Add(projectModel);

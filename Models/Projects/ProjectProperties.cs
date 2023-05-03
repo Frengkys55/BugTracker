@@ -14,4 +14,5 @@ public partial class Project{
     public string? Description {set; get;}
     public DateTime DateCreated {set; get;}
     public DateTime DateModified {set; get;}
+    public string? ProjectImage {set; get;}
 }

@@ -47,8 +47,7 @@
             </div>
         </div>
         <div class="w3-col m7">
-            <button @onclick="GenerateType">Generate one type</button>
-            @sample
+
         </div>
     </div>
 </div>
@@ -61,7 +60,6 @@
 
     string availableTicketTypes = string.Empty;
     string availableTicketSeverityTypes = string.Empty;
-    string sample;
 
     protected override async Task OnInitializedAsync(){
         // Clear old variable (if available
@@ -88,25 +86,5 @@
 
         // Load SimpleHTMLEditor/Application.js file for description
         module = await js.InvokeAsync<IJSObjectReference>("import", "./js/SimpleHTMLEditor/Application.js");
-    }
-
-    public void GenerateType(){
-        sample = "Triggered";
-        string connectionString = @"Data Source=.\BugTracker.db; version=3";
-        Guid guid = Guid.NewGuid();
-        string query = "INSERT INTO TicketType (guid, Name, Description) VALUES('" + guid.ToString() + "', 'Bug', 'Bug ticket type');";
-        SqlConnection con = new SqlConnection(connectionString);
-        con.Open();
-        SqlCommand com = new SqlCommand(query, con);
-
-        try{
-            com.ExecuteNonQuery();
-        }
-        catch(Exception e){
-            Console.WriteLine(e.Message);
-        }
-        com.Dispose();
-        con.Close();
-        con.Dispose();
     }
 }

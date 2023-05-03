@@ -1,0 +1,45 @@
+@page "/Projects/AddProject";
+@using System;
+@using Microsoft.AspNetCore.Components.Forms;
+@using Models;
+
+@using Models.Projects;
+
+<div class="w3-container">
+    <div class="w3-row">
+        <div class="w3-col m5">
+            <EditForm Model="@newProject" OnSubmit="AddProjectToDatabase">
+                <div>
+                    <label>Project name</label>
+                    <InputText id="txtProjectName" @bind-Value="newProject.Name" class="w3-input" />
+                </div>
+                <div>
+                    <label>Project description</label>
+                    <InputTextArea id="txtProjectDescription" @bind-Value="newProject.Description" class="w3-input" />
+                </div>
+                <div>
+                    <label>Project image</label>
+                    <InputText id="txtImageUrl" @bind-Value="newProject.ProjectImage" class="w3-input" />
+                </div>
+                <div>
+                    <input type="submit" value="Add Project" class="w3-button w3-transparent w3-border w3-border-black w3-hover-black w3-round w3-ripple" title="Save project" />
+                </div>
+            </EditForm>
+        </div>
+        <div class="w3-col m7">
+
+        </div>
+    </div>
+</div>
+
+@code{
+    Models.Projects.Project newProject = new();
+
+    private async Task AddProjectToDatabase(){
+        try{
+            newProject.CreateProject(newProject);
+        }catch(Exception err){
+            Console.Error.WriteLine(err.Message);
+        }
+    }
+}
