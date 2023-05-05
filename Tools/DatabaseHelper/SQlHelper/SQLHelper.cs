@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace SqlHelper;
 public class ReadData<T>{
-    public IEnumerable<T> Read(string connectionString, string sqlQuery){
+    public Collection<T> Read(string connectionString, string sqlQuery){
         Collection<T> data = new();
 
         if(connectionString == string.Empty){
@@ -56,5 +56,20 @@ public class ReadData<T>{
             con.DisposeAsync();
         }
         return data;
+    }
+}
+
+public class WriteData<T>{
+
+    public WriteData(){
+
+    }
+
+    public WriteData(T data, string connectionString){
+        throw new NotImplementedException();
+    }
+
+    public void Write(T data, SqlCommand command){
+        throw new NotImplementedException();
     }
 }

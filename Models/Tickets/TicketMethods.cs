@@ -26,6 +26,10 @@ public partial class Ticket{
         return tickets;
     }
 
+    public int GetTicketCount(Guid projectGuid){
+        return new Random().Next(2, 1000);
+    }
+
     public Ticket GetTicketDetail(string ticketId){
         throw new NotImplementedException();
     }

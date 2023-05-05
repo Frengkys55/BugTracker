@@ -2,22 +2,27 @@
 @using System;
 @using Microsoft.AspNetCore.Components.Forms;
 @using Models;
-
 @using Models.Projects;
+@inject IConfiguration configuration;
+
+<NavMenu />
 
 <div class="w3-container">
     <div class="w3-row">
         <div class="w3-col m5">
+            <header>
+                <h1>Add new project</h1>
+            </header>
             <EditForm Model="@newProject" OnSubmit="AddProjectToDatabase">
-                <div>
+                <div class="w3-margin-bottom">
                     <label>Project name</label>
-                    <InputText id="txtProjectName" @bind-Value="newProject.Name" class="w3-input" />
+                    <InputText id="txtProjectName" @bind-Value="newProject.Name" class="w3-input" required />
                 </div>
-                <div>
+                <div class="w3-margin-bottom">
                     <label>Project description</label>
                     <InputTextArea id="txtProjectDescription" @bind-Value="newProject.Description" class="w3-input" />
                 </div>
-                <div>
+                <div class="w3-margin-bottom">
                     <label>Project image</label>
                     <InputText id="txtImageUrl" @bind-Value="newProject.ProjectImage" class="w3-input" />
                 </div>
@@ -26,8 +31,34 @@
                 </div>
             </EditForm>
         </div>
-        <div class="w3-col m7">
-
+        <div class="w3-col m7 w3-hide-small w3-container">
+            <header>
+                <h1>A bit of help</h1>
+            </header>
+            <div>
+                <header>
+                    <span><b>Project name</b></span>
+                </header>
+                <div>
+                    <p>This is the name of your project</p>
+                </div>
+            </div>
+            <div>
+                <header>
+                    <span><b>Description</b></span>
+                </header>
+                <div>
+                    Describe what this project is. What did it do? Try to describe your project as clearly as possible to make sure you don't get confused later on.
+                </div>
+            </div>
+            <div>
+                <header>
+                    <span><b>Project image</b></span>
+                </header>
+                <div>
+                    Upload your project image (if available) to display your project visually.
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -36,8 +67,9 @@
     Models.Projects.Project newProject = new();
 
     private async Task AddProjectToDatabase(){
+        string connectionString = configuration["DatabaseConnectionString"];
         try{
-            newProject.CreateProject(newProject);
+            newProject.CreateProject(newProject, connectionString);
         }catch(Exception err){
             Console.Error.WriteLine(err.Message);
         }
