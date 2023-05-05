@@ -40,12 +40,7 @@
                 <div class="w3-bar">
                     <span class="w3-bar-item"><b>Newest tickets</b></span>
                 </div>
-                <ul class="w3-ul">
-                    @((MarkupString)lstTickets)
-                    @code{
-                        
-                    }
-                </ul>
+                <BugTracker.Pages.Tickets.Components.NewestTickets />
             </div>
         </div>
         <div class="w3-quarter">
@@ -54,7 +49,7 @@
                     <span class="w3-bar-item"><b>Highest priority tickets</b></span>
                 </div>
                 <ul class="w3-ul">
-                    @((MarkupString)lstHighPriorityTicketList)
+                    <BugTracker.Pages.Tickets.Components.HighestPriorityTickets />
                 </ul>
             </div>
         </div>
@@ -64,7 +59,7 @@
                     <span class="w3-bar-item"><b>Longest unsolved tickets</b></span>
                 </div>
                 <ul class="w3-ul">
-                    @((MarkupString) lstLongestUnsolvedTickets)
+                    <BugTracker.Pages.Tickets.Components.LongestUnsolvedTickets />
                 </ul>
             </div>
         </div>
@@ -74,7 +69,7 @@
                     <span class="w3-bar-item"><b>Newly solved tickets</b></span>
                 </div>
                 <ul class="w3-ul">
-                    @((MarkupString) lstNewlySolvedTickets)
+                    <BugTracker.Pages.Tickets.Components.NewlySolvedTickets />
                 </ul>
             </div>
         </div>
@@ -83,41 +78,10 @@
 
 
 @code{
-    string lstTickets = string.Empty;
-    string lstHighPriorityTicketList = string.Empty;
-
-    string? lstLongestUnsolvedTickets;
-
-    string? lstNewlySolvedTickets;
-
 
     /// For page lifecycle
     protected override async Task OnInitializedAsync(){
-        // Get newest tickets
-        foreach(var ticket in new Ticket().GetTickets()){
-            lstTickets += "<a href=\"/ManageTicket?ticketId=\"" + ticket.Key + " style=\"text-decoration:none; \"><li class=\"w3-hover-black w3-ripple\">" + ticket.Value + "</li></a>\n";
-        }
-
-        // Get highest priority tickets
-        foreach(var ticket in new Ticket().GetTickets()){
-            lstHighPriorityTicketList += "<a href=\"/ManageTicket?ticketId=\"" + ticket.Key + " style=\"text-decoration:none; \"><li class=\"w3-hover-black w3-ripple\">" + ticket.Value + "</li></a>\n";
-        }
-
-        // Get longest unsolved tickets
-        foreach(var ticket in new Ticket().GetTickets()){
-            lstLongestUnsolvedTickets += "<a href=\"/ManageTicket?ticketId=\"" + ticket.Key + " style=\"text-decoration:none; \"><li class=\"w3-hover-black w3-ripple\">" + ticket.Value + "</li></a>\n";
-        }
-
-        // Get newly solved tickets
-        foreach(var ticket in new Ticket().GetTickets()){
-            lstNewlySolvedTickets += "<a href=\"/ManageTicket?ticketId=\"" + ticket.Key + " style=\"text-decoration:none; \"><li class=\"w3-hover-black w3-ripple\">" + ticket.Value + "</li></a>\n";
-        }
-
-        // Get ticket categories
-        foreach(var ticketType in new Models.Tickets.Type().GetAvailableTypes()){
-            lstAvailableTicketTypes += "<a href=\"#\" class=\"w3-tag w3-black w3-margin-small w3-button\" style=\"text-decoration:none; margin-bottom:4px;\">" + ticketType.Value + "</a> ";
-        }
-
+        
     }
 }
 

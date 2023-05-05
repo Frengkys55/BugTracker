@@ -14,8 +14,10 @@ public partial class Ticket{
         return tickets;
     }
 
-    /**
-    **/
+    /// <summary>
+    /// Get all tickets for certain project
+    /// </summary>
+    /// <param name="projectGuid">Project GUID to use as a reference</param>
     public Dictionary<Guid, string> GetTickets(Guid projectGuid){
         Dictionary<Guid, string> tickets = new Dictionary<Guid, string>();
 
@@ -25,6 +27,17 @@ public partial class Ticket{
 
         return tickets;
     }
+
+    public Dictionary<Guid, string> GetTickets(Guid projectGuid, int maxTicketCount){
+        Dictionary<Guid, string> tickets = new Dictionary<Guid, string>();
+
+        for(int i = 0; i < maxTicketCount; i++){
+            tickets.Add(Guid.NewGuid(), "Ticket " + i);
+        }
+
+        return tickets;
+    }
+
 
     public int GetTicketCount(Guid projectGuid){
         return new Random().Next(2, 1000);

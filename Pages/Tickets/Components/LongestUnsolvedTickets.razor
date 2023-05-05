@@ -1,0 +1,15 @@
+@using Models.Tickets;
+
+<ul class="w3-ul">
+    @foreach(var ticket in tickets){
+        <a href="/Tickets/ViewTicket?id=@ticket.Key" style="text-decoration:none;"><li class="w3-hover-black w3-ripple">@ticket.Value</li></a>
+    }
+</ul>
+
+@code{
+    List<KeyValuePair<Guid, string>> tickets = new ();
+    protected override async Task OnInitializedAsync(){
+        Console.WriteLine("Triggered");
+        tickets = new Ticket().GetTickets(Guid.NewGuid(), 5).ToList();
+    }
+}

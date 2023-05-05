@@ -46,7 +46,7 @@ public partial class Project{
     /// Create and store new project to database
     /// </summary>
     /// <param name="project">Project to add to database</param>
-    public int CreateProject(Project project){
+    public int CreateProject(Project project, string connectionString){
         // Validate project informations
         if(project.Name == string.Empty || project.Name == null) throw new ArgumentException("Project name should not be empty");
         if(connectionString == string.Empty) throw new Exception("Connection string is empty");
