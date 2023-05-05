@@ -10,6 +10,18 @@
                 <span>Ticket guid</span>
             </header>
             <div class="w3-container">
+                <div class="w3-row">
+                    <div class="w3-third">
+                        <header>
+                            <span><b>Ticket type</b></span>
+                        </header>
+                        <div>
+                            Test
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w3-container">
                 <span><b>Description</b></span>
                 <p>A description for this ticket that explain nothing but just to make the screen full of text to make sure this section are working properly and not just normal on some screen and doing its own thing for the other screen.</p>
             </div>
@@ -21,11 +33,8 @@
             <header>
                 <h1>Comments</h1>
             </header>
-            <TicketsHome />
-            <div class="w3-bar-block w3-padding-small">
-                <div class="w3-bar-item w3-padding-small">
-                    Test
-                </div>
+            <div class="w3-container" style="height:600px;">
+                <BugTracker.Pages.Comments.Components.CommentList />
             </div>
         </div>
     </div>
