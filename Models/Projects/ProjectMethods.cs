@@ -1,5 +1,4 @@
 using System;
-using Microsoft.Data.SqlClient;
 
 namespace Models.Projects;
 
@@ -59,16 +58,7 @@ public partial class Project{
         string sqlQuery = "CreateProject";
         int result = -1;
         try{
-            SqlConnection con = new (connectionString);
-            con.Open();
-            SqlCommand com = new (sqlQuery, con);
-            com.CommandType = System.Data.CommandType.StoredProcedure;
-            com.Parameters.Add(new SqlParameter("@Name", project.Name));
-            com.Parameters.Add(new SqlParameter("@guid", project.guid));
-            com.Parameters.Add(new SqlParameter("@UserGuid", project.UserGuid));
-            com.Parameters.Add(new SqlParameter("@Description", project.Description));
-            com.Parameters.Add(new SqlParameter("@ProjectImage", project.ProjectImage));
-            com.ExecuteNonQuery();
+            throw new NotImplementedException("Blazor WebAssembly does not support SQLServer");
         }catch(Exception err){
             throw new Exception("Updating project to database failed. " + err.Message);
         }
