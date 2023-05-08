@@ -1,0 +1,31 @@
+<div class="w3-padding w3-card" style="height:100%;">
+    <header>
+        <span>Latest creaed project</span>
+    </header>
+    <div>
+        <span class="w3-xlarge textOverflow w3-block"><b>@projectName</b></span>
+    </div>
+    <div>
+        <div class="w3-cell">
+            <span class="w3-xxxlarge w3-margin-right">@dayCreated</span>
+        </div>
+        <div class="w3-cell w3-cell-middle">
+            <span>@monthCreated<br />@yearCreated</span>
+        </div>
+    </div>
+</div>
+
+@code{
+    string projectName = string.Empty;
+    int dayCreated = 0;
+    string monthCreated = string.Empty;
+    int yearCreated = 0;
+
+    protected override async Task OnInitializedAsync(){
+        projectName = "Replace this placeholder text";
+        dayCreated = DateTime.Now.Day;
+        monthCreated = DateTime.Now.Month.ToString();
+        yearCreated = DateTime.Now.Year;
+
+    }
+}

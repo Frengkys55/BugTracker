@@ -2,6 +2,8 @@
 @using System;
 @using Models;
 @using Models.Projects;
+@using BugTracker.Pages.Projects;
+@using BugTracker.Pages.Projects.Components;
 @inject IConfiguration configuration;
 
 <NavMenu />
@@ -22,41 +24,10 @@
                 </a>
             </div>
             <div class="w3-col l4 w3-padding-small" style="height:100%;">
-                <div class="w3-padding w3-card" style="height:100%;">
-                    <header>
-                        <span>Projects with the most tickets</span>
-                    </header>
-                    <div>
-                        <span class="w3-xlarge textOverflow w3-block"><b>Project</b></span>
-                    </div>
-                    <div>
-                        <div class="w3-cell">
-                            <span class="w3-xxxlarge w3-margin-right">100</span>
-                        </div>
-                        <div class="w3-cell w3-cell-middle">
-                            <span>Tickets<br />On Queue</span>
-                        </div>
-                    </div>
-                </div>
-                
+                <ProjectWithMostTickets />
             </div>
             <div class="w3-col l4 w3-padding-small" style="height:100%;">
-                <div class="w3-padding w3-card" style="height:100%;">
-                    <header>
-                        <span>Latest creaed project</span>
-                    </header>
-                    <div>
-                        <span class="w3-xlarge textOverflow w3-block"><b>A very long project that is made just to make sure the panel can handle this kind of title properly</b></span>
-                    </div>
-                    <div>
-                        <div class="w3-cell">
-                            <span class="w3-xxxlarge w3-margin-right">3</span>
-                        </div>
-                        <div class="w3-cell w3-cell-middle">
-                            <span>March<br />2023</span>
-                        </div>
-                    </div>
-                </div>
+                <LatestProject />
             </div>
         </div>
     </div>
@@ -64,30 +35,13 @@
         <header class="w3-container">
             <h1>Your projects</h1>
         </header>
-        <div class="w3-bar-block w3-container">
-            @for(int i = 0; i < 50; i++){
-                <a href="#" style="text-decoration:none;">
-                    <div class="w3-bar-item w3-button w3-hover-black w3-border w3-border-black w3-round w3-ripple w3-margin-bottom">
-                        <header>
-                            <span class="w3-medium w3-block textOverflow"><b>A very long project that is made just to make sure the panel can handle this kind of title properly</b></span>
-                        </header>
-                        <div>
-                            <span>Tickets: 10</span> <span>Comments: 200</span>
-                        </div>
-                    </div>
-                </a>
-            }
-        </div>
+        <ListOfProjects />
     </div>
 </div>
 
 @code{
-    List<ProjectModel> projects = new();
 
     protected override async Task OnInitializedAsync(){
-        foreach(var project in new Project().GetProjects()){
-            // Get total number of tickets for the projects
-            //int ticketCount = new Models.Tickets.Ticket().GetT
-        }
+        
     }
 }

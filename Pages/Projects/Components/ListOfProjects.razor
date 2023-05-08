@@ -1,0 +1,35 @@
+@using Models.Projects
+
+@if(projects.Count < 1){
+    <div class="w3-display-container" style="height:300px; width:100%;">
+        <div class="w3-display-middle w3-container">
+            <img src="/images/sadkiana.gif" class="w3-image" />
+            <div>No project was found. Kiana is very sad... <a href="/Projects/AddProject">Create new project</a></div>
+        </div>
+    </div>
+}
+else{
+    <div class="w3-bar-block w3-container">
+        @foreach(var project in projects){
+            <a href="/Projects/ViewProject?id=@project.Key" style="text-decoration:none;">
+                <div class="w3-bar-item w3-button w3-hover-black w3-border w3-border-black w3-round w3-ripple w3-margin-bottom">
+                    <header>
+                        <span class="w3-medium w3-block textOverflow"><b>@project.Value</b></span>
+                    </header>
+                </div>
+            </a>
+        }
+    </div>
+}
+    
+@code{
+    List<KeyValuePair<Guid, string>> projects = new ();
+    
+    protected override async Task OnInitializedAsync(){
+        try{
+            projects = new Models.Projects.Project().GetProjects().ToList();
+        }catch(Exception err){
+            Console.WriteLine(err.Message);
+        }
+    }
+}

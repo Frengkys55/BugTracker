@@ -1,0 +1,26 @@
+<div class="w3-padding w3-card" style="height:100%;">
+    <header>
+        <span>Projects with the most tickets</span>
+    </header>
+    <div>
+        <span class="w3-xlarge textOverflow w3-block"><b>@projectName</b></span>
+    </div>
+    <div>
+        <div class="w3-cell">
+            <span class="w3-xxxlarge w3-margin-right">@ticketCount</span>
+        </div>
+        <div class="w3-cell w3-cell-middle">
+            <span>Tickets<br />On queue</span>
+        </div>
+    </div>
+</div>
+
+@code{
+    string projectName = string.Empty;
+    int ticketCount = 0;
+
+    protected override async Task OnInitializedAsync(){
+        projectName = "Replace this placeholder text";
+        ticketCount = new Random().Next(0, 100);
+    }
+}
