@@ -3,10 +3,31 @@
 <div style="height:100%">
     <div class="w3-border w3-border-black w3-round" style="height:100%;">
         <div class="w3-container" style="height: calc( 100% - 84.75px ); overflow-x:hidden; overflow-y: scroll;">
-            Message
+            <div class="w3-bar-block">
+                @if(comments.Count > 0){
+                    @foreach(var comment in comments){
+                        <div class="w3-bar-item w3-card w3-round w3-margin-top">
+                            @if(comment.Attachment != null){
+                                <div class="w3-container">
+                                    <a href="#" style="text-decoration:none">
+                                        <div class="w3-cell">
+                                            <span class="material-symbols-sharp w3-xxxlarge">attach_file</span>
+                                        </div>
+                                        <div class="w3-cell w3-cell middle">
+                                            @comment.Attachment.Name
+                                        </div>
+                                    </a>
+                                </div>
+                            }
+                            @comment.CommentText
+                        </div>
+                    }
+                }
+            </div>
+            
         </div>
         <div class="w3-border-top w3-border-black">
-            <input type="text" class="w3-input w3-block w3-border-black" placeholder="Your comment here" />
+            <input type="text" class="w3-input w3-block w3-border-black" placeholder="Your comment here" @bind-value="commentText" />
             <div class="w3-bar">
                 <InputFile OnChange="upCommentFileUpload" class="w3-bar-item w3-input" />
                 <button id="btnSendComment" @onclick="btnSendComment" class="w3-bar-item w3-button w3-transparent w3-hover-black w3-ripple w3-right" title="Send comment"><span class="material-symbols-sharp">send</span></button>
@@ -17,9 +38,24 @@
 
 @code{
     IBrowserFile _file;
+    ElementReference inputFile;
+
+    string commentText = string.Empty;
+    List<Models.Comments.Comment> comments = new List<Models.Comments.Comment>();
 
     protected async Task btnSendComment(){
-        Console.WriteLine("SendComment triggered");
+        if(commentText != string.Empty){
+            Models.Comments.Comment comment = new Models.Comments.Comment();
+            comment.CommentText = commentText;
+            if(_file != null){
+                Models.Comments.Attachment attachment = new Models.Comments.Attachment();
+                attachment.Name = _file.Name;
+                comment.Attachment = attachment;
+            }
+            comments.Add(comment);
+            commentText = string.Empty;
+            _file = null;
+        }
     }
 
     protected async Task upCommentFileUpload(InputFileChangeEventArgs e){
