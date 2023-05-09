@@ -2,10 +2,10 @@
 @using Models.Tickets;
 @using Microsoft.AspNetCore.Components.Rendering;
 
-<TicketSideMenu />
+<NavMenu />
 <HeadContent>
 </HeadContent>
-<div class="w3-main" style="margin-left:100px;">
+<div>
     <!-- Ticket overview panel -->
     <div class="w3-row">
         <div class="w3-col m3 w3-padding">
@@ -73,6 +73,9 @@
                 </ul>
             </div>
         </div>
+    </div>
+    <div style="height:500px; width:100%;">
+        <BugTracker.Pages.Tickets.Components.AllTickets />
     </div>
 </div>>
 

@@ -31,5 +31,7 @@ else{
         }catch(Exception err){
             Console.WriteLine(err.Message);
         }
+        KeyValuePair<Guid, string> project = new (Guid.NewGuid(), "Replace this placeholder text");
+            projects.Add(project);
     }
 }

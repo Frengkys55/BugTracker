@@ -1,0 +1,34 @@
+<div style="height:100%; width:100%; overflow-y: hidden; overflow-x:scroll;">
+    @if(tickets.Count < 1){
+        <div class="w3-display-container" style="width:100%; height:100%;">
+            <div class="w3-display-middle">
+                <img src="/images/l4uqgizqww241.gif" class="w3-image" />
+                <div>
+                    There is no ticket found. Kiana is happy... <a href="/Tickets/AddTicket">Create new ticket</a>
+                </div>
+            </div>
+        </div>
+    }
+    else{
+        @foreach(var ticket in tickets){
+            <div class="w3-bar-block">
+                <a href="/Tickets/ViewTicket?id=@ticket.Key" class=" w3-bar-item w3-button w3-transparent w3-hover-black w3-border w3-border-black w3-round w3-ripple w3-margin-bottom">@ticket.Value</a>
+            </div>
+        }
+    }
+    
+</div>
+
+@code{
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public Guid id {set; get;}
+
+    List<KeyValuePair<Guid, string>> tickets = new();
+    
+    protected override async Task OnInitializedAsync(){
+        for(int i = 0; i < 10; i++){
+            tickets.Add(new KeyValuePair<Guid, string>(Guid.NewGuid(), "Replace this placeholder text"));
+        }
+    }
+}

@@ -2,8 +2,15 @@ using System;
 using System.IO;
 
 namespace Models.Tickets;
-
+/// <summary>
+/// Ticket model
+/// </summary>
 public partial class Ticket{
+
+    /// <summary>
+    /// Method for getting list of tickets
+    /// </summary>
+    /// <returns>Dictionary of ticket name and guid</returns>
     public Dictionary<Guid, string> GetTickets(){
         Dictionary<Guid, string> tickets = new Dictionary<Guid, string>();
 
@@ -18,6 +25,7 @@ public partial class Ticket{
     /// Get all tickets for certain project
     /// </summary>
     /// <param name="projectGuid">Project GUID to use as a reference</param>
+    /// <returns>Dictionary of tickets assosiated with the specified GUID</returns>
     public Dictionary<Guid, string> GetTickets(Guid projectGuid){
         Dictionary<Guid, string> tickets = new Dictionary<Guid, string>();
 
@@ -28,6 +36,12 @@ public partial class Ticket{
         return tickets;
     }
 
+    /// <summary>
+    /// Get all tickets for certain project with specific count
+    /// </summary>
+    /// <param name="projectGuid">GUID of the project to list the tickets</param>
+    /// <param name="maxTicketCount">Maximum number of ticket returned</param>
+    /// <returns>Dictionary of tickets assosiated with the specified GUID with spesific length</returns>
     public Dictionary<Guid, string> GetTickets(Guid projectGuid, int maxTicketCount){
         Dictionary<Guid, string> tickets = new Dictionary<Guid, string>();
 
@@ -38,19 +52,36 @@ public partial class Ticket{
         return tickets;
     }
 
-
+    /// <summary>
+    /// Get how many ticket are there for the specific project
+    /// </summary>
+    /// <param name="projectGuid">GUID of the project</param>
+    /// <returns></returns>
     public int GetTicketCount(Guid projectGuid){
         return new Random().Next(2, 1000);
     }
 
-    public Ticket GetTicketDetail(string ticketId){
+    /// <summary>
+    /// Get detail of a specific ticket
+    /// </summary>
+    /// <param name="ticketGuid">GUID of the ticket to get a detailed list from</param>
+    /// <returns></returns>
+    public Ticket GetTicketDetail(Guid ticketGuid){
         throw new NotImplementedException();
     }
 
-    public void DeleteTicket(string ticketId){
+    /// <summary>
+    /// Delete spesified ticket
+    /// </summary>
+    /// <param name="ticketGuid">GUID of the ticket to be deleted</param>
+    public void DeleteTicket(Guid ticketGuid){
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Update ticket information
+    /// </summary>
+    /// <param name="ticket">Ticket information to be updated</param>
     public void UpdateTicket(Ticket ticket){
         throw new NotImplementedException();
     }
