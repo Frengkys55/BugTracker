@@ -27,7 +27,7 @@
                     <InputText id="txtImageUrl" @bind-Value="newProject.ProjectImage" class="w3-input" />
                 </div>
                 <div>
-                    <input type="submit" value="Add Project" class="w3-button w3-transparent w3-border w3-border-black w3-hover-black w3-round w3-ripple" title="Save project" />
+                    <input @onclick="AddProjectToDatabase" type="submit" value="Add Project" class="w3-button w3-transparent w3-border w3-border-black w3-hover-black w3-round w3-ripple" title="Save project" />
                 </div>
             </EditForm>
         </div>
@@ -68,8 +68,9 @@
 
     private async Task AddProjectToDatabase(){
         string connectionString = configuration["DatabaseConnectionString"];
+        string targetAddress = configuration["BugTrackerBackendAddress"] + "/Project";
         try{
-            newProject.CreateProject(newProject, connectionString);
+            await newProject.CreateProject(newProject, connectionString, targetAddress);
         }catch(Exception err){
             Console.Error.WriteLine(err.Message);
         }

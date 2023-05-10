@@ -45,7 +45,9 @@ public partial class Project{
     /// Create and store new project to database
     /// </summary>
     /// <param name="project">Project to add to database</param>
-    public int CreateProject(Project project, string connectionString){
+    /// <param name="connectionString">Database connectionstring</param>
+    /// <param name="targetAddress">Where the API is located</param>
+    public async Task<HttpResponseMessage> CreateProject(Project project, string connectionString, string targetAddress){
         // Validate project informations
         if(project.Name == string.Empty || project.Name == null) throw new ArgumentException("Project name should not be empty");
         if(connectionString == string.Empty) throw new Exception("Connection string is empty");
@@ -55,17 +57,8 @@ public partial class Project{
         if(project.DateCreated == null) project.DateCreated = project.DateModified = DateTime.Now;
         #region Create project
 
-        string sqlQuery = "CreateProject";
-        int result = -1;
-        try{
-            throw new NotImplementedException("Blazor WebAssembly does not support SQLServer");
-        }catch(Exception err){
-            throw new Exception("Updating project to database failed. " + err.Message);
-        }
-        #endregion Create project
-
-        return result;
-        throw new NotImplementedException();
+        Tools.APIHelper.GenericPost<Project> httpSend = new(targetAddress);
+        return await httpSend.Send(project);
     }
 
     /// <summary>

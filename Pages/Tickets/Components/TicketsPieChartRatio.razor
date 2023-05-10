@@ -10,7 +10,7 @@
 
 
 <div style="width:100%; height:100%;">
-    <ChartJs.Blazor.Charts.ChartJsPieChart Config="_config" />
+    <ChartJs.Blazor.Charts.ChartJsPieChart Config="_config" style="width:100%; height:100%;" />
 </div>
 
 @code{
@@ -29,6 +29,11 @@
         ChartJs.Blazor.ChartJS.PieChart.PieDataset dataset = new ChartJs.Blazor.ChartJS.PieChart.PieDataset();
 
         for(int i = 0; i < 10; i++){
+            dataset.Data.Add((double)i);
+        }
+
+        for(int i = 0; i < 10; i++){
+            _config.Data.Labels.Add("Sample " + i);
         }
 
 
