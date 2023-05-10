@@ -55,7 +55,6 @@ public partial class Project{
         // Complete additional project information
         if(project.guid == null) project.guid = Guid.NewGuid();
         if(project.DateCreated == null) project.DateCreated = project.DateModified = DateTime.Now;
-        #region Create project
 
         Tools.APIHelper.GenericPost<Project> httpSend = new(targetAddress);
         return await httpSend.Send(project);

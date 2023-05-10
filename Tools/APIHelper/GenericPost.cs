@@ -15,6 +15,7 @@ public class GenericPost<T>{
     public async Task<HttpResponseMessage> Send(T data){
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri(targetAddress);
+        client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
         string serializedJson = JsonSerializer.Serialize(data);
         return await client.PostAsync(client.BaseAddress, new StringContent(serializedJson, Encoding.UTF8, "application/json"));
     }
