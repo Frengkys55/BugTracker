@@ -27,11 +27,9 @@ else{
     
     protected override async Task OnInitializedAsync(){
         try{
-            projects = new Models.Projects.Project().GetProjects().ToList();
+            projects = (await new Models.Projects.Project().GetProjects()).ToList();
         }catch(Exception err){
             Console.WriteLine(err.Message);
         }
-        KeyValuePair<Guid, string> project = new (Guid.NewGuid(), "Replace this placeholder text");
-            projects.Add(project);
     }
 }

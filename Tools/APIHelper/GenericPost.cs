@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text;
 using System.Text.Json;
 
@@ -19,4 +20,26 @@ public class GenericPost<T>{
         string serializedJson = JsonSerializer.Serialize(data);
         return await client.PostAsync(client.BaseAddress, new StringContent(serializedJson, Encoding.UTF8, "application/json"));
     }
+
+    public async Task<T> GenericGet(string address, List<KeyValuePair<string, string>> headers){
+
+        if (string.IsNullOrEmpty(address)) throw new ArgumentException("Well, I your want me to connect to get some data to you, please give me where should I get this data that you need....");
+        using(var client = new HttpClient()){
+            client.BaseAddress = new Uri(address);
+                    
+            if(headers != null){
+                foreach(var header in headers){
+                    client.DefaultRequestHeaders.Add(header.Key, header.Value);
+                }
+            }
+
+            HttpResponseMessage message = await client.GetAsync(address);
+
+            if(message.StatusCode == HttpStatusCode.BadRequest) throw new Exception("You've got Bad Request");
+
+            return new Tools.Misc.JsonConverter<T>().ReadString(await message.Content.ReadAsStringAsync());
+        }
+    }
+
+
 }

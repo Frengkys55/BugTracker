@@ -1,4 +1,5 @@
 using System;
+using Models.Projects;
 
 namespace Models.Projects;
 
@@ -23,22 +24,39 @@ public partial class Project{
     /// <summary>
     /// Get full list of projects
     /// </summary>
-    public Dictionary<Guid, string> GetProjects(){
-        throw new NotImplementedException();
+    public async Task<Dictionary<Guid, string>> GetProjects(){
+        string accessToken = "test";
+        Tools.APIHelper.GenericPost<List<ProjectShortModel>> genericGet = new ("https://bugtrackerapi.frengkysinaga.com/api/Project/GetProjects");
+
+        List<KeyValuePair<string, string>> headers = new ();
+        headers.Add(new KeyValuePair<string, string>("accesstoken", accessToken));
+        
+        List<ProjectShortModel> projects = await genericGet.GenericGet("https://bugtrackerapi.frengkysinaga.com/api/Project/GetProjects", headers);
+
+        Dictionary<Guid, string> projectList = new Dictionary<Guid, string>();
+        foreach(var project in projects){
+            projectList.Add(project.guid, project.name);
+        }
+
+        return projectList;
     }
     
     /// <summary>
     /// Get a limited list of project from database
     /// </summary>
     /// <padam name="count">Limit how many project to get</param>
-    public Dictionary<Guid, string> GetProjects(int count){
-        Dictionary<Guid, string> projectList = new ();
-        for(int i = 0; i < count; i++){
-            Guid guid = Guid.NewGuid();
-            string name = "Project" + i;
-            projectList.Add(guid, name);
+    public async Task<Dictionary<Guid, string>> GetProjects(int count){
+        Dictionary<Guid, string> projectList = await GetProjects();
+        Dictionary<Guid, string> newProjectList = new ();
+
+        int counter = 0;
+        foreach(var project in projectList){
+            newProjectList.Add(project.Key, project.Value);
+            counter++;
+            if(counter >= count) break;
         }
-        return projectList;
+
+        return newProjectList;
     }
 
     /// <summary>

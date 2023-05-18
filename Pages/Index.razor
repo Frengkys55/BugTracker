@@ -35,7 +35,7 @@
                         </div>
                         <div id="pnlProject1OverviewContainer" class="w3-display-bottomleft w3-block w3-theme-d5 backdropBlur" style="height:300px;">
                             <header id="headProject2Title" class="w3-container">
-                                <h1 class="w3-medium w3-wide">@project.project.Name</h1>
+                                <h1 class="w3-medium w3-wide textOverflow" title="@project.project.Name">@project.project.Name</h1>
                             </header>
                             <div id="pnlProject1TicketOverviewContainer" class="w3-bar w3-border-top w3-border-bottom w3-border-white">
                                 <div class="w3-left">
@@ -70,7 +70,9 @@
     
     protected override async Task OnInitializedAsync(){
         try{
-            foreach(var project in new Models.Projects.Project().GetProjects(8)){
+            var projectList = await new Models.Projects.Project().GetProjects(8);
+
+            foreach(var project in projectList){
                 Project projectTemp = new ();
                 projectTemp.Name = project.Value;
                 projectTemp.guid = project.Key;
