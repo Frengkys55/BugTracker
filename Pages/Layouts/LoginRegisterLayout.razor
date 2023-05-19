@@ -1,0 +1,86 @@
+@inherits LayoutComponentBase
+
+<HeadContent>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap" rel="stylesheet"> 
+    <style>
+        body{
+            font-family: 'Lato', sans-serif;
+        }
+    </style>
+    <style>
+        .w3-theme-l5 {color:#000 !important; background-color:#f0f0f0c0 !important}
+        .w3-theme-l4 {color:#000 !important; background-color:#ccccccc0 !important}
+        .w3-theme-l3 {color:#fff !important; background-color:#999999c0 !important}
+        .w3-theme-l2 {color:#fff !important; background-color:#666666c0 !important}
+        .w3-theme-l1 {color:#fff !important; background-color:#333333c0 !important}
+        .w3-theme-d1 {color:#fff !important; background-color:#000000c0 !important}
+        .w3-theme-d2 {color:#fff !important; background-color:#000000c0 !important} 
+        .w3-theme-d3 {color:#fff !important; background-color:#000000c0 !important}
+        .w3-theme-d4 {color:#fff !important; background-color:#000000c0 !important}
+        .w3-theme-d5 {color:#fff !important; background-color:#000000c0 !important}
+        .w3-hover-theme-dark {color:#fff !important; background-color:#000000c0 !important}
+
+        .w3-theme-light {color:#000 !important; background-color:#f0f0f0 !important}
+        .w3-theme-dark {color:#fff !important; background-color:#000000 !important}
+        .w3-theme-action {color:#fff !important; background-color:#000000 !important}
+
+        .w3-theme {color:#fff !important; background-color:#000000 !important}
+        .w3-text-theme {color:#000000 !important}
+        .w3-border-theme {border-color:#1a1a1a !important}
+
+
+        .desktopEnvironment{
+            position:relative;
+        }
+        body::-webkit-scrollbar{
+            width:8px;
+        }
+        body::-webkit-scrollbar-track{
+
+        }
+        body::-webkit-scrollbar-thumb{
+            background-color:#000000c0;
+            border-radius:4px;
+        }
+        .textOverflow{
+            overflow:hidden!important;
+            text-overflow:ellipsis!important;
+            white-space:nowrap!important;
+        }
+        .backdropBlur{
+            backdrop-filter:blur(30px);
+        }
+
+        .backgroundCover{
+            background-size:cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .blockTextSelection {
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        .material-symbols-sharp {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 100,
+            'GRAD' -25,
+            'opsz' 48
+        }
+    </style>
+</HeadContent>
+
+<div id="pnlMainContent" class="w3-display-container" style="height:100%; width:100%;">
+    <div class="w3-display-middle">
+        <main>
+            @Body
+        </main>
+    </div>
+
+</div>

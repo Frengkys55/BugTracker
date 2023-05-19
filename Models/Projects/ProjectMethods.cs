@@ -26,12 +26,12 @@ public partial class Project{
     /// </summary>
     public async Task<Dictionary<Guid, string>> GetProjects(){
         string accessToken = "test";
-        Tools.APIHelper.GenericPost<List<ProjectShortModel>> genericGet = new ("https://bugtrackerapi.frengkysinaga.com/api/Project/GetProjects");
+        Tools.APIHelper.GenericGet<List<ProjectShortModel>> genericGet = new ("https://bugtrackerapi.frengkysinaga.com/api/Project/GetProjects");
 
         List<KeyValuePair<string, string>> headers = new ();
         headers.Add(new KeyValuePair<string, string>("accesstoken", accessToken));
         
-        List<ProjectShortModel> projects = await genericGet.GenericGet("https://bugtrackerapi.frengkysinaga.com/api/Project/GetProjects", headers);
+        List<ProjectShortModel> projects = await genericGet.Send(headers);
 
         Dictionary<Guid, string> projectList = new Dictionary<Guid, string>();
         foreach(var project in projects){
@@ -65,17 +65,21 @@ public partial class Project{
     /// <param name="project">Project to add to database</param>
     /// <param name="connectionString">Database connectionstring</param>
     /// <param name="targetAddress">Where the API is located</param>
-    public async Task<HttpResponseMessage> CreateProject(Project project, string connectionString, string targetAddress){
+    public async Task<HttpResponseMessage> CreateProject(Project project, string targetAddress){
         // Validate project informations
-        if(project.Name == string.Empty || project.Name == null) throw new ArgumentException("Project name should not be empty");
-        if(connectionString == string.Empty) throw new Exception("Connection string is empty");
+        if(string.IsNullOrEmpty(project.Name)) throw new ArgumentException("Project name should not be empty");
 
         // Complete additional project information
         if(project.guid == null) project.guid = Guid.NewGuid();
         if(project.DateCreated == null) project.DateCreated = project.DateModified = DateTime.Now;
 
-        Tools.APIHelper.GenericPost<Project> httpSend = new(targetAddress);
-        return await httpSend.Send(project);
+        Tools.APIHelper.GenericPost<Project> createProject = new(targetAddress);
+
+        List<KeyValuePair<string, string>> headers = new();
+        headers.Add(new KeyValuePair<string, string>("accesstoken", "test"));
+
+
+        return await createProject.Send(project, headers);
     }
 
     /// <summary>
