@@ -48,7 +48,10 @@
     }
 
     protected async Task Login_Click(){
-        Console.WriteLine(password);
+        Models.UserLoginModel user = new ();
+        user.UserName = userName;
+        user.password = password;
+        string accesstoken = user.Login(user);
     }
 
     protected async Task Register_Click(){
@@ -58,5 +61,6 @@
     protected async Task LoginGuest_Click(){
         userName = "guest";
         password = "guest";
+        Login_Click();
     }
 }

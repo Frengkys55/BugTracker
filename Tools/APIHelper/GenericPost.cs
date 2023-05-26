@@ -13,6 +13,12 @@ public class GenericPost<T>{
         this.targetAddress = targetAddress;
     }
     
+    /// <summary>
+    /// Generic POST method
+    /// </summary>
+    /// <param name="data">Your data to be send (will be put in the body of the request)</param>
+    /// <param name="headers">Addidional headers you specify</param>
+    /// <returns></returns>
     public async Task<HttpResponseMessage> Send(T data, List<KeyValuePair<string, string>> headers){
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri(targetAddress);

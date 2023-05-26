@@ -39,8 +39,8 @@
                             </header>
                             <div id="pnlProject1TicketOverviewContainer" class="w3-bar w3-border-top w3-border-bottom w3-border-white">
                                 <div class="w3-left">
-                                    <a href="/Tickets/List?id=@project.project.guid" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" title="See posted tickets"><span class="material-symbols-sharp">problem</span></a>
-                                    <a href="/Projects/Edit?id=@project.project.guid" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" title="Edit project"><span class="material-symbols-sharp">edit</span></a>
+                                    <a href="/Tickets/List?id=@project.project.Guid" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" title="See posted tickets"><span class="material-symbols-sharp">problem</span></a>
+                                    <a href="/Projects/Edit?id=@project.project.Guid" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" title="Edit project"><span class="material-symbols-sharp">edit</span></a>
                                 </div>
                                 <div class="w3-right">
                                     <a href="#" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple"><span class="material-symbols-sharp" title="Delete this project">delete</span></a>
@@ -75,7 +75,7 @@
             foreach(var project in projectList){
                 Project projectTemp = new ();
                 projectTemp.Name = project.Value;
-                projectTemp.guid = project.Key;
+                projectTemp.Guid = project.Key;
 
                 Dictionary<Guid, string> tickets = new Models.Tickets.Ticket().GetTickets(Guid.NewGuid());
 

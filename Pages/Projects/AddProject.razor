@@ -25,7 +25,7 @@
                 </div>
                 <div class="w3-margin-bottom">
                     <label>Project image</label>
-                    <InputText id="txtImageUrl" @bind-Value="newProject.ProjectImage" class="w3-input" />
+                    <InputText id="txtImageUrl" @bind-Value="newProject.IconUrl" class="w3-input" />
                 </div>
                 <div>
                     <input @onclick="AddProjectToDatabase" type="submit" value="Add Project" class="w3-button w3-transparent w3-border w3-border-black w3-hover-black w3-round w3-ripple" title="Save project" />
@@ -88,8 +88,9 @@
 
     private async Task AddProjectToDatabase(){
         string targetAddress = configuration["BugTrackerBackendAddress"] + "/Project";
-        Console.WriteLine(targetAddress);
         try{
+            newProject.BackgroundImageUrl = "N/A";
+            newProject.AccessToken = new Tools.Misc.AccessTokenHelper().accessToken;
             HttpResponseMessage response = await newProject.CreateProject(newProject, targetAddress);
 
             ResponseMessage message = new Tools.Misc.JsonConverter<ResponseMessage>().ReadString(await response.Content.ReadAsStringAsync());

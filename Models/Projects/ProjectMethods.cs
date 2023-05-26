@@ -25,7 +25,7 @@ public partial class Project{
     /// Get full list of projects
     /// </summary>
     public async Task<Dictionary<Guid, string>> GetProjects(){
-        string accessToken = "test";
+        string accessToken = "58d18562-5ed6-4da2-95db-777ab7dd422a";
         Tools.APIHelper.GenericGet<List<ProjectShortModel>> genericGet = new ("https://bugtrackerapi.frengkysinaga.com/api/Project/GetProjects");
 
         List<KeyValuePair<string, string>> headers = new ();
@@ -70,14 +70,18 @@ public partial class Project{
         if(string.IsNullOrEmpty(project.Name)) throw new ArgumentException("Project name should not be empty");
 
         // Complete additional project information
-        if(project.guid == null) project.guid = Guid.NewGuid();
-        if(project.DateCreated == null) project.DateCreated = project.DateModified = DateTime.Now;
+        if(project.Guid == null) project.Guid = Guid.NewGuid();
+        
+        // Override dates
+        project.DateCreated = DateTime.Now;
+        project.DateModified = DateTime.Now;
 
         Tools.APIHelper.GenericPost<Project> createProject = new(targetAddress);
 
-        List<KeyValuePair<string, string>> headers = new();
-        headers.Add(new KeyValuePair<string, string>("accesstoken", "test"));
+        Tools.Misc.AccessTokenHelper accessToken = new Tools.Misc.AccessTokenHelper();
 
+        List<KeyValuePair<string, string>> headers = new();
+        headers.Add(new KeyValuePair<string, string>("accesstoken", accessToken.accessToken));
 
         return await createProject.Send(project, headers);
     }

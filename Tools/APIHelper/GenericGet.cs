@@ -1,6 +1,11 @@
 using System.Net;
 
 namespace Tools.APIHelper{
+
+    /// <summary>
+    /// Generic class for sending GET requests
+    /// </summary>
+    /// <typeparam name="T">Your class model object</typeparam>
     public class GenericGet<T>{
 
         Uri address;
@@ -9,6 +14,12 @@ namespace Tools.APIHelper{
             this.address = new Uri(address);
         }
 
+
+        /// <summary>
+        /// Send GET request to a server
+        /// </summary>
+        /// <param name="headers">Additional headers that you want to add</param>
+        /// <returns>Your specified T object</returns>
         public async Task<T> Send(List<KeyValuePair<string, string>> headers){
 
             if(address == null){
@@ -17,6 +28,7 @@ namespace Tools.APIHelper{
 
             using(var client = new HttpClient()){
                 client.BaseAddress = address;
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                         
                 if(headers != null){
                     foreach(var header in headers){

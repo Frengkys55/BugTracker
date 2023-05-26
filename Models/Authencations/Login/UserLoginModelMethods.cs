@@ -1,6 +1,6 @@
 namespace Models{
     public partial class UserLoginModel{
-        public void Login(UserLoginModel user){
+        public string Login(UserLoginModel user){
             throw new NotImplementedException();
         }
         public bool CheckLogin(string accesstoken){

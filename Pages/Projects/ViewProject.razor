@@ -10,8 +10,8 @@
             <header>
                 <h1 class="w3-container">@project.Name</h1>
                 <div class="w3-bar">
-                    <span class="w3-bar-item w3-text-grey">id: @project.guid</span>
-                    <a href="/Project/EditProject?id=@project.guid" class="w3-bar-item w3-button w3-transparent w3-hover-black w3-border w3-border-black w3-round w3-ripple w3-right">Edit</a>
+                    <span class="w3-bar-item w3-text-grey">id: @project.Guid</span>
+                    <a href="/Project/EditProject?id=@project.Guid" class="w3-bar-item w3-button w3-transparent w3-hover-black w3-border w3-border-black w3-round w3-ripple w3-right">Edit</a>
                 </div>
             </header>
             <div class="w3-container w3-margin-top">
@@ -66,7 +66,7 @@
             navManager.NavigateTo("/Projects");
         }
         project.Name = "Replace this placeholder text";
-        project.guid = id;
+        project.Guid = id;
         project.id = 12;
         project.Description = "Replace this placeholder text";
         project.DateCreated = DateTime.Now;
