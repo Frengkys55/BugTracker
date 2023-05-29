@@ -72,7 +72,7 @@
                 </div>
             </div>
         </div>
-        <div class="w3-col m5 w3-hide-small w3-container">
+        <div class="w3-col m3 w3-hide-small w3-container">
             <header>
                 <h1>A bit of help</h1>
             </header>
@@ -106,10 +106,17 @@
         <div id="pnlProblem" class="w3-card w3-white w3-round w3-border w3-border-black w3-animate-left" style="position:absolute; top:16px; left: 16px;">
             <div class="w3-cell-row">
                 <div class="w3-cell w3-cell-middle w3-xxxlarge w3-mobile w3-center w3-container">
-                    @statusCode
+                    <span class="material-symbols-sharp w3-xxlarge">Error</span>
                 </div>
                 <div class="w3-cell w3-cell-middle w3-container">
-                    @problemMessage
+                    <header>
+                        <h3>
+                            @statusCode
+                        </h3>
+                    </header>
+                    <div>
+                        @problemMessage
+                    </div>
                 </div>
             </div>
             <div class="w3-bar w3-padding w3-center">
@@ -122,6 +129,7 @@
 @code{
     Models.Projects.Project newProject = new();
     bool hasProblem = false;
+    string errorIcon = "error";
     string problemMessage = string.Empty;
     string projectIconFilePath = string.Empty;
     string projectBackgroundImagePath = string.Empty;
@@ -143,10 +151,14 @@
             else{
                 hasProblem = true;
                 statusCode = message.statusCode;
+                errorIcon = "error";
                 problemMessage = message.reasonPhrase;
             }
         }catch(Exception err){
-            Console.Error.WriteLine(err.Message);
+            hasProblem = true;
+            statusCode = 500;
+            errorIcon = "error";
+            problemMessage = err.Message;
         }
     }
 

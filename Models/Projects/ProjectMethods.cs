@@ -66,10 +66,6 @@ public partial class Project{
 
         // Complete additional project information
         if(project.Guid == Guid.Empty) project.Guid = Guid.NewGuid();
-        
-        // Override dates
-        project.DateCreated = DateTime.Now;
-        project.DateModified = DateTime.Now;
 
         Tools.APIHelper.GenericPost<Project> createProject = new(targetAddress);
 
