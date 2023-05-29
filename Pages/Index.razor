@@ -2,6 +2,8 @@
 @using Models;
 @using Models.Projects;
 @using Models.Tickets;
+@inject Tools.Misc.AccessTokenHelper AccessTokenHelper;
+@inject IConfiguration _configuration;
 
 <NavMenu />
 <div id="pnlWorkArea">
@@ -37,7 +39,7 @@
                                     <a href="/Projects/Edit?id=@project.project.Guid" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" title="Edit project"><span class="material-symbols-sharp">edit</span></a>
                                 </div>
                                 <div class="w3-right">
-                                    <a href="#" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple"><span class="material-symbols-sharp" title="Delete this project">delete</span></a>
+                                    <button class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" @onclick="() => { RequestDelete_Click(project.project.Guid.ToString(), project.project.Name);}"><span class="material-symbols-sharp" title="Delete this project">delete</span></button>
                                 </div>
                             </div>
                             <div id="pnlProject1LatestTicketOverviewContainer">
@@ -72,53 +74,89 @@
             </div>
         </div>
     }
-       
+    @if(requestDelete){
+        <div class="w3-modal" style="display:block;">
+            <div class="w3-modal-content">
+                <header class="w3-container">
+                    <h5 class="textOverflow">Confirm deletion</h5>
+                </header>
+                <div class="w3-container">
+                    Are you sure to delete "@nameToDelete"?
+                </div>
+                <footer class="w3-bar w3-padding">
+                    <button class="w3-bar-item w3-button w3-round w3-border w3-border-black w3-hover-red w3-ripple" @onclick="ConfirmDelete"><span class="material-symbols-sharp" style="padding-top:4px;">delete_forever</span></button> 
+                    <button class="w3-bar-item w3-button w3-round w3-border w3-border-black w3-ripple w3-margin-left" @onclick="CancelDelete"><span class="material-symbols-sharp" style="padding-top:4px;">cancel</span></button> 
+                </footer>
+            </div>
+        </div>
+    }
 </div>
 
 @code{
     string ProjectList = string.Empty;
     List<ProjectModel> projects = new ();
-
     int isLoading = 0;
     string errorMessage = string.Empty;
     
+    bool requestDelete = false;
+    string guidToDelete = string.Empty;
+    string nameToDelete = string.Empty;
+    string modelStyle = "none";
+
     protected override async Task OnInitializedAsync(){
         try{
             var projectList = await new Models.Projects.Project().GetProjects(8);
 
             if(projectList.Count > 0){
                 isLoading = 1;
+
+                foreach(var project in projectList){
+                    Project projectTemp = new ();
+                    projectTemp.Name = project.name;
+                    projectTemp.Guid = project.guid;
+                    projectTemp.BackgroundImageUrl = project.backgroundImageUrl;
+                    projectTemp.IconUrl = project.iconUrl;
+
+                    Dictionary<Guid, string> tickets = new Models.Tickets.Ticket().GetTickets(Guid.NewGuid(), AccessTokenHelper.accessToken);
+
+                    ProjectModel projectModel = new ();
+                    projectModel.project = projectTemp;
+                    projectModel.tickets = new ();
+
+                    foreach(var ticket in tickets){
+                        Ticket ticketTemp = new ();
+                        ticketTemp.Name = ticket.Value;
+                        ticketTemp.guid = ticket.Key;
+                    }
+                    projects.Add(projectModel);
+                }
             }
             else{
                 isLoading = 2;
             }
-
-            foreach(var project in projectList){
-                Project projectTemp = new ();
-                projectTemp.Name = project.name;
-                projectTemp.Guid = project.guid;
-                projectTemp.BackgroundImageUrl = project.backgroundImageUrl;
-                projectTemp.IconUrl = project.iconUrl;
-
-                Dictionary<Guid, string> tickets = new Models.Tickets.Ticket().GetTickets(Guid.NewGuid());
-
-                ProjectModel projectModel = new ();
-                projectModel.project = projectTemp;
-                projectModel.tickets = new ();
-
-                foreach(var ticket in tickets){
-                    Ticket ticketTemp = new ();
-                    ticketTemp.Name = ticket.Value;
-                    ticketTemp.guid = ticket.Key;
-                    projectModel.tickets.Add(ticketTemp);
-                }
-                projects.Add(projectModel);
-            }
-
         }catch(Exception err){
-            Console.WriteLine(err.Message);
+            Console.WriteLine(err);
         }
+    }
 
-        
+    protected async Task RequestDelete_Click(string guid, string name){
+        requestDelete = true;
+        guidToDelete = guid;
+        nameToDelete = name;
+    }
+
+    protected async Task ConfirmDelete(){
+        Project project = new Project();
+        try{
+            await project.DeleteProject(Guid.Parse(guidToDelete), _configuration["BugTrackerBackendAddress"], AccessTokenHelper.accessToken);
+        }
+        catch(Exception err){
+            System.Console.WriteLine(err.Message);
+        }
+    }
+    protected async Task CancelDelete(){
+        requestDelete = false;
+        guidToDelete = string.Empty;
+        nameToDelete = string.Empty;
     }
 }

@@ -11,7 +11,7 @@ public partial class Ticket{
     /// Method for getting list of tickets
     /// </summary>
     /// <returns>Dictionary of ticket name and guid</returns>
-    public Dictionary<Guid, string> GetTickets(){
+    public Dictionary<Guid, string> GetTickets(string accesstoken){
         Dictionary<Guid, string> tickets = new Dictionary<Guid, string>();
 
         for(int i = 0; i < 5; i++){
@@ -26,13 +26,12 @@ public partial class Ticket{
     /// </summary>
     /// <param name="projectGuid">Project GUID to use as a reference</param>
     /// <returns>Dictionary of tickets assosiated with the specified GUID</returns>
-    public Dictionary<Guid, string> GetTickets(Guid projectGuid){
+    public Dictionary<Guid, string> GetTickets(Guid projectGuid, string accesstoken){
         Dictionary<Guid, string> tickets = new Dictionary<Guid, string>();
 
         for(int i = 0; i < 5; i++){
             tickets.Add(Guid.NewGuid(), "Ticket " + i);
         }
-
         return tickets;
     }
 

@@ -48,7 +48,7 @@ public partial class Project{
         foreach(var project in projectList){
             newProjectList.Add(project);
             counter++;
-            if(counter >= count) break;
+            if(counter > count) break;
         }
 
         return newProjectList;
@@ -94,8 +94,21 @@ public partial class Project{
         throw new NotImplementedException();
     }
 
-    public void DeleteProject(Guid projectGuid){
-        throw new NotImplementedException();
+    public async Task DeleteProject(Guid projectGuid, string address, string accesstoken){
+        if(projectGuid == Guid.Empty)
+            throw new Exception("Guid is required to perform deletion");
+        if(accesstoken == string.Empty)
+            throw new Exception("Access token is empty");
+
+        try{
+            Tools.APIHelper.GenericRequest delete = new();
+            List<KeyValuePair<string, string>> headers = new();
+            headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
+            int result = await delete.Send(Tools.APIHelper.SendMethod.DELETE, address, headers);
+        }
+        catch(Exception err){
+            throw;
+        }
     }
 
 }
