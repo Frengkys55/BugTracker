@@ -29,9 +29,9 @@
         else{
             @foreach(var project in projects){
                 <div id="pnlProject1Container" class="w3-bar-item">
-                    <div id="pnlProject1" class="w3-display-container w3-block backgroundCover" style="width:335px; height:442px; background-image:url('https://www.frengkysinaga.com/Sources/Background/Pardofelis.png');">
-                        <div class="w3-display-topleft w3-block backgroundCover" style="height:calc( 100% - 300px ); background-image:url('https://www.frengkysinaga.com/Sources/Background/Pardofelis.png');">
-
+                    <div id="pnlProject1" class="w3-display-container w3-block backgroundCover" style="width:335px; height:442px; background-image:url('@project.project.BackgroundImageUrl');">
+                        <div class="w3-display-topleft w3-block backgroundCover" style="height:calc( 100% - 300px ); background-image:url('@project.project.BackgroundImageUrl');">
+                            <img class="w3-display-middle w3-image" style="height:50%;" src="@project.project.IconUrl" />
                         </div>
                         <div id="pnlProject1OverviewContainer" class="w3-display-bottomleft w3-block w3-theme-d5 backdropBlur" style="height:300px;">
                             <header id="headProject2Title" class="w3-container">
@@ -74,8 +74,10 @@
 
             foreach(var project in projectList){
                 Project projectTemp = new ();
-                projectTemp.Name = project.Value;
-                projectTemp.Guid = project.Key;
+                projectTemp.Name = project.name;
+                projectTemp.Guid = project.guid;
+                projectTemp.BackgroundImageUrl = project.backgroundImageUrl;
+                projectTemp.IconUrl = project.iconUrl;
 
                 Dictionary<Guid, string> tickets = new Models.Tickets.Ticket().GetTickets(Guid.NewGuid());
 

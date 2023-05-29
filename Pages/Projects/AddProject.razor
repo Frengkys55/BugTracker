@@ -10,7 +10,7 @@
 
 <div class="w3-container">
     <div class="w3-row">
-        <div class="w3-col m5">
+        <div class="w3-col m4">
             <header>
                 <h1>Add new project</h1>
             </header>
@@ -27,12 +27,52 @@
                     <label>Project image</label>
                     <InputText id="txtImageUrl" @bind-Value="newProject.IconUrl" class="w3-input" />
                 </div>
+                <div class="w3-margin-bottom">
+                    <label>Project background</label>
+                    <InputText id="txtImageUrl" @bind-Value="newProject.BackgroundImageUrl" class="w3-input" />
+                </div>
                 <div>
                     <input @onclick="AddProjectToDatabase" type="submit" value="Add Project" class="w3-button w3-transparent w3-border w3-border-black w3-hover-black w3-round w3-ripple" title="Save project" />
                 </div>
             </EditForm>
         </div>
-        <div class="w3-col m7 w3-hide-small w3-container">
+        <div class="w3-col m5">
+            <header class="w3-container">
+                <h1>Preview</h1>
+            </header>
+            <div class="w3-container">
+                <div id="pnlProject1" class="w3-display-container w3-block backgroundCover" style="width:335px; height:442px; background-image:url('@newProject.BackgroundImageUrl');">
+                    <div class="w3-display-topleft w3-block backgroundCover" style="height:calc( 100% - 300px ); background-image:url('@newProject.BackgroundImageUrl');">
+                        <img class="w3-display-middle w3-image" style="height:50%;" src="@newProject.IconUrl" />
+                    </div>
+                    <div id="pnlProject1OverviewContainer" class="w3-display-bottomleft w3-block w3-theme-d5 backdropBlur" style="height:300px;">
+                        <header id="headProject2Title" class="w3-container">
+                            <h1 class="w3-medium w3-wide textOverflow" title="@newProject.Name">@newProject.Name</h1>
+                        </header>
+                        <div id="pnlProject1TicketOverviewContainer" class="w3-bar w3-border-top w3-border-bottom w3-border-white">
+                            <div class="w3-left">
+                                <a href="/Tickets/List?id=@newProject.Guid" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" title="See posted tickets"><span class="material-symbols-sharp">problem</span></a>
+                                <a href="/Projects/Edit?id=@newProject.Guid" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" title="Edit project"><span class="material-symbols-sharp">edit</span></a>
+                            </div>
+                            <div class="w3-right">
+                                <a href="#" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple"><span class="material-symbols-sharp" title="Delete this project">delete</span></a>
+                            </div>
+                        </div>
+                        <div id="pnlProject1LatestTicketOverviewContainer">
+                            <div class="w3-bar">
+                                <label class="w3-bar-item">Latest Tickets 0</label>
+                            </div>
+                            <div class="w3-bar-block w3-container">
+                                @for(int i = 0; i < 3; i++){
+                                    <a href="#" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">Your Ticket</a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="w3-col m5 w3-hide-small w3-container">
             <header>
                 <h1>A bit of help</h1>
             </header>
@@ -83,6 +123,8 @@
     Models.Projects.Project newProject = new();
     bool hasProblem = false;
     string problemMessage = string.Empty;
+    string projectIconFilePath = string.Empty;
+    string projectBackgroundImagePath = string.Empty;
 
     int statusCode;
 
@@ -112,5 +154,17 @@
         hasProblem = false;
         problemMessage = string.Empty;
         statusCode = 0;
+    }
+
+    private async Task OnProjectIconChange(InputFileChangeEventArgs e){
+        if(e.FileCount > 0){
+            projectIconFilePath = e.File.Name;
+        }
+    }
+
+    private async Task OnProjectBackgroundImageChange(InputFileChangeEventArgs e){
+        if(e.FileCount > 0){
+            projectBackgroundImagePath = e.File.Name;
+        }
     }
 }

@@ -8,5 +8,5 @@ public partial class Comment{
     public Guid TicketGuid {set; get;}
     public Guid UserGuid {set; get;}
     public string? CommentText {set; get;}
-    public Comments.Attachment Attachment {set; get;}
+    public Comments.Attachment? Attachment {set; get;}
 }

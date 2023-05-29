@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using Models.Projects;
 
 namespace Models.Projects;
@@ -24,34 +25,28 @@ public partial class Project{
     /// <summary>
     /// Get full list of projects
     /// </summary>
-    public async Task<Dictionary<Guid, string>> GetProjects(){
+    public async Task<ICollection<ProjectShortModel>> GetProjects(){
         string accessToken = "58d18562-5ed6-4da2-95db-777ab7dd422a";
         Tools.APIHelper.GenericGet<List<ProjectShortModel>> genericGet = new ("https://bugtrackerapi.frengkysinaga.com/api/Project/GetProjects");
 
         List<KeyValuePair<string, string>> headers = new ();
         headers.Add(new KeyValuePair<string, string>("accesstoken", accessToken));
         
-        List<ProjectShortModel> projects = await genericGet.Send(headers);
-
-        Dictionary<Guid, string> projectList = new Dictionary<Guid, string>();
-        foreach(var project in projects){
-            projectList.Add(project.guid, project.name);
-        }
-
-        return projectList;
+        return await genericGet.Send(headers);
     }
     
     /// <summary>
     /// Get a limited list of project from database
     /// </summary>
     /// <padam name="count">Limit how many project to get</param>
-    public async Task<Dictionary<Guid, string>> GetProjects(int count){
-        Dictionary<Guid, string> projectList = await GetProjects();
-        Dictionary<Guid, string> newProjectList = new ();
+    public async Task<ICollection<ProjectShortModel>> GetProjects(int count){
+        var projectList = await GetProjects();
+
+        Collection<ProjectShortModel> newProjectList = new();
 
         int counter = 0;
         foreach(var project in projectList){
-            newProjectList.Add(project.Key, project.Value);
+            newProjectList.Add(project);
             counter++;
             if(counter >= count) break;
         }
@@ -70,7 +65,7 @@ public partial class Project{
         if(string.IsNullOrEmpty(project.Name)) throw new ArgumentException("Project name should not be empty");
 
         // Complete additional project information
-        if(project.Guid == null) project.Guid = Guid.NewGuid();
+        if(project.Guid == Guid.Empty) project.Guid = Guid.NewGuid();
         
         // Override dates
         project.DateCreated = DateTime.Now;
@@ -91,12 +86,7 @@ public partial class Project{
     /// </summary>
     /// <param name="projectGuid">Project GUID to use as a reference for reading from database</param>
     public Project ReadProject(Guid projectGuid){
-        SqlHelper.ReadData<Project> helper = new();
-        string sqlQuery = "SELECT * FROM PROJECT WHERE ProjectGuid='" + projectGuid + "';";
-
-        Project project = helper.Read(connectionString, sqlQuery)[0];
-
-        return project;
+        throw new NotImplementedException();
     }
 
     /// <summary>
