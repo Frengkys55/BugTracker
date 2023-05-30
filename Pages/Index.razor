@@ -19,6 +19,10 @@
     else if(isLoading == 0){
         <div class="w3-center">
             <img src="images/Eie9.gif" class="w3-images" style="max-height:300px;" />
+            <div class="w3-center">
+                <span>Welp! We got you an error</span><br />
+                <span>@errorMessage</span>
+            </div>
         </div>
     }
     else if(isLoading == 1){
@@ -39,7 +43,7 @@
                                     <a href="/Projects/Edit?id=@project.project.Guid" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" title="Edit project"><span class="material-symbols-sharp">edit</span></a>
                                 </div>
                                 <div class="w3-right">
-                                    <button class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" @onclick="() => { RequestDelete_Click(project.project.Guid.ToString(), project.project.Name);}"><span class="material-symbols-sharp" title="Delete this project">delete</span></button>
+                                    <button class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" @onclick="async () => { await RequestDelete_Click(project.project.Guid.ToString(), project.project.Name);}"><span class="material-symbols-sharp" title="Delete this project">delete</span></button>
                                 </div>
                             </div>
                             <div id="pnlProject1LatestTicketOverviewContainer">
@@ -47,8 +51,8 @@
                                 <label class="w3-bar-item">Latest Tickets (@project.tickets.Count)</label>
                             </div>
                             <div class="w3-bar-block w3-container">
-                                @for(int i = 0; i < 3; i++){
-                                    <a href="/Tickets/ViewTicket?id=@project.tickets[i].guid" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">@project.tickets[i].Name</a>
+                                @foreach(var ticket in project.tickets){
+                                    <a href="/Tickets/ViewTicket?id=@ticket.guid" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">@ticket.Name</a>
                                 }
                                 </div>
                             </div>
@@ -105,12 +109,12 @@
 
     protected override async Task OnInitializedAsync(){
         try{
-            var projectList = await new Models.Projects.Project().GetProjects(8);
+            var projectListTemp = await new Models.Projects.Project().GetProjects(8);
 
-            if(projectList.Count > 0){
+            if(projectListTemp.Count > 0){
                 isLoading = 1;
 
-                foreach(var project in projectList){
+                foreach(var project in projectListTemp){
                     Project projectTemp = new ();
                     projectTemp.Name = project.name;
                     projectTemp.Guid = project.guid;
@@ -123,10 +127,14 @@
                     projectModel.project = projectTemp;
                     projectModel.tickets = new ();
 
+                    int counter = 0;
                     foreach(var ticket in tickets){
                         Ticket ticketTemp = new ();
                         ticketTemp.Name = ticket.Value;
                         ticketTemp.guid = ticket.Key;
+                        projectModel.tickets.Add(ticketTemp);
+                        counter++;
+                        if(counter == 3) break;
                     }
                     projects.Add(projectModel);
                 }
@@ -135,7 +143,8 @@
                 isLoading = 2;
             }
         }catch(Exception err){
-            Console.WriteLine(err);
+            isLoading = -1;
+            errorMessage = err.Message;
         }
     }
 
@@ -148,10 +157,12 @@
     protected async Task ConfirmDelete(){
         Project project = new Project();
         try{
-            await project.DeleteProject(Guid.Parse(guidToDelete), _configuration["BugTrackerBackendAddress"], AccessTokenHelper.accessToken);
+            string address = _configuration["BugTrackerBackendAddress"] + "/project";
+            System.Console.WriteLine(address);
+            await project.DeleteProject(Guid.Parse(guidToDelete), address, AccessTokenHelper.accessToken);
         }
         catch(Exception err){
-            System.Console.WriteLine(err.Message);
+            throw;
         }
     }
     protected async Task CancelDelete(){

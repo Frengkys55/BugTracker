@@ -1,4 +1,5 @@
 @using Models.Tickets;
+@inject Tools.Misc.AccessTokenHelper AccessTokenHelper;
 
 <ul class="w3-ul">
     @foreach(var ticket in tickets){
@@ -9,6 +10,6 @@
 @code{
     List<KeyValuePair<Guid, string>> tickets = new ();
     protected override async Task OnInitializedAsync(){
-        tickets = new Ticket().GetTickets(Guid.NewGuid(), 5).ToList();
+        tickets = new Ticket().GetTickets(Guid.NewGuid(), 5, AccessTokenHelper.accessToken).ToList();
     }
 }

@@ -41,7 +41,7 @@ public partial class Ticket{
     /// <param name="projectGuid">GUID of the project to list the tickets</param>
     /// <param name="maxTicketCount">Maximum number of ticket returned</param>
     /// <returns>Dictionary of tickets assosiated with the specified GUID with spesific length</returns>
-    public Dictionary<Guid, string> GetTickets(Guid projectGuid, int maxTicketCount){
+    public Dictionary<Guid, string> GetTickets(Guid projectGuid, int maxTicketCount, string accesstoken){
         Dictionary<Guid, string> tickets = new Dictionary<Guid, string>();
 
         for(int i = 0; i < maxTicketCount; i++){

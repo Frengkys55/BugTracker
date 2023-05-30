@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Text;
 using Models.Projects;
 
 namespace Models.Projects;
@@ -74,26 +75,57 @@ public partial class Project{
         List<KeyValuePair<string, string>> headers = new();
         headers.Add(new KeyValuePair<string, string>("accesstoken", accessToken.accessToken));
 
-        return await createProject.Send(project, headers);
+        try{
+            return await createProject.Send(project, headers);
+        }
+        catch(Exception){
+            throw;
+        }
     }
 
     /// <summary>
     /// Read a project from database
     /// </summary>
     /// <param name="projectGuid">Project GUID to use as a reference for reading from database</param>
-    public Project ReadProject(Guid projectGuid){
-        throw new NotImplementedException();
+    public async Task<Project> ReadProject(Guid projectGuid, string address, string accesstoken){
+        if(projectGuid == Guid.Empty)
+            throw new Exception("For reading the project, I need the GUID.");
+        if(string.IsNullOrEmpty(accesstoken))
+            throw new Exception("Well, the backend is secured. How should I access if those backend if there you didn't give me something that those backend accespted.");
+
+        string newAddress = (address.EndsWith("/")) ? address + projectGuid : address + "/" + projectGuid;
+        System.Console.WriteLine(newAddress);
+        Tools.APIHelper.GenericGet<Project> request = new Tools.APIHelper.GenericGet<Project>(newAddress);
+
+        List<KeyValuePair<string, string>> headers = new();
+        headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
+        return await request.Send(headers);
     }
 
     /// <summary>
-    /// Method to update existing project
+    /// Method to update existing project (You need to fill AccessToken propetry for this to work)
     /// </summary>
     /// <param name="project">Project object to update using project.guid as a reference</param>
-    public void UpdateProject(Project project){
-
-        throw new NotImplementedException();
+    public async Task UpdateProject(Project project, string address){
+        if(project == null)
+            throw new NullReferenceException("Here is an error for you because you give me something onreasonable to do.");
+        
+        Tools.APIHelper.GenericRequest request = new Tools.APIHelper.GenericRequest();
+        try{
+            int result = await request.Send2<Project>(Tools.APIHelper.SendMethod.PUT, address, project);
+        }
+        catch(Exception){
+            throw;
+        }
     }
 
+    /// <summary>
+    /// Delete project from database
+    /// </summary>
+    /// <param name="projectGuid">Guid of the project to delete</param>
+    /// <param name="address">API endpoint to send this request</param>
+    /// <param name="accesstoken">Your access token</param>
+    /// <returns></returns>
     public async Task DeleteProject(Guid projectGuid, string address, string accesstoken){
         if(projectGuid == Guid.Empty)
             throw new Exception("Guid is required to perform deletion");
@@ -102,11 +134,11 @@ public partial class Project{
 
         try{
             Tools.APIHelper.GenericRequest delete = new();
-            List<KeyValuePair<string, string>> headers = new();
+            List<KeyValuePair<string, string>> headers = new List<KeyValuePair<string, string>>();
             headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
-            int result = await delete.Send(Tools.APIHelper.SendMethod.DELETE, address, headers);
+            int result = await delete.Send(Tools.APIHelper.SendMethod.DELETE, address + "/" + projectGuid.ToString(), headers);
         }
-        catch(Exception err){
+        catch(Exception){
             throw;
         }
     }
