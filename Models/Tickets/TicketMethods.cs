@@ -11,7 +11,7 @@ public partial class Ticket{
     /// Method for getting list of tickets
     /// </summary>
     /// <returns>Dictionary of ticket name and guid</returns>
-    public Dictionary<Guid, string> GetTickets(string accesstoken){
+    public Dictionary<Guid, string> GetTickets(string accesstoken, string address){
         Dictionary<Guid, string> tickets = new Dictionary<Guid, string>();
 
         for(int i = 0; i < 5; i++){
@@ -41,13 +41,19 @@ public partial class Ticket{
     /// <param name="projectGuid">GUID of the project to list the tickets</param>
     /// <param name="maxTicketCount">Maximum number of ticket returned</param>
     /// <returns>Dictionary of tickets assosiated with the specified GUID with spesific length</returns>
-    public Dictionary<Guid, string> GetTickets(Guid projectGuid, int maxTicketCount, string accesstoken){
+    public async Task<Dictionary<Guid, string>> GetTicketsAsync(Guid projectGuid, int maxTicketCount, string accesstoken, string address){
         Dictionary<Guid, string> tickets = new Dictionary<Guid, string>();
 
-        for(int i = 0; i < maxTicketCount; i++){
-            tickets.Add(Guid.NewGuid(), "Ticket " + i);
-        }
+        Tools.APIHelper.GenericGet<List<Ticket>> request = new Tools.APIHelper.GenericGet<List<Ticket>>(address);
+        List<KeyValuePair<string, string>> headers = new();
+        headers.Add(new KeyValuePair<string, string>(accesstoken, accesstoken));
 
+        List<Ticket> receivedTickets = await request.Send(headers);
+
+        foreach(Ticket ticket in receivedTickets){
+            tickets.Add(ticket.guid, ticket.Name);
+        }
+        
         return tickets;
     }
 

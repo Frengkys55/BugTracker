@@ -1,5 +1,6 @@
 @using Models.Tickets;
 @inject Tools.Misc.AccessTokenHelper AccessTokenHelper;
+@inject IConfiguration _configuration;
 
 <ul class="w3-ul">
     @foreach(var ticket in tickets){
@@ -10,7 +11,7 @@
 @code{
     List<KeyValuePair<Guid, string>> tickets = new ();
     protected override async Task OnInitializedAsync(){
-        Console.WriteLine("Triggered");
-        tickets = new Ticket().GetTickets(Guid.NewGuid(), 5, AccessTokenHelper.accessToken).ToList();
+        string address = _configuration["BugTrackerBackendAddress"] + "/api/Ticket/GetAllTickets";
+        tickets = new Ticket().GetTickets(AccessTokenHelper.accessToken, address).ToList();
     }
 }

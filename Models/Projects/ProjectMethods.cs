@@ -116,7 +116,14 @@ public partial class Project{
         
         Tools.APIHelper.GenericRequest request = new Tools.APIHelper.GenericRequest();
         try{
-            int result = await request.Send2<Project>(Tools.APIHelper.SendMethod.PUT, address, project);
+            HttpResponseMessage response = await new Tools.APIHelper.GenericRequest().Send2<Project>(Tools.APIHelper.SendMethod.PUT, address, project, null);
+            if(response.StatusCode == System.Net.HttpStatusCode.OK ||
+               response.StatusCode == System.Net.HttpStatusCode.NoContent ||
+               response.StatusCode == System.Net.HttpStatusCode.Created){
+                return;
+            }
+            else
+                throw new HttpRequestException("Project update failed");
         }
         catch(Exception){
             throw;

@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Components.Forms;
 @inject IConfiguration _configuration;
 @inject Tools.Misc.AccessTokenHelper _accresstokenHelper;
+@inject NavigationManager _navigation;
 
 <NavMenu />
 <div class="w3-container">
@@ -146,8 +147,6 @@
             string address = _configuration["BugTrackerBackendAddress"] + "/Project";
             project = await new Project().ReadProject(Guid.Parse(guid), address, _accresstokenHelper.accessToken);
             StateHasChanged();
-            System.Console.WriteLine(project.Name);
-            System.Console.WriteLine(project.IconUrl);
         }
         catch(Exception err){
             hasProblem = true;
@@ -163,11 +162,13 @@
             if(string.IsNullOrEmpty(project.Name))
                 throw new Exception("Oh come on! I need to know your project name!");
             await new Project().UpdateProject(project, address);
+            _navigation.NavigateTo("/Projects");
         }
         catch(Exception err){
             hasProblem = true;
             statusCode = 400;
-            problemMessage = err.Message;
+            problemMessage = err.StackTrace;
+            throw;
         }
     }
 
