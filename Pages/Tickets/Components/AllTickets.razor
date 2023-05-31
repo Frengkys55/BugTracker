@@ -1,3 +1,6 @@
+@inject IConfiguration _configuration;
+@inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
+
 <div style="height:100%; width:100%; overflow-x: hidden; overflow-y:scroll;">
     @if(tickets.Count < 1){
         <div class="w3-display-container" style="width:100%; height:100%;">
@@ -9,14 +12,22 @@
             </div>
         </div>
     }
-    <div class="w3-bar-block">
-    </div>
+    else{
+        <div class="w3-bar-block">
+            @foreach(var ticket in tickets){
+                <a href="#" class="w3-bar-item w3-button w3-hover-black w3-border w3-border-black w3-round w3-margin-bottom">@ticket.Value</a>
+            }
+        </div>
+    }
+    
 </div>
 
 @code{
-    List<KeyValuePair<Guid, string>> tickets = new();
+    Dictionary<Guid, string> tickets = new();
     
     protected override async Task OnInitializedAsync(){
+        string address = _configuration["BugTrackerBackendAddress"] + "/ticket/gettickets";
 
+        tickets = await new Models.Tickets.Ticket().GetAllTicketsAsync(_accesstokenHelper.accessToken, address);
     }
 }

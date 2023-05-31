@@ -11,11 +11,16 @@ public partial class Ticket{
     /// Method for getting list of tickets
     /// </summary>
     /// <returns>Dictionary of ticket name and guid</returns>
-    public Dictionary<Guid, string> GetAllTickets(string accesstoken, string address){
+    public async Task<Dictionary<Guid, string>> GetAllTicketsAsync(string accesstoken, string address){
         Dictionary<Guid, string> tickets = new Dictionary<Guid, string>();
 
-        for(int i = 0; i < 5; i++){
-            tickets.Add(Guid.NewGuid(), "Ticket " + i);
+        Tools.APIHelper.GenericGet<List<Ticket>> request = new Tools.APIHelper.GenericGet<List<Ticket>>(address);
+        List<KeyValuePair<string, string>> headers = new ();
+        headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
+        List<Ticket> ticketList = await request.Send(headers);
+
+        foreach(var ticket in ticketList){
+            tickets.Add(ticket.guid, ticket.Title);
         }
 
         return tickets;
@@ -51,7 +56,7 @@ public partial class Ticket{
         List<Ticket> receivedTickets = await request.Send(headers);
 
         foreach(Ticket ticket in receivedTickets){
-            tickets.Add(ticket.guid, ticket.Name);
+            tickets.Add(ticket.guid, ticket.Title);
         }
         
         return tickets;

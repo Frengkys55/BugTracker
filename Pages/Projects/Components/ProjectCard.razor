@@ -27,7 +27,7 @@
                 <div class="w3-bar-block w3-container">
                     @if(_Tickets != null){
                         @foreach(var ticket in _Tickets){
-                            <a href="/Tickets/ViewTicket?id=@ticket.guid" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">@ticket.Name</a>
+                            <a href="/Tickets/ViewTicket?id=@ticket.guid" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">@ticket.Title</a>
                         }
                     }
                     else{

@@ -1,11 +1,13 @@
 <div class="w3-center">
-    <img src="" class="w3-images" style="max-height:300px;" />
+    <img src="@Image" class="w3-images" style="max-height:300px;" />
     <div class="w3-center">
         <span>Welp! We got you an error</span><br />
-        <span></span>
+        <span>@Message</span>
     </div>
 </div>
 @code{
-
+    [Parameter]
+    public string Image {set; get;}
+    public string Message {set; get;}
 
 }
