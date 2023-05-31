@@ -1,4 +1,4 @@
-@page "/Projects/Edit"
+@page "/Projects/Edit/{guid}"
 @using Models.Projects;
 @using Microsoft.AspNetCore.Components.Forms;
 @inject IConfiguration _configuration;
@@ -11,7 +11,7 @@
             <header>
                 Edit Project
             </header>
-            <EditForm Model="@project" @onsubmit="EditProjectOnDatabaseAsync">
+            <EditForm Model="project" OnSubmit="EditProjectOnDatabaseAsync">
                 <div>
                     <label>Title</label>
                     <InputText id="txtProjectTitle" @bind-Value="project.Name" class="w3-input" />
@@ -26,19 +26,85 @@
                 </div>
                 <div>
                     <label>Project Background</label>
-                    <InputText id="txtProjectIcon" @bind-Value="project.BackgroundImageUrl" class="w3-input" />
+                    <InputText id="txtProjectBackground" @bind-Value="project.BackgroundImageUrl" class="w3-input" />
                 </div>
-                <div>
-                    <input type="submit" value "Save" class="w3-button w3-transparent w3-border w3-border-black w3-hover-black w3-round w3-ripple" />
+                <div class="w3-margin-top">
+                    <input type="submit" value="Save changes" class="w3-button w3-transparent w3-border w3-border-black w3-hover-black w3-round w3-ripple" title="Save changes" />
                 </div>
             </EditForm>
+        </div>
+        <div class="w3-col m4">
+            <header class="w3-container">
+                <h1>Preview</h1>
+            </header>
+            <div class="w3-container">
+                <div id="pnlProjectPreview" class="w3-display-container w3-block backgroundCover w3-block" style="height:442px; background-image:url('@project.BackgroundImageUrl');">
+                    <div class="w3-display-topleft w3-block backgroundCover" style="height:calc( 100% - 300px ); background-image:url('@project.BackgroundImageUrl');">
+                        <img class="w3-display-middle w3-image" style="height:50%;" src="@project.IconUrl" />
+                    </div>
+                    <div id="pnlProjectPreviewOverviewContainer" class="w3-display-bottomleft w3-block w3-theme-d5 backdropBlur" style="height:300px;">
+                        <header id="headProject2Title" class="w3-container">
+                            <h1 class="w3-medium w3-wide textOverflow" title="@project.Name">@project.Name</h1>
+                        </header>
+                        <div id="pnlProjectPreviewTicketOverviewContainer" class="w3-bar w3-border-top w3-border-bottom w3-border-white">
+                            <div class="w3-left">
+                                <div class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" title="See posted tickets"><span class="material-symbols-sharp">problem</span></div>
+                                <div class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" title="Edit project"><span class="material-symbols-sharp">edit</span></div>
+                            </div>
+                            <div class="w3-right">
+                                <div class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple"><span class="material-symbols-sharp" title="Delete this project">delete</span></div>
+                            </div>
+                        </div>
+                        <div id="pnlProjectPreviewLatestTicketOverviewContainer">
+                            <div class="w3-bar">
+                                <label class="w3-bar-item">Latest Tickets 0</label>
+                            </div>
+                            <div class="w3-bar-block w3-container">
+                                @for(int i = 0; i < 3; i++){
+                                    <div class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">Your Ticket</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="w3-col m4">
+            <header>
+                <h1>A bit of help</h1>
+            </header>
+            <div>
+                <header>
+                    <span><b>Project name</b></span>
+                </header>
+                <div>
+                    <p>This is the name of your project</p>
+                </div>
+            </div>
+            <div>
+                <header>
+                    <span><b>Description</b></span>
+                </header>
+                <div>
+                    Describe what this project is. What did it do? Try to describe your project as clearly as possible to make sure you don't get confused later on.
+                </div>
+            </div>
+            <div>
+                <header>
+                    <span><b>Project image</b></span>
+                </header>
+                <div>
+                    Upload your project image (if available) to display your project visually.
+                </div>
+            </div>
         </div>
     </div>
     @if(hasProblem){
         <div id="pnlProblem" class="w3-card w3-white w3-round w3-border w3-border-black w3-animate-left" style="position:absolute; top:16px; left: 16px;">
             <div class="w3-cell-row">
                 <div class="w3-cell w3-cell-middle w3-xxxlarge w3-mobile w3-center w3-container">
-                    <span class="material-symbols-sharp w3-xxlarge">Error</span>
+                    <span class="material-symbols-sharp w3-xxxlarge">Error</span>
                 </div>
                 <div class="w3-cell w3-cell-middle w3-container">
                     <header>
@@ -59,7 +125,8 @@
 </div>
 
 @code{
-
+    [Parameter]
+    public string guid {set; get;}
     #region Project
     Project project = new Project();
 
@@ -74,16 +141,32 @@
     #endregion Error handling
 
     protected override async Task OnInitializedAsync(){
-        
-    }
-
-    protected async Task EditProjectOnDatabaseAsync(){
+        project.Name = "Replace this placeholder text";
         try{
-
+            string address = _configuration["BugTrackerBackendAddress"] + "/Project";
+            project = await new Project().ReadProject(Guid.Parse(guid), address, _accresstokenHelper.accessToken);
+            StateHasChanged();
+            System.Console.WriteLine(project.Name);
+            System.Console.WriteLine(project.IconUrl);
         }
         catch(Exception err){
             hasProblem = true;
             statusCode = 500;
+            problemMessage = err.Message;
+        }
+    }
+
+    private async Task EditProjectOnDatabaseAsync(){
+        project.AccessToken = _accresstokenHelper.accessToken;
+        string address = _configuration["BugTrackerBackendAddress"] + "/Project";
+        try{
+            if(string.IsNullOrEmpty(project.Name))
+                throw new Exception("Oh come on! I need to know your project name!");
+            await new Project().UpdateProject(project, address);
+        }
+        catch(Exception err){
+            hasProblem = true;
+            statusCode = 400;
             problemMessage = err.Message;
         }
     }
