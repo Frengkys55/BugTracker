@@ -2,6 +2,7 @@
 @using Models;
 @using Models.Projects;
 @using Models.Tickets;
+@using BugTracker.Pages.Projects.Components;
 @inject Tools.Misc.AccessTokenHelper AccessTokenHelper;
 @inject IConfiguration _configuration;
 @inject NavigationManager _navigation;
@@ -29,37 +30,7 @@
     else if(isLoading == 1){
         <div class="w3-bar">
             @foreach(var project in projects){
-                <div id="pnlProject1Container" class="w3-bar-item">
-                    <div id="pnlProject_@project.project.Guid" class="w3-display-container w3-block backgroundCover w3-round w3-card" style="width:335px; height:442px; background-image:url('@project.project.BackgroundImageUrl');">
-                        <div class="w3-display-topleft w3-block backgroundCover" style="height:calc( 100% - 300px ); background-image:url('@project.project.BackgroundImageUrl');">
-                            <img class="w3-display-middle w3-image" style="height:50%;" src="@project.project.IconUrl" />
-                        </div>
-                        <div id="pnlProjectOverviewContainer_@project.project.Guid" class="w3-display-bottomleft w3-block w3-theme-d5 backdropBlur" style="height:300px; border-radius:0px 0px 4px 4px;">
-                            <header id="headProject2Title" class="w3-container">
-                                <h1 class="w3-medium w3-wide textOverflow" title="@project.project.Name">@project.project.Name</h1>
-                            </header>
-                            <div id="pnlProjectTicketOverviewContainer_@project.project.Guid" class="w3-bar w3-border-top w3-border-bottom w3-border-white">
-                                <div class="w3-left">
-                                    <a href="/Tickets/List?id=@project.project.Guid" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" title="See posted tickets"><span class="material-symbols-sharp">problem</span></a>
-                                    <a href="/Projects/Edit/@project.project.Guid" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" title="Edit project"><span class="material-symbols-sharp">edit</span></a>
-                                </div>
-                                <div class="w3-right">
-                                    <button class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" @onclick="async () => { await RequestDelete_Click(project.project.Guid.ToString(), project.project.Name);}"><span class="material-symbols-sharp" title="Delete this project">delete</span></button>
-                                </div>
-                            </div>
-                            <div id="pnlProjectLatestTicketOverviewContainer_@project.project.Guid">
-                            <div class="w3-bar">
-                                <label class="w3-bar-item">Latest Tickets (@project.tickets.Count)</label>
-                            </div>
-                            <div class="w3-bar-block w3-container">
-                                @foreach(var ticket in project.tickets){
-                                    <a href="/Tickets/ViewTicket?id=@ticket.guid" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">@ticket.Name</a>
-                                }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <ProjectCard Guid="@project.project.Guid.ToString()" Name="@project.project.Name" Icon="@project.project.IconUrl" Background="@project.project.BackgroundImageUrl" OnClick="RequestDeleteAsync_Click" />
             }
         </div>
     }
@@ -128,7 +99,7 @@
                     projectModel.project = projectTemp;
                     projectModel.tickets = new();
                     string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/GetTickets/" + projectTemp.Guid.ToString();
-                    var receivedTicket = await new Models.Tickets.Ticket().GetTicketsAsync(project.guid, 3, AccessTokenHelper.accessToken, address);
+                    //var receivedTicket = await new Models.Tickets.Ticket().GetTicketsAsync(project.guid, 3, AccessTokenHelper.accessToken, address);
                     projects.Add(projectModel);
                 }
             }
@@ -141,10 +112,10 @@
         }
     }
 
-    protected async Task RequestDelete_Click(string guid, string name){
+    protected async Task RequestDeleteAsync_Click(Models.Projects.ProjectShortEventArgs e){
         requestDelete = true;
-        guidToDelete = guid;
-        nameToDelete = name;
+        guidToDelete = e.guid.ToString();
+        nameToDelete = e.Name;
     }
 
     protected async Task ConfirmDelete(){

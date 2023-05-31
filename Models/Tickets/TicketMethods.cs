@@ -11,7 +11,7 @@ public partial class Ticket{
     /// Method for getting list of tickets
     /// </summary>
     /// <returns>Dictionary of ticket name and guid</returns>
-    public Dictionary<Guid, string> GetTickets(string accesstoken, string address){
+    public Dictionary<Guid, string> GetAllTickets(string accesstoken, string address){
         Dictionary<Guid, string> tickets = new Dictionary<Guid, string>();
 
         for(int i = 0; i < 5; i++){

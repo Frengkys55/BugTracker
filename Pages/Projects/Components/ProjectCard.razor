@@ -1,0 +1,72 @@
+@using Models.Tickets;
+@using Microsoft.AspNetCore.Components;
+@using Models.Projects;
+
+<div id="pnlProject1Container" class="w3-bar-item">
+    <div id="pnlProject_@Guid" class="w3-display-container w3-block backgroundCover w3-round w3-card" style="width:335px; height:442px; background-image:url('@Background');">
+        <div class="w3-display-topleft w3-block backgroundCover" style="height:calc( 100% - 300px ); background-image:url('@Background');">
+            <img class="w3-display-middle w3-image" style="height:50%;" src="@Icon" />
+        </div>
+        <div id="pnlProjectOverviewContainer_@Guid" class="w3-display-bottomleft w3-block w3-theme-d5 backdropBlur" style="height:300px; border-radius:0px 0px 4px 4px;">
+            <header id="headProject2Title" class="w3-container">
+                <h1 class="w3-medium w3-wide textOverflow" title="@Name">@Name</h1>
+            </header>
+            <div id="pnlProjectTicketOverviewContainer_@Guid" class="w3-bar w3-border-top w3-border-bottom w3-border-white">
+                <div class="w3-left">
+                    <a href="/Tickets/List?id=@Guid" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" title="See posted tickets"><span class="material-symbols-sharp">problem</span></a>
+                    <a href="/Projects/Edit/@Guid" class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" title="Edit project"><span class="material-symbols-sharp">edit</span></a>
+                </div>
+                <div class="w3-right">
+                    <button class="w3-bar-item w3-button w3-transparent w3-hover-white w3-ripple" @onclick="@(() => OnClick.InvokeAsync(e))"><span class="material-symbols-sharp" title="Delete this project">delete</span></button>
+                </div>
+            </div>
+            <div id="pnlProjectLatestTicketOverviewContainer_@Guid">
+                <div class="w3-bar">
+                    <label class="w3-bar-item">Tickets (@TicketCount)</label>
+                </div>
+                <div class="w3-bar-block w3-container">
+                    @if(_Tickets != null){
+                        @foreach(var ticket in _Tickets){
+                            <a href="/Tickets/ViewTicket?id=@ticket.guid" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">@ticket.Name</a>
+                        }
+                    }
+                    else{
+
+                    }
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+    [Parameter]
+    public string? Guid {set; get;}
+    [Parameter]
+    public string? Name {set; get;}
+    [Parameter]
+    public string? Icon {set; get;}
+    [Parameter]
+    public string? Background {set; get;}
+    [Parameter]
+    public ICollection<Ticket>? Tickets {set; get;}
+    
+    List<Ticket> _Tickets = new ();
+    int TicketCount = 0;
+    [Parameter]
+    public EventCallback<ProjectShortEventArgs> OnClick {set; get;}
+    ProjectShortEventArgs e = new ();
+
+    protected override void OnParametersSet(){
+        e.guid = Guid;
+        e.Name = Name;
+
+    }
+    protected override async Task OnInitializedAsync(){
+        //if(Tickets != null){
+            //TicketCount = Tickets.Count<Ticket>();
+        //}
+    }
+
+}

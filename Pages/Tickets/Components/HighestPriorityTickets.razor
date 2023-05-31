@@ -12,6 +12,6 @@
     List<KeyValuePair<Guid, string>> tickets = new ();
     protected override async Task OnInitializedAsync(){
         string address = _configuration["BugTrackerBackendAddress"] + "/api/Ticket/GetAllTickets";
-        tickets = new Ticket().GetTickets(AccessTokenHelper.accessToken, address).ToList();
+        throw new NotImplementedException("Waiting for reimplementation");
     }
 }
