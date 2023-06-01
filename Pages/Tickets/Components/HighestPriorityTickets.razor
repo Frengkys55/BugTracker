@@ -4,14 +4,14 @@
 
 <ul class="w3-ul">
     @foreach(var ticket in tickets){
-        <a href="/Tickets/ViewTicket?id=@ticket.Key" style="text-decoration:none;"><li class="w3-hover-black w3-ripple">@ticket.Value</li></a>
+        <a href="/Tickets/ViewTicket?id=@ticket.Guid" style="text-decoration:none;"><li class="w3-hover-black w3-ripple">@ticket.Name</li></a>
     }
 </ul>
 
 @code{
-    List<KeyValuePair<Guid, string>> tickets = new ();
+    ICollection<TicketShortModel> tickets {set; get;}
     protected override async Task OnInitializedAsync(){
-        string address = _configuration["BugTrackerBackendAddress"] + "/api/Ticket/GetAllTickets";
-        throw new NotImplementedException("Waiting for reimplementation");
+        string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/GetHighestSeverityTickets";
+        tickets = await new Ticket().GetAllTicketsAsync(AccessTokenHelper.accessToken, address);
     }
 }

@@ -56,7 +56,7 @@ public partial class Ticket{
         List<Ticket> receivedTickets = await request.Send(headers);
 
         foreach(Ticket ticket in receivedTickets){
-            tickets.Add(ticket.guid, ticket.Title);
+            tickets.Add(ticket.guid, ticket.Name);
         }
         
         return tickets;
@@ -76,8 +76,14 @@ public partial class Ticket{
     /// </summary>
     /// <param name="ticketGuid">GUID of the ticket to get a detailed list from</param>
     /// <returns></returns>
-    public Ticket GetTicketDetail(Guid ticketGuid){
-        throw new NotImplementedException();
+    public async Task<Ticket> GetTicketDetail(Guid ticketGuid, string accesstoken, string address){
+        Tools.APIHelper.GenericGet<Ticket> genericGet = new Tools.APIHelper.GenericGet<Ticket>(address);
+        Console.WriteLine(accesstoken);
+        List<KeyValuePair<string, string>> headers = new();
+        headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
+
+        var result = await genericGet.Send(headers);
+        return result;
     }
 
     /// <summary>

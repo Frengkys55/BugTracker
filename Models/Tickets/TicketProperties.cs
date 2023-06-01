@@ -15,11 +15,11 @@ public partial class Ticket{
     public Guid ProjectGuid{set; get;}
     public Guid UserGuid {set; get;}
     [NotNull]
-    public string? Title {set; get;}
+    public string? Name {set; get;}
     [NotNull]
     public string? Description {set; get;}
     public DateTime DateCreated {set; get;}
     public DateTime DateModified {set; get;}
-    public Guid SeverityGuid {set; get;}
-    public Guid TypeGuid {set; get;}
+    public string Severity {set; get;}
+    public string? Type {set; get;}
 }
