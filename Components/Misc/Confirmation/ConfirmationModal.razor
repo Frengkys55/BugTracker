@@ -1,0 +1,41 @@
+@using Components.Misc.Confirmation;
+
+
+<div class="w3-modal" style="display:block;">
+    <div class="w3-modal-content w3-card w3-round">
+        <header class="w3-container">
+            <h3 class="textOverflow">@Title</h3>
+        </header>
+        <div class="w3-container">
+            @Message
+        </div>
+        <footer class="w3-bar w3-padding">
+            <button class="w3-bar-item w3-button w3-round w3-border w3-border-black w3-hover-red w3-ripple" @onclick="@(() => OnConfirm.InvokeAsync())">
+                <span class="material-symbols-sharp" style="padding-top:4px;">delete_forever</span>
+            </button>
+            <button class="w3-bar-item w3-button w3-round w3-border w3-border-black w3-ripple w3-margin-left" @onclick="@(() => OnCancel.InvokeAsync())">
+                <span class="material-symbols-sharp" style="padding-top:4px;">cancel</span>
+            </button>
+        </footer>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public string? Title { set; get; } = "Confirm";
+    [Parameter]
+    public string? Message { set; get; }
+    [Parameter]
+    public string? Guid { set; get; }
+    [Parameter]
+    public string? Name { set; get; }
+    [Parameter]
+    public string? Image { set; get; }
+
+    [Parameter]
+    public EventCallback OnConfirm { set; get; }
+    [Parameter]
+    public EventCallback OnCancel { set; get; }
+
+}

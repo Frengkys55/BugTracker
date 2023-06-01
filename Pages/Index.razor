@@ -3,6 +3,7 @@
 @using Models.Projects;
 @using Models.Tickets;
 @using BugTracker.Pages.Projects.Components;
+@using BugTracker.Components.Misc.Confirmation;
 @inject Tools.Misc.AccessTokenHelper AccessTokenHelper;
 @inject IConfiguration _configuration;
 @inject NavigationManager _navigation;
@@ -49,20 +50,7 @@
         </div>
     }
     @if(requestDelete){
-        <div class="w3-modal" style="display:block;">
-            <div class="w3-modal-content">
-                <header class="w3-container">
-                    <h5 class="textOverflow">Confirm deletion</h5>
-                </header>
-                <div class="w3-container">
-                    Are you sure to delete "@nameToDelete"?
-                </div>
-                <footer class="w3-bar w3-padding">
-                    <button class="w3-bar-item w3-button w3-round w3-border w3-border-black w3-hover-red w3-ripple" @onclick="ConfirmDelete"><span class="material-symbols-sharp" style="padding-top:4px;">delete_forever</span></button> 
-                    <button class="w3-bar-item w3-button w3-round w3-border w3-border-black w3-ripple w3-margin-left" @onclick="CancelDelete"><span class="material-symbols-sharp" style="padding-top:4px;">cancel</span></button> 
-                </footer>
-            </div>
-        </div>
+        <ConfirmationModal Message="@deleteMessage" Guid="@guidToDelete" OnConfirm="ConfirmDelete" OnCancel="CancelDelete" />
     }
 </div>
 
@@ -75,6 +63,7 @@
     bool requestDelete = false;
     string guidToDelete = string.Empty;
     string nameToDelete = string.Empty;
+    string deleteMessage = "Confirm delete ";
     string modelStyle = "none";
 
     protected override async Task OnInitializedAsync(){
@@ -114,6 +103,7 @@
         requestDelete = true;
         guidToDelete = e.guid.ToString();
         nameToDelete = e.Name;
+        deleteMessage = "Confirm delete " + nameToDelete + "?";
     }
 
     protected async Task ConfirmDelete(){
