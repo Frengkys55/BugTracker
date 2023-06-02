@@ -27,17 +27,26 @@ public partial class Ticket{
     }
 
     /// <summary>
-    /// Get all tickets for certain project
+    /// Get list of tickets from a certain project
     /// </summary>
-    /// <param name="projectGuid">Project GUID to use as a reference</param>
-    /// <returns>Dictionary of tickets assosiated with the specified GUID</returns>
-    public Dictionary<Guid, string> GetTickets(Guid projectGuid, string accesstoken){
+    /// <param name="projectGuid">Project guid to use as a reference</param>
+    /// <param name="accesstoken">Your access token</param>
+    /// <param name="address">The endpoint to use</param>
+    /// <returns></returns>
+    public async Task<IEnumerable<TicketShortModel>> GetProjectTickets(Guid projectGuid, string accesstoken, string address){
         Dictionary<Guid, string> tickets = new Dictionary<Guid, string>();
 
-        for(int i = 0; i < 5; i++){
-            tickets.Add(Guid.NewGuid(), "Ticket " + i);
+        Tools.APIHelper.GenericGet<List<TicketShortModel>> ticketList = new Tools.APIHelper.GenericGet<List<TicketShortModel>>(address);
+
+        List<KeyValuePair<string, string>> headers = new();
+        headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
+        try{
+            return await ticketList.Send(headers);
         }
-        return tickets;
+        catch(Exception)
+        {
+            throw;
+        }
     }
 
     /// <summary>
@@ -84,6 +93,31 @@ public partial class Ticket{
 
         var result = await genericGet.Send(headers);
         return result;
+    }
+
+    public async Task<Ticket> GetLongestUnsolvedTicket(string accesstoken, string address){
+        Tools.APIHelper.GenericGet<Ticket> helper = new Tools.APIHelper.GenericGet<Ticket>(address);
+        List<KeyValuePair<string, string>> headers = new ();
+        headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
+
+        try{
+            return await helper.Send(headers);
+        }
+        catch(Exception){
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<Ticket>> GetLongestUnsolvedTickets(string accesstoken, string address){
+        Tools.APIHelper.GenericGet<List<Ticket>> helper = new Tools.APIHelper.GenericGet<List<Ticket>>(address);
+        List<KeyValuePair<string, string>> headers = new ();
+        headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
+        try{
+            return await helper.Send(headers);
+        }
+        catch(Exception){
+            throw;
+        }
     }
 
     /// <summary>

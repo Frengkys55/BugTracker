@@ -40,6 +40,7 @@ public partial class Type{
     /// Delete ticket type from database
     /// </sumary>
     public void DeleteType (Guid typeGuid){
+
         throw new NotImplementedException();
     }
 }

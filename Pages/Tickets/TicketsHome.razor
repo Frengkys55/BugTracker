@@ -30,13 +30,12 @@
                         string lstAvailableTicketTypes = string.Empty;
                     }
                 </div>
-                
             </div>
         </div>
     </div>
     <div class="w3-row">
         <div class="w3-quarter">
-            <div class="w3-card w3-margin">
+            <div class="w3-card w3-margin" style="height:192.5px;">
                 <div class="w3-bar">
                     <span class="w3-bar-item"><b>Newest tickets</b></span>
                 </div>
@@ -44,27 +43,25 @@
             </div>
         </div>
         <div class="w3-quarter">
-            <div class="w3-card w3-margin">
+            <div class="w3-card w3-margin" style="height:192.5px;">
                 <div class="w3-bar">
                     <span class="w3-bar-item"><b>Highest priority tickets</b></span>
                 </div>
-                <ul class="w3-ul">
+                <div class="w3-block" style="height: calc( 100% - 38.5px );">
                     <BugTracker.Pages.Tickets.Components.HighestPriorityTickets />
-                </ul>
+                </div>
             </div>
         </div>
         <div class="w3-quarter">
-            <div class="w3-card w3-margin">
+            <div class="w3-card w3-margin" style="height:192.5px;">
                 <div class="w3-bar">
                     <span class="w3-bar-item"><b>Longest unsolved tickets</b></span>
                 </div>
-                <ul class="w3-ul">
-                    <BugTracker.Pages.Tickets.Components.LongestUnsolvedTickets />
-                </ul>
+                <BugTracker.Pages.Tickets.Components.LongestUnsolvedTickets />
             </div>
         </div>
         <div class="w3-quarter">
-            <div class="w3-card w3-margin">
+            <div class="w3-card w3-margin" style="height:192.5px;">
                 <div class="w3-bar">
                     <span class="w3-bar-item"><b>Newly solved tickets</b></span>
                 </div>

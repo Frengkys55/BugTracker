@@ -29,7 +29,7 @@
     else if(isLoading == 1){
         <div class="w3-bar">
             @foreach(var project in projects){
-                <ProjectCard Guid="@project.project.Guid.ToString()" Name="@project.project.Name" Icon="@project.project.IconUrl" Background="@project.project.BackgroundImageUrl" OnClick="RequestDeleteAsync_Click" />
+                <ProjectCard Guid="@project.project.Guid.ToString()" Name="@project.project.Name" Icon="@project.project.IconUrl" Background="@project.project.BackgroundImageUrl" Tickets="@project.tickets" OnClick="RequestDeleteAsync_Click" />
             }
         </div>
     }
@@ -72,7 +72,6 @@
 
             if(projectListTemp.Count > 0){
                 isLoading = 1;
-
                 foreach(var project in projectListTemp){
                     Project projectTemp = new ();
                     projectTemp.Name = project.name;
@@ -80,13 +79,29 @@
                     projectTemp.BackgroundImageUrl = project.backgroundImageUrl;
                     projectTemp.IconUrl = project.iconUrl;
 
-                    Dictionary<Guid, string> tickets = new Models.Tickets.Ticket().GetTickets(Guid.NewGuid(), AccessTokenHelper.accessToken);
-
                     ProjectModel projectModel = new ();
                     projectModel.project = projectTemp;
                     projectModel.tickets = new();
-                    string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/GetTickets/" + projectTemp.Guid.ToString();
-                    //var receivedTicket = await new Models.Tickets.Ticket().GetTicketsAsync(project.guid, 3, AccessTokenHelper.accessToken, address);
+                    try{
+                        string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/" + projectTemp.Guid.ToString();
+                        var receivedTicket = await new Models.Tickets.Ticket().GetProjectTickets(project.guid, AccessTokenHelper.accessToken, address);
+                        int counter = 0;
+                        foreach(var ticket in receivedTicket){
+                            var tempTicket = new Ticket(){
+                                guid = ticket.Guid,
+                                Name = ticket.Name,
+                                DateCreated = ticket.DateCreated
+                            };
+                            projectModel.tickets.Add(tempTicket);
+                            counter++;
+                            if(counter == 3)
+                                break;
+                        }
+                    }
+                    catch{
+                        // Skip. It's just an error thrown by api because how the return type works in web api
+                    }
+                    
                     projects.Add(projectModel);
                 }
             }

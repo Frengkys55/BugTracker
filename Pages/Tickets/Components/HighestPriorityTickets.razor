@@ -2,16 +2,34 @@
 @inject Tools.Misc.AccessTokenHelper AccessTokenHelper;
 @inject IConfiguration _configuration;
 
-<ul class="w3-ul">
-    @foreach(var ticket in tickets){
-        <a href="/Tickets/ViewTicket?id=@ticket.Guid" style="text-decoration:none;"><li class="w3-hover-black w3-ripple">@ticket.Name</li></a>
+@if(hasError){
+    <BugTracker.Components.Misc.NoContent.NoContent ImageUrl="@errorImage" Title="There are no high priority tickets found" />
+}
+else{
+    @if(tickets.Count > 0){
+        <ul class="w3-ul">
+            @foreach(var ticket in tickets){
+                <a href="/Tickets/ViewTicket?id=@ticket.Guid" style="text-decoration:none;"><li class="w3-hover-black w3-ripple">@ticket.Name</li></a>
+            }
+        </ul>
     }
-</ul>
+}
+
 
 @code{
+    bool hasError = false;
+    string errorMessage = string.Empty;
+    string errorImage = "images/69a6b00a04b341828841fba193a51ee5_4970450105616380596.jpg";
+
     ICollection<TicketShortModel> tickets {set; get;}
     protected override async Task OnInitializedAsync(){
         string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/GetHighestSeverityTickets";
-        tickets = await new Ticket().GetAllTicketsAsync(AccessTokenHelper.accessToken, address);
+        try{
+            tickets = await new Ticket().GetAllTicketsAsync(AccessTokenHelper.accessToken, address);
+        }
+        catch(Exception err){
+            hasError = true;
+            errorMessage = err.Message;
+        }
     }
 }

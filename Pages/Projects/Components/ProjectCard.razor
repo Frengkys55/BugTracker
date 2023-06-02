@@ -25,7 +25,7 @@
                     <label class="w3-bar-item">Tickets (@TicketCount)</label>
                 </div>
                 <div class="w3-bar-block w3-container">
-                    @if(_Tickets != null){
+                    @if(_Tickets.Count > 0){
                         @foreach(var ticket in _Tickets){
                             <a href="/Tickets/ViewTicket?id=@ticket.guid" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">@ticket.Name</a>
                         }
@@ -50,7 +50,7 @@
     [Parameter]
     public string? Background {set; get;}
     [Parameter]
-    public ICollection<Ticket>? Tickets {set; get;}
+    public ICollection<Ticket>? Tickets {set; get;} = null;
     
     List<Ticket> _Tickets = new ();
     int TicketCount = 0;
@@ -63,8 +63,16 @@
         e.Name = Name;
     }
     protected override async Task OnInitializedAsync(){
-        if(Tickets != null){
-            TicketCount = Tickets.Count<Ticket>();
+        try{
+            if(Tickets != null){
+                foreach(var ticket in Tickets){
+                    _Tickets.Add(ticket);
+                }
+                TicketCount = _Tickets.Count<Ticket>();
+            }
+        }
+        catch{
+            // Skip
         }
     }
 
