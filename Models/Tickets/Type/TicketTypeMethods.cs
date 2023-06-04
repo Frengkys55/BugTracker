@@ -4,15 +4,25 @@ namespace Models.Tickets;
 
 public partial class Type{
 
-    /// <sumary>
-    /// Get a list of available types from database (guid and name)
-    /// </sumary>
-    public Dictionary<Guid, string> GetAvailableTypes(){
-        Dictionary<Guid, string> availableTypes = new ();
-        for(int i = 0; i < 5; i++){
-            availableTypes.Add(Guid.NewGuid(), "Type" + i.ToString());
+    /// <summary>
+    /// Get list of available ticket types to use
+    /// </summary>
+    /// <param name="accesstoken"></param>
+    /// <param name="address"></param>
+    /// <returns></returns>
+    public async Task<IEnumerable<Type>> GetAvailableTypes(string accesstoken, string address){
+        List<Type> availableTypes = new List<Type>();
+
+        List<KeyValuePair<string, string>> headers = new List<KeyValuePair<string, string>>();
+        headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
+
+        try{
+            Tools.APIHelper.GenericGet<List<Type>> request = new Tools.APIHelper.GenericGet<List<Type>>(address);
+            return await request.Send(headers);
         }
-        return availableTypes;
+        catch(Exception){
+            throw;
+        }
     }
 
     /// <sumary>

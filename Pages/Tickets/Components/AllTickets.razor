@@ -1,7 +1,10 @@
 @inject IConfiguration _configuration;
 @inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
 
-<div style="height:100%; width:100%; overflow-x: hidden; overflow-y:scroll;">
+<div class="w3-card w3-round" style="height:100%; width:100%; overflow-x: hidden; overflow-y:scroll;">
+    <div class="w3-bar w3-border-bottom w3-border-black w3-margin-bottom">
+        <a href="/Tickets/AddTicket" class="w3-bar-item w3-button w3-hover-black w3-ripple" style="border-radius:4px 0px 0px 0px;" title="Add new ticket"><span class="material-symbols-sharp">add</span></a>
+    </div>
     @if(tickets == null || tickets.Count < 1){
         <div class="w3-display-container" style="width:100%; height:100%;">
             <div class="w3-display-middle">
@@ -13,7 +16,7 @@
         </div>
     }
     else{
-        <div class="w3-bar-block">
+        <div class="w3-bar-block w3-container">
             @foreach(var ticket in tickets){
                 <a href="#" class="w3-bar-item w3-button w3-hover-black w3-border w3-border-black w3-round w3-margin-bottom">@ticket.Name</a>
             }

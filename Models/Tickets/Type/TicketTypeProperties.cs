@@ -17,7 +17,7 @@ public partial class Type{
     /// <sumary>
     /// Name of the type
     /// </sumary>
-    public string? Name {set; get;}
+    public string? Title {set; get;}
 
     /// <sumary>
     /// Description of the type

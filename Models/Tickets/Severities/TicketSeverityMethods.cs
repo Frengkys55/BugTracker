@@ -4,8 +4,17 @@ namespace Models.Tickets;
 
 public partial class Severity{
 
-    public Dictionary<Guid, string> GetAvailableSeverities(){
-        throw new NotImplementedException();
+    public async Task<List<Severity>> GetAvailableSeverities(string accesstoken, string address){
+        
+        List<KeyValuePair<string, string>> headers = new List<KeyValuePair<string, string>>();
+        headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
+
+        try{
+            return await new Tools.APIHelper.GenericGet<List<Severity>>(address).Send(headers);
+        }
+        catch(Exception){
+            throw;
+        }
     }
 
     public void CreateSeverity(Severity severity){

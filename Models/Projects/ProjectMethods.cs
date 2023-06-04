@@ -26,9 +26,9 @@ public partial class Project{
     /// <summary>
     /// Get full list of projects
     /// </summary>
-    public async Task<ICollection<ProjectShortModel>> GetProjects(){
-        string accessToken = "58d18562-5ed6-4da2-95db-777ab7dd422a";
-        Tools.APIHelper.GenericGet<List<ProjectShortModel>> genericGet = new ("https://bugtrackerapi.frengkysinaga.com/api/Project/GetProjects");
+    public async Task<ICollection<ProjectShortModel>> GetProjects(string address, string accesstoken){
+        string accessToken = accesstoken;
+        Tools.APIHelper.GenericGet<List<ProjectShortModel>> genericGet = new (address);
 
         List<KeyValuePair<string, string>> headers = new ();
         headers.Add(new KeyValuePair<string, string>("accesstoken", accessToken));
@@ -40,8 +40,8 @@ public partial class Project{
     /// Get a limited list of project from database
     /// </summary>
     /// <padam name="count">Limit how many project to get</param>
-    public async Task<ICollection<ProjectShortModel>> GetProjects(int count){
-        var projectList = await GetProjects();
+    public async Task<ICollection<ProjectShortModel>> GetProjects(string address, string accesstoken, int count){
+        var projectList = await GetProjects(address, accesstoken);
 
         Collection<ProjectShortModel> newProjectList = new();
 

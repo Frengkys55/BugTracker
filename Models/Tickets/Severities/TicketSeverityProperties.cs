@@ -9,7 +9,7 @@ public partial class Severity{
     /// <sumary>
     /// Name of the severity
     /// </sumary>
-    public string? Name {set; get;}
+    public string? Title {set; get;}
 
     /// <sumary>
     /// Description about this severity

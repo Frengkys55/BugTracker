@@ -1,5 +1,6 @@
 @using Models.Projects
-
+@inject IConfiguration _configuration;
+@inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
 
 @if(isLoaded == 0){
     <div class="w3-center">
@@ -43,8 +44,9 @@ else if (isLoaded == 2){
     string errorMessage = string.Empty;
     
     protected override async Task OnInitializedAsync(){
+        string address = _configuration["BugTrackerBackendAddress"] + "/Project/GetProjects";
         try{
-            projects = await new Models.Projects.Project().GetProjects();
+            projects = await new Models.Projects.Project().GetProjects(address, _accesstokenHelper.accessToken);
             if(projects.Count > 0)
                 isLoaded = 1;
             else
