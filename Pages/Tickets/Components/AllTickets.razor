@@ -1,11 +1,11 @@
 @inject IConfiguration _configuration;
 @inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
 
-<div class="w3-card w3-round" style="height:100%; width:100%; overflow-x: hidden; overflow-y:scroll;">
-    <div class="w3-bar w3-border-bottom w3-border-black w3-margin-bottom">
+<div class="w3-card w3-round" style="height:100%; width:100%;">
+    <div class="w3-bar w3-border-bottom w3-border-black">
         <a href="/Tickets/AddTicket" class="w3-bar-item w3-button w3-hover-black w3-ripple" style="border-radius:4px 0px 0px 0px;" title="Add new ticket"><span class="material-symbols-sharp">add</span></a>
     </div>
-    @if(tickets == null || tickets.Count < 1){
+    @if(loadingStatus == 2){
         <div class="w3-display-container" style="width:100%; height:100%;">
             <div class="w3-display-middle">
                 <img src="/images/l4uqgizqww241.gif" class="w3-image" />
@@ -15,22 +15,47 @@
             </div>
         </div>
     }
-    else{
-        <div class="w3-bar-block w3-container">
-            @foreach(var ticket in tickets){
-                <a href="#" class="w3-bar-item w3-button w3-hover-black w3-border w3-border-black w3-round w3-margin-bottom">@ticket.Name</a>
-            }
+    else if(loadingStatus == 1){
+        <div class="w3-container" style="width: 100%; height: calc( 100% - 46.25px ); overflow-x: hidden; overflow-y:scroll;">
+            <div class="w3-bar-block">
+                @foreach(var ticket in tickets){
+                    <a href="#" class="w3-bar-item w3-button w3-hover-black w3-border w3-border-black w3-round" style="margin-top:16px; margin-bottom:16px;">@ticket.Name</a>
+                }
+            </div>
         </div>
     }
-    
+    else if(loadingStatus == -1){
+        <BugTracker.Components.Misc.Errors.StandardError Title="Error loading tickets" Message="@errorMessage" />
+    }
+    else{
+        <BugTracker.Components.Misc.Loading.IsLoading Title="Loading" />
+    }
 </div>
 
 @code{
+    int loadingStatus = 0;
     ICollection<Models.Tickets.TicketShortModel>? tickets {set; get;}
     
+    #region Error stuff
+    bool hasError = false;
+    string errorMessage = string.Empty;
+
+    #endregion Error stuff
+
     protected override async Task OnInitializedAsync(){
         string address = _configuration["BugTrackerBackendAddress"] + "/ticket/getalltickets";
 
-        tickets = await new Models.Tickets.Ticket().GetAllTicketsAsync(_accesstokenHelper.accessToken, address);
+        try{
+            tickets = await new Models.Tickets.Ticket().GetAllTicketsAsync(_accesstokenHelper.accessToken, address);
+            if(tickets.Count > 0)
+                loadingStatus = 1; // Has content
+            else if(tickets.Count == 0)
+                loadingStatus = 2; // No content
+        }
+        catch(Exception err){
+            loadingStatus = -1;
+            hasError = true;
+            errorMessage = err.Message;
+        }
     }
 }

@@ -1,8 +1,10 @@
 @page "/Tickets/AddTicket"
 @using Microsoft.AspNetCore.Components.Forms;
+@using Models.Tickets;
 @using System;
 @inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
 @inject IConfiguration _configuration;
+@inject NavigationManager _navigationManager;
 
 <TicketSideMenu />
 
@@ -28,21 +30,21 @@
                     </div>
                     <div class="w3-margin-top">
                         <label>Type <span class="material-symbols-sharp w3-tiny" title="Available ticket type from the server that you can use">question_mark</span></label>
-                        <select class="w3-input w3-padding w3-transparent">
+                        <InputSelect @bind-Value="TicketForm.Type" class="w3-input w3-padding w3-transparent">
                             <option value="">--Select Type--</option>
                             @foreach(var type in AvailableTicketTypes){
-                                <option value="@type.guid">@type.Title</option>
+                                <option value="@type.Title">@type.Title</option>
                             }
-                        </select>
+                        </InputSelect>
                     </div>
                     <div class="w3-margin-top">
                         <label>Severity <span class="material-symbols-sharp w3-tiny" title="How severe is this ticket to the project">question_mark</span></label>
-                        <select class="w3-input w3-padding w3-transparent">
-                            <option value="">--Select Ticket Severity--</option>
+                        <InputSelect @bind-Value="TicketForm.Severity" class="w3-input w3-padding w3-transparent">
+                            <option value="">--Select Severity--</option>
                             @foreach(var severity in availableTicketSeverities){
-                                <option value="@severity.guid">@severity.Title</option>
+                                <option value="@severity.Title">@severity.Title</option>
                             }
-                        </select>
+                        </InputSelect>
                     </div>
                     <div class="w3-margin-top">
                         <label class="w3-bar-item">Description <span class="material-symbols-sharp w3-tiny" title="How severe is this ticket to the project">question_mark</span></label>
@@ -66,7 +68,7 @@
 </div>
 
 @code{
-    TicketFormModel TicketForm = new TicketFormModel();
+    Ticket TicketForm = new Ticket();
     List<Models.Tickets.Type> AvailableTicketTypes = new List<Models.Tickets.Type>();
     List<Models.Tickets.Severity> availableTicketSeverities = new List<Models.Tickets.Severity>();
     List<Models.Projects.ProjectShortModel> availableProjects = new List<Models.Projects.ProjectShortModel>();
@@ -113,6 +115,28 @@
     }
 
     protected async Task FormTicketSubmit_Click(){
+        string address = _configuration["BugTrackerBackendAddress"] + "/Ticket?projectGuid=";
         
+        // Find and assign project name to guid
+        foreach(var project in availableProjects){
+            if(project.guid.ToString() == TicketForm.Project){
+                TicketForm.Project = project.name;
+                address += project.guid.ToString();
+                break;
+            }
+        }
+
+        try{
+            string accesstoken = _accesstokenHelper.accessToken;
+            TicketForm.DateCreated = TicketForm.DateModified = DateTime.Now;
+            TicketForm.guid = Guid.NewGuid();
+            if(string.IsNullOrEmpty(TicketForm.Description))
+                TicketForm.Description = "N/A";
+            await new Models.Tickets.Ticket().AddTicket(TicketForm, accesstoken, address);
+            _navigationManager.NavigateTo("/Tickets");
+        }
+        catch(Exception err){
+            Console.WriteLine(err.Message);
+        }
     }
 }

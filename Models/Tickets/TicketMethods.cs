@@ -7,6 +7,8 @@ namespace Models.Tickets;
 /// </summary>
 public partial class Ticket{
 
+    #region Ticket reading
+
     /// <summary>
     /// Method for getting list of tickets
     /// </summary>
@@ -120,6 +122,8 @@ public partial class Ticket{
         }
     }
 
+    #endregion Ticket reading
+
     /// <summary>
     /// Delete spesified ticket
     /// </summary>
@@ -135,4 +139,22 @@ public partial class Ticket{
     public void UpdateTicket(Ticket ticket){
         throw new NotImplementedException();
     }
+
+    public async Task AddTicket(Ticket ticket, string accesstoken, string address){
+
+        List<KeyValuePair<string, string>> headers = new List<KeyValuePair<string, string>>();
+        headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
+
+        try{
+            Tools.APIHelper.GenericRequest request = new Tools.APIHelper.GenericRequest();
+            HttpResponseMessage result = await request.Send2<Ticket>(Tools.APIHelper.SendMethod.POST, address, ticket, headers);
+
+            var message = new Tools.Misc.JsonConverter<Models.ResponseMessage>().ReadString(await result.Content.ReadAsStringAsync());
+        }
+        catch(Exception){
+            throw;
+        }
+
+    }
+
 }

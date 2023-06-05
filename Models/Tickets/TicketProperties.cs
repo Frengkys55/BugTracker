@@ -12,7 +12,7 @@ public partial class Ticket{
     [NotNull]
     public int id {set; get;}
     public Guid guid {set; get;}
-    public Guid ProjectGuid{set; get;}
+    public string? Project{set; get;}
     public Guid UserGuid {set; get;}
     [NotNull]
     public string? Name {set; get;}
@@ -20,6 +20,6 @@ public partial class Ticket{
     public string? Description {set; get;}
     public DateTime DateCreated {set; get;}
     public DateTime DateModified {set; get;}
-    public string Severity {set; get;}
+    public string? Severity {set; get;}
     public string? Type {set; get;}
 }
