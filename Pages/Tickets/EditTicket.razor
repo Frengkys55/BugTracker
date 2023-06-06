@@ -1,32 +1,22 @@
-@page "/Tickets/AddTicket"
+@page "/Tickets/Edit"
 @using Microsoft.AspNetCore.Components.Forms;
 @using Models.Tickets;
-@using System;
 @inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
 @inject IConfiguration _configuration;
 @inject NavigationManager _navigationManager;
 
+<NavMenu />
 <BugTracker.Components.Tickets.SideNav />
-
 <div class="w3-container" style="margin-left:89px;">
     <div class="w3-row">
         <div class="w3-col m5">
             <div>
                 <h1>Information about the ticket</h1>
-                <p>Add new ticket</p>
+                <p>Edit ticket for the project "<b>@TicketForm.Project</b>"</p>
                 <EditForm Model="TicketForm" OnSubmit="FormTicketSubmit_Click">
                     <div class="w3-margin-top">
                         <label>Ticket name <span class="material-symbols-sharp w3-tiny" title="Name of the ticket you want to submit">question_mark</span></label>
                         <input @bind-value="TicketForm.Name" type="textbox" class="w3-input w3-padding" />
-                    </div>
-                    <div class="w3-margin-top">
-                        <label>Project <span class="material-symbols-sharp w3-tiny" title="To which project do you want to add this ticket for?">question_mark</span></label>
-                        <InputSelect @bind-Value="TicketForm.Project" class="w3-input w3-padding w3-transparent">
-                            <option value="">--Select Project--</option>
-                            @foreach(var project in availableProjects){
-                                <option value="@project.guid">@project.name</option>
-                            }
-                        </InputSelect>
                     </div>
                     <div class="w3-margin-top">
                         <label>Type <span class="material-symbols-sharp w3-tiny" title="Available ticket type from the server that you can use">question_mark</span></label>
@@ -55,20 +45,28 @@
                         </div>
                     </div>
                     <div class="w3-bar w3-margin-top">
-                        <input type="submit" class="w3-bar-item w3-button w3-border w3-border-black w3-round w3-hover-black w3-ripple" value="Add Ticket" />
+                        <input type="submit" class="w3-bar-item w3-button w3-border w3-border-black w3-round w3-hover-black w3-ripple" value="Save Edit" />
                     </div>
                 </EditForm>
                 
             </div>
         </div>
         <div class="w3-col m7">
-
+            <div class="w3-display-container" style="width:100%; height:100%;">
+                <div class="w3-middle">
+                    The unnecessarily large Edit Ticket title
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+
 @code{
-    Ticket TicketForm = new Ticket();
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public Guid id {set; get;}
+    public Ticket TicketForm = new Ticket();
     List<Models.Tickets.Type> AvailableTicketTypes = new List<Models.Tickets.Type>();
     List<Models.Tickets.Severity> availableTicketSeverities = new List<Models.Tickets.Severity>();
     List<Models.Projects.ProjectShortModel> availableProjects = new List<Models.Projects.ProjectShortModel>();
@@ -78,6 +76,8 @@
 
         string address = _configuration["BugTrackerBackendAddress"] + "/Ticket";
         string accesstoken = _accesstokenHelper.accessToken;
+
+        Console.WriteLine(id);
 
         // Load available ticket types
         try{
@@ -111,11 +111,19 @@
         catch(Exception err){
             Console.WriteLine(err.Message);
         }
-        // Load SimpleHTMLEditor/Application.js file for description
+
+        // Load user ticket
+        try{
+            string ticketAddress = _configuration["BugTrackerBackendAddress"] + "/Ticket?id=" + id;
+            TicketForm = await new Models.Tickets.Ticket().GetTicketDetail(id, accesstoken, ticketAddress);
+        }
+        catch(Exception err){
+            Console.WriteLine(err.Message);
+        }
     }
 
-    protected async Task FormTicketSubmit_Click(){
-        string address = _configuration["BugTrackerBackendAddress"] + "/Ticket?projectGuid=";
+    public async Task FormTicketSubmit_Click(){
+        string address = _configuration["BugTrackerBackendAddress"] + "/Ticket";
         
         // Find and assign project name to guid
         foreach(var project in availableProjects){
@@ -129,14 +137,15 @@
         try{
             string accesstoken = _accesstokenHelper.accessToken;
             TicketForm.DateCreated = TicketForm.DateModified = DateTime.Now;
-            TicketForm.guid = Guid.NewGuid();
             if(string.IsNullOrEmpty(TicketForm.Description))
                 TicketForm.Description = "N/A";
-            await new Models.Tickets.Ticket().AddTicket(TicketForm, accesstoken, address);
+            await new Models.Tickets.Ticket().UpdateTicket(TicketForm, accesstoken, address);
             _navigationManager.NavigateTo("/Tickets");
         }
         catch(Exception err){
             Console.WriteLine(err.Message);
         }
     }
+
+
 }

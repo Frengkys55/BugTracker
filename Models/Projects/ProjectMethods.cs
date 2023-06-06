@@ -22,6 +22,18 @@ public partial class Project{
         this.connectionString = connectionString;
     }
 
+    public async Task<Project> GetProject(Guid projectGuid, string accesstoken, string address){
+        List<KeyValuePair<string, string>> headers = new List<KeyValuePair<string, string>>();
+        headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
+
+        try{
+            var result = await new Tools.APIHelper.GenericGet<Project>(address).Send(headers);
+            return result;
+        }
+        catch(Exception){
+            throw;
+        }
+    }
 
     /// <summary>
     /// Get full list of projects

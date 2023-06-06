@@ -136,8 +136,20 @@ public partial class Ticket{
     /// Update ticket information
     /// </summary>
     /// <param name="ticket">Ticket information to be updated</param>
-    public void UpdateTicket(Ticket ticket){
-        throw new NotImplementedException();
+    public async Task UpdateTicket(Ticket ticket, string accesstoken, string address){
+        
+        List<KeyValuePair<string, string>> headers = new List<KeyValuePair<string, string>>();
+        headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
+
+        try{
+            Tools.APIHelper.GenericRequest request = new Tools.APIHelper.GenericRequest();
+            HttpResponseMessage result = await request.Send2<Ticket>(Tools.APIHelper.SendMethod.PUT, address, ticket, headers);
+
+            var message = new Tools.Misc.JsonConverter<Models.ResponseMessage>().ReadString(await result.Content.ReadAsStringAsync());
+        }
+        catch(Exception){
+            throw;
+        }
     }
 
     public async Task AddTicket(Ticket ticket, string accesstoken, string address){
@@ -154,7 +166,6 @@ public partial class Ticket{
         catch(Exception){
             throw;
         }
-
     }
 
 }
