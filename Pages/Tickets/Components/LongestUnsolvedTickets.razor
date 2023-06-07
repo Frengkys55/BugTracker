@@ -3,7 +3,7 @@
 @inject IConfiguration _configuration;
 
 @if(hasError){
-    <BugTracker.Components.Misc.NoContent.NoContent ImageUrl="@errorImage" Title="There are no high priority tickets found" />
+    <BugTracker.Components.Misc.NoContent.NoContent ImageUrl="@errorImage" Title="Ticket not found" />
 }
 else{
     <ul class="w3-ul">

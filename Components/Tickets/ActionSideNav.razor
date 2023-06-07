@@ -1,0 +1,55 @@
+<div id="pnlTicketActionSidebar" class="">
+    <a href="/Tickets/Edit?id=@Guid" class="w3-bar-item w3-button w3-transparent w3-hover-black w3-round w3-border w3-border-dark-grey w3-margin-top">
+        <span class="material-symbols-sharp" title="Edit this ticket" style="margin-top:4px;">edit</span>
+    </a>
+    <button
+        type="button"
+        class="w3-bar-item w3-button w3-transparent w3-hover-black w3-round w3-border w3-border-dark-grey w3-margin-top"
+        @onclick="() => { OnMarkTicketComplete_ClickAsync(); }">
+        <span class="material-symbols-sharp" title="Mark this ticket as complete">check</span>
+    </button>
+    <button
+        type="button"
+        class="w3-bar-item w3-button w3-transparent w3-hover-black w3-round w3-border w3-border-dark-grey w3-margin-top w3-hover-red w3-hover-border-red"
+        @onclick="() => { OnDelete_ClickAsync.InvokeAsync(); }">
+        <span class="material-symbols-sharp" title="Delete this ticket">delete</span>
+    </button>
+</div>
+
+@code{
+    [Parameter]
+    public string Guid {set; get;}
+
+    bool ticketMarkedComplete = false;
+
+    /// <summary>
+    /// Delegate to call when ticket marking is finished
+    /// </summary>
+    /// <value>TRUE if ticket has been marked and FALSE if not</value>
+    [Parameter]
+    public EventCallback<bool> OnTicketMarkStatus {set; get;}
+
+    /// <summary>
+    /// Delegate to call when the delete ticket button is clicked (also return your ticket Guid)
+    /// </summary>
+    /// <value></value>
+    [Parameter]
+    public EventCallback<Guid> OnDelete_ClickAsync {set; get;}
+    protected async Task OnMarkTicketComplete_ClickAsync(){
+        try{
+            ticketMarkedComplete = true;
+        }
+        catch(Exception){
+            ticketMarkedComplete = false;
+            
+        }
+        finally{
+            if(OnTicketMarkStatus.HasDelegate)
+                OnTicketMarkStatus.InvokeAsync(ticketMarkedComplete);
+        }
+    }
+
+    protected override async Task OnInitializedAsync(){
+        Console.WriteLine(Guid);
+    }
+}

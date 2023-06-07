@@ -10,10 +10,10 @@
             @Message
         </div>
         <footer class="w3-bar w3-padding">
-            <button class="w3-bar-item w3-button w3-round w3-border w3-border-black w3-hover-red w3-ripple" @onclick="@(() => OnConfirm.InvokeAsync())">
-                <span class="material-symbols-sharp" style="padding-top:4px;">delete_forever</span>
+            <button class="w3-bar-item w3-button w3-round w3-border w3-border-black w3-hover-black w3-ripple" @onclick="@(() => OnConfirm.InvokeAsync())">
+                <span class="material-symbols-sharp" style="padding-top:4px;">check</span>
             </button>
-            <button class="w3-bar-item w3-button w3-round w3-border w3-border-black w3-ripple w3-margin-left" @onclick="@(() => OnCancel.InvokeAsync())">
+            <button class="w3-bar-item w3-button w3-round w3-border w3-border-black w3-hover-black w3-ripple w3-margin-left" @onclick="@(() => OnCancel.InvokeAsync())">
                 <span class="material-symbols-sharp" style="padding-top:4px;">cancel</span>
             </button>
         </footer>

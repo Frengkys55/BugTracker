@@ -128,8 +128,18 @@ public partial class Ticket{
     /// Delete spesified ticket
     /// </summary>
     /// <param name="ticketGuid">GUID of the ticket to be deleted</param>
-    public void DeleteTicket(Guid ticketGuid){
-        throw new NotImplementedException();
+    public async Task DeleteTicket(Guid ticketGuid, string accesstoken, string address){
+        List<KeyValuePair<string, string>> headers = new List<KeyValuePair<string, string>>();
+        headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
+
+        try{
+            var result = await new Tools.APIHelper.GenericRequest().Send(Tools.APIHelper.SendMethod.DELETE, address, headers);
+            if(result == -1)
+                throw new Exception("Error deleting ticket");
+        }
+        catch(Exception){
+            throw;
+        }
     }
 
     /// <summary>

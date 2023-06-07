@@ -3,9 +3,11 @@
 @inject Tools.Misc.AccessTokenHelper _accresstokenHelper;
 @inject IConfiguration _configuration;
 
-<NavMenu />
-
-<div>
+<BugTracker.Components.Tickets.SideNav>
+    <BugTracker.Components.Tickets.ActionSideNav Guid="@id.ToString()" />
+</BugTracker.Components.Tickets.SideNav>
+<div style="margin-left:89px;">
+    <NavMenu />
     <div class="w3-row">
         <div class="w3-col m5">
             <header>
