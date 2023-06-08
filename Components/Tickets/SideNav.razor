@@ -1,14 +1,10 @@
 <div id="pnlTicketActionSidebar" class="w3-sidebar w3-bar-block w3-card w3-animate-left w3-card w3-container" style="width:89px;">
-    <a href="/" class="w3-bar-item w3-button w3-transparent w3-hover-black w3-round w3-border w3-border-dark-grey w3-margin-top">
+    <a href="@BackUrl" class="w3-bar-item w3-button w3-transparent w3-hover-black w3-round w3-border w3-border-dark-grey w3-margin-top">
         <span class="material-symbols-sharp" title="Back" style="margin-top:4px;">arrow_back</span>
     </a>
     <a href="/Tickets" class="w3-bar-item w3-button w3-transparent w3-hover-black w3-round w3-border w3-border-dark-grey w3-margin-top">
-
         @if(ProjectGuid != Guid.Empty && ProjectName != string.Empty){
             <span class="material-symbols-sharp" title="List ticket for project @ProjectName" style="margin-top:4px;">list</span>
-        }
-        else{
-            <span class="material-symbols-sharp" title="View all available tickets" style="margin-top:4px;">list</span>
         }
     </a>
     @if(ChildContent != null){
@@ -29,11 +25,9 @@
     public RenderFragment ChildContent {set; get;}
     Guid ticketGuid;
 
+    [Parameter]
+    public string BackUrl {get; set;} = "#";
     protected override async Task OnParametersSetAsync(){
         ticketGuid = TicketGuid;
     }
-
-    
-
-
 }

@@ -1,3 +1,6 @@
+@inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
+@inject IConfiguration _configuration;
+
 <div style="height:100%; width:100%; overflow-x: hidden; overflow-y:scroll;">
     @if(tickets.Count < 1){
         <div class="w3-display-container" style="width:100%; height:100%;">
@@ -12,7 +15,7 @@
     else{
         @foreach(var ticket in tickets){
             <div class="w3-bar-block">
-                <a href="/Tickets/ViewTicket?id=@ticket.Key" class=" w3-bar-item w3-button w3-transparent w3-hover-black w3-border w3-border-black w3-round w3-ripple w3-margin-bottom">@ticket.Value</a>
+                <a href="/Tickets/ViewTicket?id=@ticket.Guid" class=" w3-bar-item w3-button w3-transparent w3-hover-black w3-border w3-border-black w3-round w3-ripple w3-margin-bottom">@ticket.Name</a>
             </div>
         }
     }
@@ -21,14 +24,25 @@
 
 @code{
     [Parameter]
-    [SupplyParameterFromQuery]
-    public Guid id {set; get;}
+    public string? ProjectGuid {set; get;}
 
-    List<KeyValuePair<Guid, string>> tickets = new();
+    List<Models.Tickets.TicketShortModel> tickets = new List<Models.Tickets.TicketShortModel>();
     
     protected override async Task OnInitializedAsync(){
-        for(int i = 0; i < 10; i++){
-            tickets.Add(new KeyValuePair<Guid, string>(Guid.NewGuid(), "Replace this placeholder text"));
+        Console.WriteLine(ProjectGuid);
+        if(ProjectGuid != string.Empty){
+            string accesstoken = _accesstokenHelper.accessToken;
+            string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/" + ProjectGuid;
+            try{
+                var result = await new Models.Tickets.Ticket().GetProjectTickets(Guid.Parse(ProjectGuid), accesstoken, address);
+                foreach(var ticket in result){
+                    tickets.Add(ticket);
+                }
+            }
+            catch(Exception err){
+                Console.WriteLine(err.Message);
+            }
         }
+
     }
 }

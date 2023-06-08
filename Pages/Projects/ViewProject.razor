@@ -12,8 +12,8 @@
             <header>
                 <h1 class="w3-container">@project.Name</h1>
                 <div class="w3-bar">
-                    <span class="w3-bar-item w3-text-grey">id: @project.Guid</span>
-                    <a href="/Project/EditProject?id=@project.Guid" class="w3-bar-item w3-button w3-transparent w3-hover-black w3-border w3-border-black w3-round w3-ripple w3-right">Edit</a>
+                    <span class="w3-bar-item w3-text-grey">id: @id.ToString()</span>
+                    <a href="/Project/EditProject?id=@id.ToString()" class="w3-bar-item w3-button w3-transparent w3-hover-black w3-border w3-border-black w3-round w3-ripple w3-right">Edit</a>
                 </div>
             </header>
             <div class="w3-container w3-margin-top">
@@ -47,7 +47,7 @@
                 <a href="/Tickets/AddTicket" class="w3-button w3-transparent w3-hover-black w3-border w3-border-black w3-round w3-ripple w3-margin-bottom">Add Ticket</a>
             </header>
             <div class="w3-container" style="height:500px;">
-                <BugTracker.Pages.Tickets.Components.TicketListForAProject />
+                <BugTracker.Pages.Tickets.Components.TicketListForAProject ProjectGuid="@id.ToString()" />
             </div>
         </div>
     </div>

@@ -106,12 +106,13 @@ public partial class Project{
             throw new Exception("Well, the backend is secured. How should I access those backend if you didn't give me something that those backend accepted.");
 
         string newAddress = (address.EndsWith("/")) ? address + projectGuid : address + "/" + projectGuid;
-        Tools.APIHelper.GenericGet<Project> request = new Tools.APIHelper.GenericGet<Project>(newAddress);
+        var request = new Tools.APIHelper.GenericGet<Models.ResultResponse<Project>>(newAddress);
 
         List<KeyValuePair<string, string>> headers = new();
         headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
         try{
-            return await request.Send(headers);
+            var receivedData = await request.Send(headers);
+            return receivedData.Result;
         }
         catch(Exception){
             throw;
