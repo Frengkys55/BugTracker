@@ -1,26 +1,51 @@
+@using Models.Tickets;
+@inject IConfiguration _configuration;
+@inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
+
 <div id="pnlTicketActionSidebar" class="">
-    <a href="/Tickets/Edit?id=@Guid" class="w3-bar-item w3-button w3-transparent w3-hover-black w3-round w3-border w3-border-dark-grey w3-margin-top">
+    <a
+        href="/Tickets/Edit?id=@Guid"
+        class="w3-bar-item w3-button w3-transparent w3-hover-black w3-round w3-border w3-border-dark-grey w3-margin-top"
+        Title="Edit this ticket">
         <span class="material-symbols-sharp" title="Edit this ticket" style="margin-top:4px;">edit</span>
     </a>
     <button
         type="button"
         class="w3-bar-item w3-button w3-transparent w3-hover-black w3-round w3-border w3-border-dark-grey w3-margin-top"
-        @onclick="() => { OnMarkTicketComplete_ClickAsync(); }">
+        Title="Mark this ticket as solved"
+        @onclick="async () => { await OnMarkTicketComplete_ClickAsync(); }">
         <span class="material-symbols-sharp" title="Mark this ticket as complete">check</span>
     </button>
     <button
         type="button"
         class="w3-bar-item w3-button w3-transparent w3-hover-black w3-round w3-border w3-border-dark-grey w3-margin-top w3-hover-red w3-hover-border-red"
-        @onclick="() => { OnDelete_ClickAsync.InvokeAsync(); }">
+        Title="Delete this ticket"
+        @onclick="RequestDeleteTicket_ClickAsync">
         <span class="material-symbols-sharp" title="Delete this ticket">delete</span>
     </button>
 </div>
+@if(requestDelete){
+    <BugTracker.Components.Misc.Confirmation.ConfirmationModal
+        Guid="@Guid"
+        Title="Are you sure about this?"
+        Message="After this you will not able to recover it later."
+        OnConfirm="@DeleteTicket_ClickAsync"
+        OnCancel="@CancelDeleteTicket_ClickAsync" />
+}
 
 @code{
+
+    /// <summary>
+    /// Ticket Guid
+    /// </summary>
+    /// <value></value>
     [Parameter]
     public string Guid {set; get;}
 
     bool ticketMarkedComplete = false;
+    bool ticketDeletionComplete = false;
+
+    bool requestDelete = false;
 
     /// <summary>
     /// Delegate to call when ticket marking is finished
@@ -30,23 +55,63 @@
     public EventCallback<bool> OnTicketMarkStatus {set; get;}
 
     /// <summary>
-    /// Delegate to call when the delete ticket button is clicked (also return your ticket Guid)
+    /// Delegate to call when the delete deletion has been requested and carried out.
     /// </summary>
     /// <value></value>
     [Parameter]
-    public EventCallback<Guid> OnDelete_ClickAsync {set; get;}
+    public EventCallback<bool> OnDeleteTicketStatus {set; get;}
+
+    /// <summary>
+    /// Mark a ticket complete and report to parent component that ticket marking has been carried out.
+    /// </summary>
+    /// <returns></returns>
     protected async Task OnMarkTicketComplete_ClickAsync(){
         try{
             ticketMarkedComplete = true;
         }
         catch(Exception){
             ticketMarkedComplete = false;
-            
         }
         finally{
             if(OnTicketMarkStatus.HasDelegate)
                 OnTicketMarkStatus.InvokeAsync(ticketMarkedComplete);
         }
+    }
+
+    /// <summary>
+    /// Will be called when requested to delete a ticket
+    /// </summary>
+    /// <returns></returns>
+    protected async Task RequestDeleteTicket_ClickAsync(){
+        requestDelete = true;
+    }
+
+    /// <summary>
+    /// Will be called if user has confirmed to delete the ticket
+    /// </summary>
+    /// <returns></returns>
+    protected async Task DeleteTicket_ClickAsync(){
+        try{
+            string address = _configuration["BugTrackerBackendAddress"] + "/Ticket";
+
+            await new Ticket().DeleteTicket(new Guid(Guid), _accesstokenHelper.accessToken, address);
+            ticketDeletionComplete = true;
+        }
+        catch(Exception){
+            ticketDeletionComplete = false;
+        }
+        finally{
+            if(OnDeleteTicketStatus.HasDelegate)
+                OnDeleteTicketStatus.InvokeAsync(ticketDeletionComplete);
+        }
+    }
+
+    /// <summary>
+    /// Cancel delete ticket
+    /// </summary>
+    /// <returns></returns>
+    protected async Task CancelDeleteTicket_ClickAsync(){
+        requestDelete = false;
     }
 
     protected override async Task OnInitializedAsync(){

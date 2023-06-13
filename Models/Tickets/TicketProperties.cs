@@ -18,8 +18,10 @@ public partial class Ticket{
     public string? Name {set; get;}
     [NotNull]
     public string? Description {set; get;}
-    public DateTime DateCreated {set; get;}
-    public DateTime DateModified {set; get;}
+
+    [NotNull]
+    public DateTime? DateCreated {set; get;}
+    public DateTime? DateModified {set; get;}
     public string? Severity {set; get;}
     public string? Type {set; get;}
 }

@@ -1,0 +1,45 @@
+@using Models.Tickets;
+@inject Tools.Misc.AccessTokenHelper AccessTokenHelper;
+@inject IConfiguration _configuration;
+
+@if(hasError){
+    <BugTracker.Components.Misc.NoContent.NoContent ImageUrl="@errorImage" Title="Ticket not found" />
+}
+else{
+    <a href="/Tickets/ViewTicket?id=@ticket.guid" style="text-decoration:none;">
+        <div class="w3-container" style="height: calc( 100% - 38.5px );">
+            <header>
+                <h3>@ticket.Name</h3>
+            </header>
+            <div>
+                <div class="w3-cell">
+                    <span class="w3-xxxlarge">@totalDaysSinceCreation</span>
+                </div>
+                <div class="w3-cell w3-cell-middle w3-margin-left">
+                    <span>days<br />since creation</span>
+                </div>
+            </div>
+        </div>
+    </a>
+}
+
+@code{
+    bool hasError = false;
+    string errorMessage = string.Empty;
+
+    string errorImage = "images/69a6b00a04b341828841fba193a51ee5_4970450105616380596.jpg";
+    Ticket ticket = new Ticket();
+    int totalDaysSinceCreation = 0;
+    protected override async Task OnInitializedAsync(){
+        string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/LongestUnsolved";
+        try{
+            var result = await new Ticket().GetLongestUnsolvedTicket(AccessTokenHelper.accessToken, address);
+            ticket = result;
+            totalDaysSinceCreation = Convert.ToInt32(DateTime.Now.Subtract(ticket.DateCreated.Value).Days);
+        }
+        catch(Exception err){
+            hasError = true;
+            Console.WriteLine(err.Message);
+        }
+    }
+}

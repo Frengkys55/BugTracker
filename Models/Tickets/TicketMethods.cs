@@ -110,8 +110,8 @@ public partial class Ticket{
         }
     }
 
-    public async Task<IEnumerable<Ticket>> GetLongestUnsolvedTickets(string accesstoken, string address){
-        Tools.APIHelper.GenericGet<List<Ticket>> helper = new Tools.APIHelper.GenericGet<List<Ticket>>(address);
+    public async Task<Ticket> GetLongestUnsolvedTickets(string accesstoken, string address){
+        Tools.APIHelper.GenericGet<Ticket> helper = new Tools.APIHelper.GenericGet<Ticket>(address);
         List<KeyValuePair<string, string>> headers = new ();
         headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
         try{
