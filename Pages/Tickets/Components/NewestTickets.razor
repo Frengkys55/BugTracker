@@ -1,15 +1,39 @@
 @using Models.Tickets;
-@inject Tools.Misc.AccessTokenHelper AccessTokenHelper;
+@inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
+@inject IConfiguration _configuration;
 
 <ul class="w3-ul">
-    @foreach(var ticket in tickets){
-        <a href="/Tickets/ViewTicket?id=@ticket.Key" style="text-decoration:none;"><li class="w3-hover-black w3-ripple">@ticket.Value</li></a>
+    @foreach(var ticket in invertedTicket){
+        <a href="/Tickets/ViewTicket?id=@ticket.Guid" style="text-decoration:none;"><li class="w3-hover-black w3-ripple">@ticket.Name</li></a>
     }
 </ul>
 
 @code{
-    List<KeyValuePair<Guid, string>> tickets = new ();
+    [Parameter]
+    public List<TicketShortModel> tickets {set; get;} = null;
+    
+    List<TicketShortModel> invertedTicket = new List<TicketShortModel>();
+    
     protected override async Task OnInitializedAsync(){
-        throw new NotImplementedException("Waiting for reimplementation");
+        if(tickets == null){
+            tickets = new List<TicketShortModel>();
+
+            string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/GetAllTickets";
+            var result = await new Ticket().GetAllTicketsAsync(_accesstokenHelper.accessToken, address);
+
+            foreach(var ticket in result){
+                tickets.Add(ticket);
+            }
+
+            int counter = 0;
+
+            // invert
+            for(int i = tickets.Count - 1; i >= 0; i--){
+                invertedTicket.Add(tickets[i]);
+                counter++;
+                if(counter == 4)
+                    break;
+            }
+        }
     }
 }
