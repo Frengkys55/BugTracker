@@ -29,7 +29,7 @@
     else if(isLoading == 1){
         <div class="w3-bar">
             @foreach(var project in projects){
-                <ProjectCard Guid="@project.project.Guid.ToString()" Name="@project.project.Name" Icon="@project.project.IconUrl" Background="@project.project.BackgroundImageUrl" Tickets="@project.tickets" OnClick="RequestDeleteAsync_Click" />
+                <ProjectCard Guid="@project.project.Guid.ToString()" Name="@project.project.Name" Icon="@project.project.IconUrl" Background="@project.project.BackgroundImageUrl" OnClick="RequestDeleteAsync_Click" />
             }
         </div>
     }
@@ -83,26 +83,6 @@
 
                     ProjectModel projectModel = new ();
                     projectModel.project = projectTemp;
-                    projectModel.tickets = new();
-                    try{
-                        string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/" + projectTemp.Guid.ToString();
-                        var receivedTicket = await new Models.Tickets.Ticket().GetProjectTickets(project.guid, AccessTokenHelper.accessToken, address);
-                        int counter = 0;
-                        foreach(var ticket in receivedTicket){
-                            var tempTicket = new Ticket(){
-                                guid = ticket.Guid,
-                                Name = ticket.Name,
-                                DateCreated = ticket.DateCreated
-                            };
-                            projectModel.tickets.Add(tempTicket);
-                            counter++;
-                            if(counter == 3)
-                                break;
-                        }
-                    }
-                    catch{
-                        // Skip. It's just an error thrown by api because how the return type works in web api
-                    }
                     
                     projects.Add(projectModel);
                 }

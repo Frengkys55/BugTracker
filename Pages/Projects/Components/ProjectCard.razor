@@ -1,6 +1,9 @@
 @using Models.Tickets;
 @using Microsoft.AspNetCore.Components;
 @using Models.Projects;
+@using Models.Tickets;
+@inject IConfiguration _configuration;
+@inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
 
 <div id="pnlProjectContainer_@Guid" class="w3-bar-item">
     <div id="pnlProject_@Guid" class="w3-display-container w3-block backgroundCover w3-round w3-card" style="width:335px; height:442px; background-image:url('@Background');">
@@ -43,17 +46,38 @@
 </div>
 
 @code{
+    /// <summary>
+    /// The project's guid
+    /// </summary>
+    /// <value></value>
     [Parameter]
     public string? Guid {set; get;}
+
+    /// <summary>
+    /// The project's name
+    /// </summary>
+    /// <value></value>
     [Parameter]
     public string? Name {set; get;}
+
+    /// <summary>
+    /// The project's Icon
+    /// </summary>
+    /// <value></value>
     [Parameter]
     public string? Icon {set; get;}
+
+    /// <summary>
+    /// The project's background image (leave empty will use white background)
+    /// </summary>
+    /// <value></value>
     [Parameter]
     public string? Background {set; get;}
-    [Parameter]
-    public ICollection<Ticket>? Tickets {set; get;} = null;
-    
+
+    /// <summary>
+    /// The project's ticket (handled by this card)
+    /// </summary>
+    /// <value></value>
     List<Ticket> _Tickets = new ();
     int TicketCount = 0;
     [Parameter]
@@ -66,11 +90,22 @@
     }
     protected override async Task OnInitializedAsync(){
         try{
-            if(Tickets != null){
-                foreach(var ticket in Tickets){
-                    _Tickets.Add(ticket);
-                }
-                TicketCount = _Tickets.Count<Ticket>();
+            string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/" + Guid;
+            var receivedTicket = await new Models.Tickets.Ticket().GetProjectTickets(new Guid(Guid), _accesstokenHelper.accessToken, address);
+
+            TicketCount = receivedTicket.Count();
+
+            int counter = 0;
+            foreach(var ticket in receivedTicket){
+                _Tickets.Add(new Ticket(){
+                    Name = ticket.Name,
+                    guid = ticket.Guid,
+                    DateCreated = ticket.DateCreated,
+                });
+                if(counter == 2)
+                    break;
+                else
+                    counter++;
             }
         }
         catch{

@@ -27,9 +27,10 @@
     public string? ProjectGuid {set; get;}
 
     List<Models.Tickets.TicketShortModel> tickets = new List<Models.Tickets.TicketShortModel>();
-    
+
+    [Parameter]
+    public EventCallback<int> OnTicketLoadingComplete {set; get;}
     protected override async Task OnInitializedAsync(){
-        Console.WriteLine(ProjectGuid);
         if(ProjectGuid != string.Empty){
             string accesstoken = _accesstokenHelper.accessToken;
             string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/" + ProjectGuid;
@@ -38,6 +39,7 @@
                 foreach(var ticket in result){
                     tickets.Add(ticket);
                 }
+                OnTicketLoadingComplete.InvokeAsync(tickets.Count);
             }
             catch(Exception err){
                 Console.WriteLine(err.Message);

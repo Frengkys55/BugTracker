@@ -140,7 +140,12 @@
     private async Task AddProjectToDatabase(){
         string targetAddress = configuration["BugTrackerBackendAddress"] + "/Project";
         try{
-            newProject.BackgroundImageUrl = "N/A";
+            if(string.IsNullOrEmpty(newProject.BackgroundImageUrl))
+                newProject.BackgroundImageUrl = "N/A";
+            
+            if(string.IsNullOrEmpty(newProject.IconUrl))
+                newProject.IconUrl = "N/A";
+
             newProject.AccessToken = new Tools.Misc.AccessTokenHelper().accessToken;
             HttpResponseMessage response = await newProject.CreateProject(newProject, targetAddress);
 
