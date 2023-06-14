@@ -4,8 +4,6 @@ namespace Tools.Misc{
     public class JsonConverter<T>{
         public T ReadString(string data){
             if(data == null) throw new NullReferenceException("There is no data proviced.");
-
-            Console.WriteLine(data);
             try{
                 JsonSerializerOptions options = new JsonSerializerOptions();
                 options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;

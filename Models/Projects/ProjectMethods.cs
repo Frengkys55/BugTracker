@@ -129,7 +129,7 @@ public partial class Project{
         
         Tools.APIHelper.GenericRequest request = new Tools.APIHelper.GenericRequest();
         try{
-            HttpResponseMessage response = await new Tools.APIHelper.GenericRequest().Send2<Project>(Tools.APIHelper.SendMethod.PUT, address, project, null);
+            HttpResponseMessage response = await new Tools.APIHelper.GenericRequest().Send2<Project>(Tools.APIHelper.SendMethod.PUT, address, project);
             if(response.StatusCode == System.Net.HttpStatusCode.OK ||
                response.StatusCode == System.Net.HttpStatusCode.NoContent ||
                response.StatusCode == System.Net.HttpStatusCode.Created){
