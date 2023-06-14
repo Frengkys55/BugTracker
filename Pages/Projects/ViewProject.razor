@@ -1,8 +1,9 @@
 @page "/Projects/ViewProject"
 
 @using Models.Projects;
+@using Models.Tickets;
 @inject NavigationManager navManager
-@inject Tools.Misc.AccessTokenHelper _accresstokenHelper;
+@inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
 @inject IConfiguration _configuration;
 
 <NavMenu />
@@ -28,7 +29,12 @@
                     </div>
                     <div class="w3-third">
                         Last modified on<br />
-                        @Misc.DateTimeToStringConverter.Convert(project.DateModified)
+                        @if(project.DateModified.Subtract(project.DateCreated).TotalDays > 0){
+                            @Misc.DateTimeToStringConverter.Convert(project.DateModified)
+                        }
+                        else{
+                            <span>None</span>
+                        }
                     </div>
                 </div>
             </div>
@@ -97,13 +103,18 @@
         string address = _configuration["BugTrackerBackendAddress"] + "/Project";
         System.Console.WriteLine(id);
         try{
-            project = await new Project().ReadProject(id, address, _accresstokenHelper.accessToken);
+            project = await new Project().ReadProject(id, address, _accesstokenHelper.accessToken);
         }
         catch(Exception err){
             hasProblem = true;
             statusCode = 500;
             problemMessage = err.Message;
         }
+
+        // Count ticket
+        address = _configuration["BugTrackerBackendAddress"] + "/Ticket/" + id.ToString();
+        var result = await new Ticket().GetProjectTickets(id, _accesstokenHelper.accessToken, address);
+        ticketNumber = result.Count();
     }
 
     protected void CloseProblem_Click(){
