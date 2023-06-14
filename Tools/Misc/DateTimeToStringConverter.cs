@@ -1,4 +1,4 @@
-namespace Misc;
+namespace Tools.Misc;
 
 public static class DateTimeToStringConverter{
     public static string Convert(DateTime input){

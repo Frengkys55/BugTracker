@@ -25,12 +25,12 @@
                     </div>
                     <div class="w3-third">
                         Created on<br />
-                        @Misc.DateTimeToStringConverter.Convert(project.DateCreated)
+                        @Tools.Misc.DateTimeToStringConverter.Convert(project.DateCreated)
                     </div>
                     <div class="w3-third">
                         Last modified on<br />
                         @if(project.DateModified.Subtract(project.DateCreated).TotalDays > 0){
-                            @Misc.DateTimeToStringConverter.Convert(project.DateModified)
+                            @Tools.Misc.DateTimeToStringConverter.Convert(project.DateModified)
                         }
                         else{
                             <span>None</span>

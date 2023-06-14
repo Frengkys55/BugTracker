@@ -40,7 +40,7 @@
     /// </summary>
     /// <value></value>
     [Parameter]
-    public string Guid {set; get;}
+    public string? Guid {set; get;}
 
     bool ticketMarkedComplete = false;
     bool ticketDeletionComplete = false;
@@ -102,7 +102,7 @@
         }
         finally{
             if(OnDeleteTicketStatus.HasDelegate)
-                OnDeleteTicketStatus.InvokeAsync(ticketDeletionComplete);
+                await OnDeleteTicketStatus.InvokeAsync(ticketDeletionComplete);
         }
     }
 
