@@ -2,6 +2,7 @@
 @layout Pages.Layouts.LoginRegisterLayout
 @inject NavigationManager navigationManager
 @inject IConfiguration configuration
+@inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
 
 <div class="w3-card w3-mobile" style="width:400px;">
     <div class="w3-cell-row">
@@ -11,7 +12,7 @@
                 <input type="text" @bind-value="userName" class="w3-input w3-border-black" title="Your username" />
             </div>
             <div class="w3-row w3-margin-top">
-                <label>Username</label>
+                <label>Password</label>
                 <input type="password" @bind-value="password" class="w3-input w3-border-black" title="Your username" />
             </div>
             <div class="w3-bar w3-margin-top w3-margin-bottom">
@@ -25,10 +26,8 @@
                     <button class="w3-bar-item w3-button w3-round w3-border w3-border-black w3-hover-black w3-ripple w3-margin-bottom">Login as Guest</button>
                 }
             </div>
-
         </div>
     </div>
-    
 </div>
 
 @code{
@@ -52,6 +51,8 @@
         user.UserName = userName;
         user.password = password;
         string accesstoken = user.Login(user);
+        _accesstokenHelper.SetAccesstoken(accesstoken);
+        navigationManager.NavigateTo("/");
     }
 
     protected async Task Register_Click(){
@@ -59,8 +60,8 @@
     }
 
     protected async Task LoginGuest_Click(){
-        userName = "guest";
-        password = "guest";
-        Login_Click();
+        userName = "guest_" + Guid.NewGuid;
+        password = Guid.NewGuid().ToString();
+        await Login_Click();
     }
 }

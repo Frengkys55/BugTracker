@@ -1,4 +1,6 @@
 ﻿@inherits LayoutComponentBase
+@inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
+@inject NavigationManager _navigationManager;
 
 <HeadContent>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -91,6 +93,8 @@
 
 @code{
     protected override async Task OnInitializedAsync(){
-        
+        if(string.IsNullOrEmpty(_accesstokenHelper.accessToken)){
+            _navigationManager.NavigateTo("/Login", forceLoad: true);
+        }
     }
 }
