@@ -30,7 +30,14 @@
         string address = _configuration["BugTrackerBackendAddress"] + "/Project/GetProjects";
         try{
             var result = await new Project().GetProjects(address, _accesstokenHelper.accessToken);
-            var project = await new Project().GetProject(result.LastOrDefault().guid, _accesstokenHelper.accessToken, address);
+            List<ProjectShortModel> resultConverted = new List<ProjectShortModel>();
+
+            foreach(var item in result){
+                resultConverted.Add(item);
+            }
+
+            address = _configuration["BugTrackerBackendAddress"] + "/Project";
+            var project = await new Project().ReadProject(resultConverted[^1].guid, address, _accesstokenHelper.accessToken);
             projectName = project.Name;
             dayCreated = project.DateCreated.Day;
             monthCreated = project.DateCreated.Month.ToString();
@@ -39,7 +46,5 @@
         catch(Exception err){
             Console.WriteLine(err.Message);
         }
-
-
     }
 }
