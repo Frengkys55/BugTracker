@@ -1,0 +1,47 @@
+@page "/Register"
+@layout Pages.Layouts.LoginRegisterLayout
+@inject NavigationManager navigationManager
+@inject IConfiguration _configuration
+@inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
+@inject NavigationManager _navigationManager;
+
+<div class="w3-card w3-mobile" style="width:400px;">
+    <div class="w3-cell-row">
+        <div class="w3-cell w3-container w3-mobile">
+            <div class="w3-row w3-margin-top">
+                <label>Username</label>
+                <input type="text" @bind-value="userName" class="w3-input w3-border-black" title="Your username" />
+            </div>
+            <div class="w3-row w3-margin-top">
+                <label>Email</label>
+                <input type="email" @bind-value="password" class="w3-input w3-border-black" title="Your email" />
+            </div>
+            <div class="w3-row w3-margin-top">
+                <label>Password</label>
+                <input type="password" @bind-value="password" class="w3-input w3-border-black" title="Your password" />
+            </div>
+            <div class="w3-bar w3-margin-top w3-margin-bottom">
+                <button class="w3-bar-item w3-button w3-border w3-border-black w3-round w3-hover-black w3-ripple" @onclick="btnRegister_ClickAsync">Registerr</button>
+            </div>
+        </div>
+        <div class="w3-cell w3-cell-middle w3-container w3-mobile">
+            <div class="w3-bar-block">
+                <button class="w3-bar-item w3-button w3-round w3-border w3-border-black w3-hover-black w3-ripple w3-margin-bottom" @onclick="btnLogin_ClickAsync">Login</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+    string? userName = string.Empty;
+    string? password = string.Empty;
+    string? email = string.Empty;
+
+    protected async Task btnRegister_ClickAsync(){
+        Console.WriteLine("User registration is not possible right now");
+    }
+
+    protected async Task btnLogin_ClickAsync(){
+        _navigationManager.NavigateTo("/login");
+    }
+}

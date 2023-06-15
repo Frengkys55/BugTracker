@@ -1,3 +1,4 @@
+@using Models.Projects;
 @inject IConfiguration _configuration;
 @inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
 
@@ -25,10 +26,20 @@
     int yearCreated = 0;
 
     protected override async Task OnInitializedAsync(){
-        projectName = "Replace this placeholder text";
-        dayCreated = DateTime.Now.Day;
-        monthCreated = DateTime.Now.Month.ToString();
-        yearCreated = DateTime.Now.Year;
+
+        string address = _configuration["BugTrackerBackendAddress"] + "/Project/GetProjects";
+        try{
+            var result = await new Project().GetProjects(address, _accesstokenHelper.accessToken);
+            var project = await new Project().GetProject(result.LastOrDefault().guid, _accesstokenHelper.accessToken, address);
+            projectName = project.Name;
+            dayCreated = project.DateCreated.Day;
+            monthCreated = project.DateCreated.Month.ToString();
+            yearCreated = project.DateCreated.Year;
+        }
+        catch(Exception err){
+            Console.WriteLine(err.Message);
+        }
+
 
     }
 }
