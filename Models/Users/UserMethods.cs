@@ -10,6 +10,7 @@ public partial class User{
     /// Register new user
     /// </summary>
     /// <param name="user">Minimal user information to be registered (should be hashed already)</param>
+    /// <param name="address">Address to send the request to</param>
     public async Task<int> CreateUser(UserRegisterModel user, string address){
         Tools.APIHelper.GenericRequest request = new Tools.APIHelper.GenericRequest();
         try{
@@ -33,10 +34,6 @@ public partial class User{
 
     /// @brief Method to update user information
     public void UpdateUser(User user, string accesstoken, string address){
-        throw new NotImplementedException();
-    }
-
-    public void Authenticate(Guid usetGuid){
         throw new NotImplementedException();
     }
 }

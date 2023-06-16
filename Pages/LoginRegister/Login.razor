@@ -52,7 +52,7 @@
         user.UserName = userName;
         user.password = password;
 
-        string address = configuration["BugTrackerBackendAddress"] + "/Authentication";
+        string address = configuration["BugTrackerBackendAddress"] + "/Authentication/Login";
 
         string accesstoken = await user.Login(user, address);
         _accesstokenHelper.SetAccesstoken(accesstoken);

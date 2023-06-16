@@ -13,21 +13,24 @@ namespace Models.Authentications{
 
         }
 
+        /// <summary>
+        /// Authenticate user
+        /// </summary>
+        /// <param name="user">User's login information</param>
+        /// <param name="address">Address to send this request to</param>
+        /// <returns>User's accesstoken</returns>
         public async Task<string> Login(UserLoginModel user, string address){
-            // Hash username and password
-            string hashedUsername;
-            string hashedPassword;
-
-            var sha512 = SHA512.Create();
-            hashedUsername = Convert.ToBase64String(sha512.ComputeHash(Encoding.UTF8.GetBytes(user.UserName)));
-            hashedPassword = Convert.ToBase64String(sha512.ComputeHash(Encoding.UTF8.GetBytes(user.password)));
+            UserLoginModel hashedUser = new UserLoginModel(){
+                UserName = new Tools.Misc.Hash().SHA512(user.UserName),
+                password = new Tools.Misc.Hash().SHA512(user.password)
+            };
 
             // Send user login information and get accesstoken
             try{
-                var result = await new Tools.APIHelper.GenericRequest().Send2<UserLoginModel>(Tools.APIHelper.SendMethod.POST, address, user);
+                var result = await new Tools.APIHelper.GenericRequest().Send2<UserLoginModel>(Tools.APIHelper.SendMethod.POST, address, hashedUser);
             }
-            catch(Exception){
-                throw;
+            catch(Exception err){
+                Console.WriteLine(err.Message);
             }
 
             return "58d18562-5ed6-4da2-95db-777ab7dd422a";
@@ -36,9 +39,20 @@ namespace Models.Authentications{
             throw new NotImplementedException();
         }
         
-        public bool Logout(string accesstoken){
-            _accesstokenHelper.SetAccesstoken(string.Empty);
-            return true;
+        public async Task<bool> Logout(string accesstoken, string address){
+            List<KeyValuePair<string, string>> headers = new List<KeyValuePair<string, string>>();
+            headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
+
+            try{
+                var result = await new Tools.APIHelper.GenericRequest().Send(Tools.APIHelper.SendMethod.GET, address, headers);
+                _accesstokenHelper.SetAccesstoken(string.Empty);
+                return true;
+            }
+            catch(Exception err){
+                Console.WriteLine(err.Message);
+                return false;
+            }
+
         }
     }
 }
