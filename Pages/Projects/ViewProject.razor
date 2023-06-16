@@ -14,7 +14,7 @@
                 <h1 class="w3-container">@project.Name</h1>
                 <div class="w3-bar">
                     <span class="w3-bar-item w3-text-grey">id: @id.ToString()</span>
-                    <a href="/Project/EditProject?id=@id.ToString()" class="w3-bar-item w3-button w3-transparent w3-hover-black w3-border w3-border-black w3-round w3-ripple w3-right">Edit</a>
+                    <button @onclick="() => {btnEditTicket(project.Guid);}" class="w3-bar-item w3-button w3-transparent w3-hover-black w3-border w3-border-black w3-round w3-ripple w3-right">Edit</button>
                 </div>
             </header>
             <div class="w3-container w3-margin-top">
@@ -89,7 +89,7 @@
     bool hasProblem = false;
     int statusCode {get; set;}
     
-    string problemMessage {get; set;}
+    string? problemMessage {get; set;}
 
     int ticketNumber = 0;
     string dateCreated = DateTime.Now.Date.ToString();
@@ -123,7 +123,11 @@
         statusCode = 0;
     }
 
-    protected async Task OnTicketLoadingComplete(int i){
+    protected void OnTicketLoadingComplete(int i){
         ticketNumber = i;
+    }
+
+    protected void btnEditTicket(Guid projectGuid){
+        navManager.NavigateTo("/Projects/Edit/" + projectGuid);
     }
 }

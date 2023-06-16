@@ -13,7 +13,7 @@
         type="button"
         class="w3-bar-item w3-button w3-transparent w3-hover-black w3-round w3-border w3-border-dark-grey w3-margin-top"
         Title="Mark this ticket as solved"
-        @onclick="async () => { await OnMarkTicketComplete_ClickAsync(); }">
+        @onclick="OnMarkTicketComplete_Click">
         <span class="material-symbols-sharp" title="Mark this ticket as complete">check</span>
     </button>
     <button
@@ -30,7 +30,7 @@
         Title="Are you sure about this?"
         Message="After this you will not able to recover it later."
         OnConfirm="@DeleteTicket_ClickAsync"
-        OnCancel="@CancelDeleteTicket_ClickAsync" />
+        OnCancel="@CancelDeleteTicket_Click" />
 }
 
 @code{
@@ -65,7 +65,7 @@
     /// Mark a ticket complete and report to parent component that ticket marking has been carried out.
     /// </summary>
     /// <returns></returns>
-    protected async Task OnMarkTicketComplete_ClickAsync(){
+    protected void OnMarkTicketComplete_Click(){
         try{
             ticketMarkedComplete = true;
         }
@@ -82,7 +82,7 @@
     /// Will be called when requested to delete a ticket
     /// </summary>
     /// <returns></returns>
-    protected async Task RequestDeleteTicket_ClickAsync(){
+    protected void RequestDeleteTicket_ClickAsync(){
         requestDelete = true;
     }
 
@@ -110,11 +110,7 @@
     /// Cancel delete ticket
     /// </summary>
     /// <returns></returns>
-    protected async Task CancelDeleteTicket_ClickAsync(){
+    protected void CancelDeleteTicket_Click(){
         requestDelete = false;
-    }
-
-    protected override async Task OnInitializedAsync(){
-        Console.WriteLine(Guid);
     }
 }

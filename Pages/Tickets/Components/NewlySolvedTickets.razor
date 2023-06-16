@@ -1,15 +1,23 @@
 @using Models.Tickets;
-@inject Tools.Misc.AccessTokenHelper AccessTokenHelper;
+@inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
+@inject IConfiguration _configuration;
 
 <ul class="w3-ul">
     @foreach(var ticket in tickets){
-        <a href="/Tickets/ViewTicket?id=@ticket.Key" style="text-decoration:none;"><li class="w3-hover-black w3-ripple">@ticket.Value</li></a>
+        <a href="/Tickets/ViewTicket?id=@ticket.Guid" style="text-decoration:none;"><li class="w3-hover-black w3-ripple">@ticket.Name</li></a>
     }
 </ul>
 
 @code{
-    List<KeyValuePair<Guid, string>> tickets = new ();
+    List<TicketShortModel> tickets = new ();
     protected override async Task OnInitializedAsync(){
-        throw new NotImplementedException("Waiting for reimplementation");
+        string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/SolvedTickets";
+        try{
+            var result = await new Ticket().GetSolvedTickets(_accesstokenHelper.accessToken, address);
+            tickets = result.ToList();
+        }
+        catch(Exception){
+            throw;
+        }
     }
 }

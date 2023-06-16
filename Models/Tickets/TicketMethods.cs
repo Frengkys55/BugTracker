@@ -122,6 +122,24 @@ public partial class Ticket{
         }
     }
 
+    public async Task<ICollection<TicketShortModel>> GetSolvedTickets(string accesstoken, string address){
+        if(string.IsNullOrEmpty(accesstoken) || string.IsNullOrEmpty(address)){
+            throw new ArgumentException("Are you kidding me...");
+        }
+
+        List<KeyValuePair<string, string>> headers = new List<KeyValuePair<string, string>>();
+        headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
+
+        try{
+            var result = await new Tools.APIHelper.GenericRequest().Send2<TicketShortModel>(Tools.APIHelper.SendMethod.GET, address, null, headers);
+            return new Tools.Misc.JsonConverter<List<TicketShortModel>>().ReadString(await result.Content.ReadAsStringAsync());
+        }
+        catch(Exception err){
+            throw;
+        }
+
+    }
+
     #endregion Ticket reading
 
     /// <summary>

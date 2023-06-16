@@ -22,7 +22,7 @@ namespace Tools.APIHelper{
                     else
                         return -1;
                 }
-                catch(Exception err){
+                catch(Exception){
                     throw;
                 }
             }
@@ -33,17 +33,19 @@ namespace Tools.APIHelper{
         /// </summary>
         /// <param name="method">Method to use (GET, POST, etc)</param>
         /// <param name="address">Address to send the request</param>
-        /// <param name="data">Data to include in the request body</param>
+        /// <param name="data">Data to include in the request body (set to null if there is no data to be included in the body)</param>
         /// <param name="headers">Additional headers to include in the request</param>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Your object type to send</typeparam>
         /// <returns></returns>
         public async Task<HttpResponseMessage> Send2<T>(SendMethod method, string address, T data, ICollection<KeyValuePair<string, string>> headers = null){
             using(var client = new HttpClient()){
                 HttpRequestMessage request = new HttpRequestMessage(new HttpMethod(method.ToString()), address);
 
-                string serializedData = new Tools.Misc.JsonSerializer<T>().Serialize(data);
-                
-                request.Content = new StringContent(serializedData, new System.Net.Http.Headers.MediaTypeHeaderValue("application/json"));
+                if(data != null){
+                    string serializedData = new Tools.Misc.JsonSerializer<T>().Serialize(data);
+                    
+                    request.Content = new StringContent(serializedData, new System.Net.Http.Headers.MediaTypeHeaderValue("application/json"));
+                }
 
                 if(headers != null){
                     foreach(var header in headers){
