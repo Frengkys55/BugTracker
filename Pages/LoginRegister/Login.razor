@@ -1,5 +1,6 @@
 @page "/Login"
 @layout Pages.Layouts.LoginRegisterLayout
+@using Models.Authentications;
 @inject NavigationManager navigationManager
 @inject IConfiguration configuration
 @inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
@@ -47,7 +48,7 @@
     }
 
     protected async Task Login_ClickAsync(){
-        Models.UserLoginModel user = new ();
+        UserLoginModel user = new ();
         user.UserName = userName;
         user.password = password;
 

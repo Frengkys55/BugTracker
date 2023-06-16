@@ -1,8 +1,9 @@
 using System.Security.Cryptography;
 using System.Text;
 using Tools.Misc;
+using Models.Authentications;
 
-namespace Models{
+namespace Models.Authentications{
     public partial class UserLoginModel{
         private readonly AccessTokenHelper _accesstokenHelper;
         public UserLoginModel(AccessTokenHelper _accesstokenHelper){

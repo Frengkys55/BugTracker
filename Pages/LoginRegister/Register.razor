@@ -1,7 +1,9 @@
 @page "/Register"
 @layout Pages.Layouts.LoginRegisterLayout
-@inject NavigationManager navigationManager
-@inject IConfiguration _configuration
+@using Models.Authentications;
+@using Models.Users;
+@inject NavigationManager navigationManager;
+@inject IConfiguration _configuration;
 @inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
 @inject NavigationManager _navigationManager;
 
@@ -21,7 +23,7 @@
                 <input type="password" @bind-value="password" class="w3-input w3-border-black" title="Your password" />
             </div>
             <div class="w3-bar w3-margin-top w3-margin-bottom">
-                <button class="w3-bar-item w3-button w3-border w3-border-black w3-round w3-hover-black w3-ripple" @onclick="btnRegister_ClickAsync">Registerr</button>
+                <button class="w3-bar-item w3-button w3-border w3-border-black w3-round w3-hover-black w3-ripple" @onclick="btnRegister_ClickAsync">Register</button>
             </div>
         </div>
         <div class="w3-cell w3-cell-middle w3-container w3-mobile">
@@ -37,8 +39,31 @@
     string? password = string.Empty;
     string? email = string.Empty;
 
+    bool hasError = false;
+
     protected async Task btnRegister_ClickAsync(){
-        Console.WriteLine("User registration is not possible right now");
+        UserRegisterModel user = new UserRegisterModel(){
+            UserName = new Tools.Misc.Hash().SHA512(userName),
+            Password = new Tools.Misc.Hash().SHA512(password),
+            Email = new Tools.Misc.Hash().SHA512(email)
+        };
+
+        string address = _configuration["BugTrackerBackendAddress"] + "/Authentication/Register";
+        try{
+            var result = await new User().CreateUser(user, address);
+
+            Console.WriteLine("btnRegister triggered");
+            if(result == 1){
+                _navigationManager.NavigateTo("/Login");
+            }
+            else{
+                hasError = true;
+            }
+
+        }
+        catch(Exception err){
+            Console.WriteLine(err.Message);
+        }
     }
 
     protected async Task btnLogin_ClickAsync(){
