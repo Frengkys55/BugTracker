@@ -89,7 +89,6 @@ public partial class Ticket{
     /// <returns></returns>
     public async Task<Ticket> GetTicketDetail(Guid ticketGuid, string accesstoken, string address){
         Tools.APIHelper.GenericGet<Ticket> genericGet = new Tools.APIHelper.GenericGet<Ticket>(address);
-        Console.WriteLine(accesstoken);
         List<KeyValuePair<string, string>> headers = new();
         headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
 
