@@ -4,6 +4,7 @@
 @inject NavigationManager navigationManager
 @inject IConfiguration configuration
 @inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
+@inject Tools.Misc.LocalStorageHelper _storageHelper;
 
 <div class="w3-card w3-mobile" style="width:400px;">
     <div class="w3-cell-row">
@@ -45,6 +46,7 @@
         else{
             enableGuest = false;
         }
+        Console.WriteLine("From Login.razor: " + _accesstokenHelper.accessToken);
     }
 
     protected async Task Login_ClickAsync(){

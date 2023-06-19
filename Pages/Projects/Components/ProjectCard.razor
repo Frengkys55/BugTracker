@@ -10,6 +10,14 @@
             @if(Tools.Misc.UriValidator.IsValidURL(Icon)){
                 <img class="w3-display-middle w3-image" style="height:50%;" src="@Icon" />
             }
+            else{
+                @if(Icon.ToLower().Contains("n/a") && Background.ToLower().Contains("n/a")){
+                    <div class="w3-display-middle w3-center">
+                        <span class="material-symbols-sharp w3-xxxlarge">panorama</span><br />
+                        <span>No image found</span>
+                    </div>
+                }
+            }
         </div>
         <div id="pnlProjectOverviewContainer_@Guid" class="w3-display-bottomleft w3-block w3-theme-d5 backdropBlur" style="height:300px; border-radius:0px 0px 4px 4px;">
             <header id="headProject2Title" class="w3-container">
