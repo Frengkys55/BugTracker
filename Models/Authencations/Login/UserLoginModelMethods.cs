@@ -28,12 +28,12 @@ namespace Models.Authentications{
             // Send user login information and get accesstoken
             try{
                 var result = await new Tools.APIHelper.GenericRequest().Send2<UserLoginModel>(Tools.APIHelper.SendMethod.POST, address, hashedUser);
+                return await result.Content.ReadAsStringAsync();
             }
             catch(Exception err){
                 Console.WriteLine(err.Message);
+                return string.Empty;
             }
-
-            return "58d18562-5ed6-4da2-95db-777ab7dd422a";
         }
         public bool CheckLogin(string accesstoken){
             throw new NotImplementedException();

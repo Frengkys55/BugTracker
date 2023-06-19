@@ -146,7 +146,8 @@
             if(string.IsNullOrEmpty(newProject.IconUrl))
                 newProject.IconUrl = "N/A";
 
-            newProject.AccessToken = new Tools.Misc.AccessTokenHelper().accessToken;
+            newProject.AccessToken = AccessTokenHelper.accessToken;
+            newProject.ProjectStatus = "In Development";
             HttpResponseMessage response = await newProject.CreateProject(newProject, targetAddress);
 
             ResponseMessage message = new Tools.Misc.JsonConverter<ResponseMessage>().ReadString(await response.Content.ReadAsStringAsync());

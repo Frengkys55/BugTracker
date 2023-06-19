@@ -54,9 +54,20 @@
 
         string address = configuration["BugTrackerBackendAddress"] + "/Authentication/Login";
 
-        string accesstoken = await user.Login(user, address);
-        _accesstokenHelper.SetAccesstoken(accesstoken);
-        navigationManager.NavigateTo("/");
+        string accesstoken = string.Empty;
+        
+        try{
+            var result = await user.Login(user, address);
+            Console.WriteLine(result);
+            if(result.ToLower().Contains("invalid"))
+                throw new InvalidDataException(result);
+
+            _accesstokenHelper.SetAccesstoken(result);
+            navigationManager.NavigateTo("/");
+        }
+        catch(Exception err){
+            Console.WriteLine(err.Message);
+        }
     }
 
     protected async Task Register_ClickAsync(){
