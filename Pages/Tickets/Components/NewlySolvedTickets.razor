@@ -2,22 +2,44 @@
 @inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
 @inject IConfiguration _configuration;
 
-<ul class="w3-ul">
-    @foreach(var ticket in tickets){
-        <a href="/Tickets/ViewTicket?id=@ticket.Guid" style="text-decoration:none;"><li class="w3-hover-black w3-ripple textOverflow">@ticket.Name</li></a>
-    }
-</ul>
+
+@if(ticketLoadingStatus == 1){
+    <ul class="w3-ul">
+        @foreach(var ticket in tickets){
+            <a href="/Tickets/ViewTicket?id=@ticket.Guid" style="text-decoration:none;"><li class="w3-hover-black w3-ripple textOverflow">@ticket.Name</li></a>
+        }
+    </ul>
+}
+else if(ticketLoadingStatus == 2){
+    <BugTracker.Components.Misc.NoContent.NoContent ImageUrl="" Message="No ticket found" />
+}
+else if(ticketLoadingStatus == -1){
+    <BugTracker.Components.BugTracker.Components.Misc.Errors.StandardError />
+}
+else{
+    <BugTracker.Components.Misc.Loading.IsLoading Title="Still loading" />
+}
+
 
 @code{
+
+    int ticketLoadingStatus = 0; // 0 = loading | 1 = loaded | 2 = loaded but no tickets | -1 = has problem
+    string message = string.Empty;
+
+
     List<TicketShortModel> tickets = new ();
     protected override async Task OnInitializedAsync(){
         string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/SolvedTickets";
         try{
             var result = await new Ticket().GetSolvedTickets(_accesstokenHelper.accessToken, address);
+            
+            ticketLoadingStatus = (result.Count > 0) ? 1 : 2;
+
             tickets = result.ToList();
         }
-        catch(Exception){
-            throw;
+        catch(Exception err){
+            ticketLoadingStatus = -1;
+            message = err.Message;
         }
     }
 }

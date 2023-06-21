@@ -168,7 +168,18 @@ public partial class Project{
     }
 
 
-    public async Task GetProjectWithTheMostTicket(){
-        throw new NotImplementedException();
+    public async Task<Projects.ProjectWithTicketCount> GetProjectWithTheMostTicket(string accesstoken, string address){
+        List<KeyValuePair<string, string>> headers = new List<KeyValuePair<string, string>>();
+        headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
+
+        var request = new Tools.APIHelper.GenericGet<ProjectWithTicketCount>(address);
+
+        try{
+            var result = await request.Send(headers);
+            return result;
+        }
+        catch(Exception){
+            throw;            
+        }
     }
 }
