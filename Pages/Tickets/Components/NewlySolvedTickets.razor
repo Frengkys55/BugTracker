@@ -14,10 +14,12 @@ else if(ticketLoadingStatus == 2){
     <BugTracker.Components.Misc.NoContent.NoContent ImageUrl="" Message="No ticket found" />
 }
 else if(ticketLoadingStatus == -1){
-    <BugTracker.Components.BugTracker.Components.Misc.Errors.StandardError />
+    <BugTracker.Components.Misc.Errors.StandardErrorSmall Message="@message" />
 }
 else{
-    <BugTracker.Components.Misc.Loading.IsLoading Title="Still loading" />
+    <div style="width:100%; height:100%;">
+        <BugTracker.Components.Misc.Loading.IsLoading Title="Still loading" />
+    </div>
 }
 
 
@@ -33,9 +35,9 @@ else{
         try{
             var result = await new Ticket().GetSolvedTickets(_accesstokenHelper.accessToken, address);
             
-            ticketLoadingStatus = (result.Count > 0) ? 1 : 2;
 
             tickets = result.ToList();
+            ticketLoadingStatus = (tickets.Count == 0) ? 2 : 1;
         }
         catch(Exception err){
             ticketLoadingStatus = -1;

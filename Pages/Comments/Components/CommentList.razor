@@ -1,39 +1,57 @@
 @using Microsoft.AspNetCore.Components.Forms;
 @using Models.Comments;
+@using BugTracker.Components.Misc.Errors;
 @inject IConfiguration _configuration;
 @inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
 
 <div style="height:100%">
     <div class="w3-border w3-border-black w3-round" style="height:100%;">
-        <div class="w3-container" style="height: calc( 100% - 39.5px ); overflow-x:hidden; overflow-y: scroll;">
-            <div class="w3-bar-block">
-                @if(comments.Count > 0){
-                    @foreach(var comment in comments){
-                        <CommentItem Comment="@comment" />
+        @if(hasError){
+            <div class="w3-display-container" style="height:100%; width:100%;">
+                <div class="w3-left w3-block">
+                    <StandardError Title="Error loading component" Message="@errorMessage" />
+                </div>
+            </div>
+        }
+        else{
+            <div class="w3-container" style="height: calc( 100% - 39.5px ); overflow-x:hidden; overflow-y: scroll;">
+                <div class="w3-bar-block">
+                    @if(comments.Count > 0){
+                        @foreach(var comment in comments){
+                            <CommentItem Comment="@comment" />
+                        }
                     }
-                }
-            </div>
-            
-        </div>
-        <div class="w3-border-top w3-border-black">
-            <div class="w3-row">
-                <div class="w3-col w3-right" style="width:56px;">
-                    <button id="btnSendComment" @onclick="btnSendComment" class="w3-block w3-button w3-transparent w3-hover-black w3-ripple w3-right" style="height:39.5px;" title="Add comment"><span class="material-symbols-sharp">send</span></button>
                 </div>
-                <div class="w3-rest">
-                    <input type="text" class="w3-input w3-border-black" placeholder="Add comment" style="border-radius:0px 0px 0px 4px;" @bind-value="commentText" />
+                
+            </div>
+            <div class="w3-border-top w3-border-black">
+                <div class="w3-row">
+                    <div class="w3-col w3-right" style="width:56px;">
+                        <button id="btnSendComment" @onclick="btnSendComment" class="w3-block w3-button w3-transparent w3-hover-black w3-ripple w3-right" style="height:39.5px;" title="Add comment"><span class="material-symbols-sharp">send</span></button>
+                    </div>
+                    <div class="w3-rest">
+                        <input type="text" class="w3-input w3-border-black" placeholder="Add comment" style="border-radius:0px 0px 0px 4px;" @bind-value="commentText" />
+                    </div>
                 </div>
             </div>
-        </div>
+        }
+        
     </div>
 </div>
 
 @code{
+    /// <summary>
+    /// Ticket Guid
+    /// </summary>
+    /// <value></value>
     [Parameter]
     public Guid Guid {set; get;}
     
     string commentText = string.Empty;
     List<Models.Comments.Comment> comments = new List<Models.Comments.Comment>();
+
+    bool hasError = false;
+    string errorMessage = string.Empty;
 
     protected async Task btnSendComment(){
         if(commentText != string.Empty){
@@ -51,6 +69,12 @@
 
     protected async Task LoadAvailableComments(Guid ticketGuid){
         string address = _configuration["BugTrackerBackendAddress"] + "/Comment";
-        var result = await new Comment().GetComments(Guid, address, _accesstokenHelper.accessToken);
+        try{
+            var result = await new Comment().GetComments(Guid, address, _accesstokenHelper.accessToken);
+        }
+        catch(Exception err){
+            hasError = true;
+            errorMessage = err.Message;            
+        }
     }
 }

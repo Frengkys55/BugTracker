@@ -6,7 +6,7 @@
     <BugTracker.Components.Misc.NoContent.NoContent ImageUrl="@errorImage" Title="There are no high priority tickets found" />
 }
 else{
-    @if(tickets.Count > 0){
+    @if(tickets!= null && tickets.Count > 0){
         <ul class="w3-ul">
             @foreach(var ticket in tickets){
                 <a href="/Tickets/ViewTicket?id=@ticket.Guid" style="text-decoration:none;"><li class="w3-hover-black w3-ripple textOverflow">@ticket.Name</li></a>

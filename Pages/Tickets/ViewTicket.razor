@@ -55,14 +55,14 @@
                 <h1>Comments</h1>
             </header>
             <div class="w3-container" style="height:600px;">
-                <BugTracker.Pages.Comments.Components.CommentList />
+                <BugTracker.Pages.Comments.Components.CommentList Guid="@id" />
             </div>
         </div>
     </div>
 </div>
 
 @code{
-    Models.Tickets.Ticket ticket = new ();
+    Models.Tickets.Ticket ticket = new Ticket();
 
     [Parameter]
     [SupplyParameterFromQuery]
