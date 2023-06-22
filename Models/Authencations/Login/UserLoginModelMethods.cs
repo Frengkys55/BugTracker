@@ -52,7 +52,16 @@ namespace Models.Authentications{
                 Console.WriteLine(err.Message);
                 return false;
             }
-
+        }
+    
+        public async Task<string> LoginAsGuest(string address){
+            try{
+                var result = await new Tools.APIHelper.GenericRequest().Send2<object>(Tools.APIHelper.SendMethod.GET, address);
+                return await result.Content.ReadAsStringAsync();
+            }
+            catch(Exception){
+                throw;
+            }
         }
     }
 }

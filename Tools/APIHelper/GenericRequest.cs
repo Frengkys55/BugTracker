@@ -37,7 +37,7 @@ namespace Tools.APIHelper{
         /// <param name="headers">Additional headers to include in the request</param>
         /// <typeparam name="T">Your object type to send</typeparam>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> Send2<T>(SendMethod method, string address, T data, ICollection<KeyValuePair<string, string>> headers = null){
+        public async Task<HttpResponseMessage> Send2<T>(SendMethod method, string address, T data = default, ICollection<KeyValuePair<string, string>> headers = null){
             using(var client = new HttpClient()){
                 HttpRequestMessage request = new HttpRequestMessage(new HttpMethod(method.ToString()), address);
 

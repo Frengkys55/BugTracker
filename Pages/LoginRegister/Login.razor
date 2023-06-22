@@ -1,8 +1,8 @@
 @page "/Login"
 @layout Pages.Layouts.LoginRegisterLayout
 @using Models.Authentications;
-@inject NavigationManager navigationManager
-@inject IConfiguration configuration
+@inject NavigationManager navigationManager;
+@inject IConfiguration configuration;
 @inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
 @inject Tools.Misc.LocalStorageHelper _storageHelper;
 
@@ -77,8 +77,17 @@
     }
 
     protected async Task LoginGuest_ClickAsync(){
-        userName = "guest_" + Guid.NewGuid;
-        password = Guid.NewGuid().ToString();
-        await Login_ClickAsync();
+        
+        string address = configuration["BugTrackerBackendAddress"] + "/Authentication/RegisterGuest";
+        UserLoginModel guest = new UserLoginModel();
+        try{
+            var result = await guest.LoginAsGuest(address);
+            _accesstokenHelper.SetAccesstoken(result);
+            navigationManager.NavigateTo("/");
+        }
+        catch(Exception err){
+            Console.WriteLine(err.Message);
+        }
+
     }
 }
