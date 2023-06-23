@@ -28,19 +28,53 @@
 
 
 @code {
+
+    /// <summary>
+    /// Title of the modal
+    /// </summary>
+    /// <value></value>
     [Parameter]
     public string? Title { set; get; } = "Confirm";
+
+    /// <summary>
+    /// The main text of the modal
+    /// </summary>
+    /// <value></value>
     [Parameter]
     public string? Message { set; get; }
+
+    /// <summary>
+    /// Not used right now
+    /// </summary>
+    /// <value></value>
     [Parameter]
     public string? Guid { set; get; }
+
+    /// <summary>
+    /// Not used right now
+    /// </summary>
+    /// <value></value>
     [Parameter]
     public string? Name { set; get; }
+
+    /// <summary>
+    /// Not used right now
+    /// </summary>
+    /// <value></value>
     [Parameter]
     public string? Image { set; get; }
 
+    /// <summary>
+    /// Method to call when user confimed the action
+    /// </summary>
+    /// <value></value>
     [Parameter]
     public EventCallback OnConfirm { set; get; }
+
+    /// <summary>
+    /// Method to call when user canceled the action
+    /// </summary>
+    /// <value></value>
     [Parameter]
     public EventCallback OnCancel { set; get; }
 

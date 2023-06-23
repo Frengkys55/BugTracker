@@ -18,7 +18,7 @@
                 <div class="w3-bar-block">
                     @if(comments.Count > 0){
                         @foreach(var comment in comments){
-                            <CommentItem Comment="@comment" />
+                            <CommentItem Comment="@comment" OnDeleteConfirmed="@OnCommentDeleted" />
                         }
                     }
                 </div>
@@ -65,10 +65,16 @@
             // Send comment to server
             try{
                 var result = await comment.AddComment(comment, address, _accesstokenHelper.accessToken);
-                Console.WriteLine(result);
+                if(result == 1)
+                    LoadAvailableComments(Guid);
+                else{
+                    hasError = true;
+                    errorMessage = "Unable tp load tickets";
+                }
             }
             catch(Exception err){
-                Console.WriteLine(err.Message);
+                hasError = true;
+                errorMessage = err.Message;
             }
 
             comments.Add(comment);
@@ -91,5 +97,9 @@
             hasError = true;
             errorMessage = err.Message;            
         }
+    }
+
+    protected async Task OnCommentDeleted(){
+        await LoadAvailableComments(Guid);
     }
 }
