@@ -46,7 +46,7 @@
     /// <value></value>
     [Parameter]
     public Guid Guid {set; get;}
-    
+
     string commentText = string.Empty;
     List<Models.Comments.Comment> comments = new List<Models.Comments.Comment>();
 
@@ -55,9 +55,22 @@
 
     protected async Task btnSendComment(){
         if(commentText != string.Empty){
-            Models.Comments.Comment comment = new Models.Comments.Comment();
+            string address = _configuration["BugTrackerBackendAddress"] + "/Comment?id=" + Guid.ToString() ;
+            Models.Comments.Comment comment = new Models.Comments.Comment(); 
             comment.CommentText = commentText;
             comment.DateCreated = DateTime.Now;
+            comment.guid = Guid.NewGuid();
+            comment.TicketGuid = this.Guid;
+
+            // Send comment to server
+            try{
+                var result = await comment.AddComment(comment, address, _accesstokenHelper.accessToken);
+                Console.WriteLine(result);
+            }
+            catch(Exception err){
+                Console.WriteLine(err.Message);
+            }
+
             comments.Add(comment);
             commentText = string.Empty;
         }
@@ -68,6 +81,8 @@
     }
 
     protected async Task LoadAvailableComments(Guid ticketGuid){
+
+        return;
         string address = _configuration["BugTrackerBackendAddress"] + "/Comment";
         try{
             var result = await new Comment().GetComments(Guid, address, _accesstokenHelper.accessToken);

@@ -179,6 +179,13 @@ public partial class Ticket{
         }
     }
 
+    /// <summary>
+    /// Add ticket to project
+    /// </summary>
+    /// <param name="ticket">Ticket to add</param>
+    /// <param name="accesstoken">User's access token</param>
+    /// <param name="address">Address to send the request to</param>
+    /// <returns></returns>
     public async Task AddTicket(Ticket ticket, string accesstoken, string address){
 
         List<KeyValuePair<string, string>> headers = new List<KeyValuePair<string, string>>();
@@ -193,6 +200,21 @@ public partial class Ticket{
         catch(Exception){
             throw;
         }
+    }
+
+    /// <summary>
+    /// Mark ticket as solved
+    /// </summary>
+    /// <param name="TicketGuid">Ticket's Guid to mark</param>
+    /// <param name="accesstoken">User's access token</param>
+    /// <param name="address">Address to send the request to</param>
+    /// <returns>Return TRUE if executed succesfully and FALSE when not.</returns>
+    public async Task<bool> MarkTicketComplete(Guid TicketGuid, string accesstoken, string address){
+        List<KeyValuePair<string, string>> headers = new List<KeyValuePair<string, string>>();
+        headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
+
+        var result = await new Tools.APIHelper.GenericRequest().Send2<object>(Tools.APIHelper.SendMethod.GET, address, null, headers);
+        throw new NotImplementedException();
     }
 
 }
