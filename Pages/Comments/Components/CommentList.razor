@@ -82,10 +82,10 @@
 
     protected async Task LoadAvailableComments(Guid ticketGuid){
 
-        return;
-        string address = _configuration["BugTrackerBackendAddress"] + "/Comment";
+        string address = _configuration["BugTrackerBackendAddress"] + "/Comment?id=" + Guid.ToString();
         try{
             var result = await new Comment().GetComments(Guid, address, _accesstokenHelper.accessToken);
+            comments = result.ToList();
         }
         catch(Exception err){
             hasError = true;
