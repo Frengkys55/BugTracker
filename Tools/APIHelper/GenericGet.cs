@@ -36,7 +36,7 @@ namespace Tools.APIHelper{
                     if(message.StatusCode == HttpStatusCode.BadRequest) throw new Exception("You've got Bad Request");
                     return new Tools.Misc.JsonConverter<T>().ReadString(await message.Content.ReadAsStringAsync());
                 }
-                catch(Exception err){
+                catch(Exception){
                     throw;
                 }
             }

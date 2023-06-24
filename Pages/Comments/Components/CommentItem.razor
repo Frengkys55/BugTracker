@@ -3,26 +3,32 @@
 @inject IConfiguration _configuration;
 
 <div class="w3-bar-item w3-card w3-round w3-margin-top">
-    <div class="w3-row">
-        <div class="w3-col w3-right w3-mobile w3-text-gray" style="width:100px;">
-            <div class="w3-tiny">
-                <span class="">
-                    @Tools.Misc.DateTimeToStringConverter.Convert(Comment.DateCreated)
-                </span>
+    @if(!hasError){
+        <div class="w3-row">
+            <div class="w3-col w3-right w3-mobile w3-text-gray" style="width:100px;">
+                <div class="w3-tiny">
+                    <span class="">
+                        @Tools.Misc.DateTimeToStringConverter.Convert(Comment.DateCreated)
+                    </span>
+                </div>
+                <div>
+                    <span class="">
+                        @Comment.DateCreated.ToLocalTime().ToShortTimeString()
+                    </span>
+                </div>
+                <div class="w3-margin-top">
+                    <button type="button" class="w3-block w3-button w3-hover-red w3-ripple w3-round w3-border w3-border-black w3-hover-border-red" @onclick="DeleteTicket_Click"><span class="material-symbols-sharp">delete</span></button>
+                </div>
             </div>
-            <div>
-                <span class="">
-                    @Comment.DateCreated.ToLocalTime().ToShortTimeString()
-                </span>
-            </div>
-            <div class="w3-margin-top">
-                <button type="button" class="w3-block w3-button w3-hover-red w3-ripple w3-round w3-border w3-border-black w3-hover-border-red" @onclick="DeleteTicket_Click"><span class="material-symbols-sharp">delete</span></button>
+            <div class="w3-rest w3-mobile">
+                <span>@Comment.CommentText</span>
             </div>
         </div>
-        <div class="w3-rest w3-mobile">
-            <span>@Comment.CommentText</span>
-        </div>
-    </div>
+    }
+    else{
+        <BugTracker.Components.Misc.Errors.StandardErrorSmall Message="@errorMessage" />
+    }
+    
 
 </div>
     @if(requestDelete){
@@ -34,6 +40,9 @@
     [Parameter]
     public Comment? Comment {set; get;}
     bool requestDelete = false;
+
+    bool hasError = false;
+    string errorMessage = string.Empty;
 
     [Parameter]
     public EventCallback<Guid> OnDeleteConfirmed {set; get;}
@@ -59,7 +68,8 @@
             requestDelete = false;
         }
         catch(Exception err){
-            Console.WriteLine(err.Message);
+            hasError = true;
+            errorMessage = err.Message;
         }
     }
 

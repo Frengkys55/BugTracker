@@ -1,3 +1,31 @@
+@using ChartJs.Blazor;
+@using ChartJs.Blazor.LineChart;
+@using Models.Tickets;
+@inject IConfiguration _configuration;
+@inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
+
 <div style="height:100%; width:100%;">
-    <BugTracker.Components.Misc.Loading.IsLoading Message="Well, this component is not finished yet. Instead, why not watch Parerun dance together?" />
+    <Chart Config="@config" Height="200" Width="200" />
 </div>
+
+@code{
+    LineConfig config = new LineConfig{
+        Options = new LineOptions{
+            Responsive = true,
+            Title = new OptionsTitle{
+                Text = "Test"
+            },
+            ShowLines = true,
+            MaintainAspectRatio = false
+        },
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        LineDataset<int> dataset = new ChartJs.Blazor.LineChart.LineDataset<int>();
+        for(int i = 0; i < 100; i++){
+            config.Data.Labels.Add(i.ToString());
+        }
+
+    }    
+}

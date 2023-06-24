@@ -153,7 +153,7 @@
             Console.WriteLine(err.Message);
         }
     }
-    public async Task TicketDelete_ClickAsync(){
+    public void TicketDelete_ClickAsync(){
         isDeleteRequested = true;
     }
 
@@ -168,7 +168,7 @@
         }
     }
 
-    public async Task CancelTicketDelete_ClickAsync(){
+    public void CancelTicketDelete_ClickAsync(){
         isDeleteRequested = false;
     }
 }

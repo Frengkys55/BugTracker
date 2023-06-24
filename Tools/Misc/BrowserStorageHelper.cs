@@ -9,7 +9,7 @@ namespace Tools.Misc{
             this._storageService = storageService;
             this._accesstokenHelper = accesstokenHelper;
             _accesstokenHelper.AccesstokenChangedEventHanler += AccesstokenChanged;
-            TryGetAccesstoken();
+            Task result = TryGetAccesstoken();
         }
 
         private async Task TryGetAccesstoken(){

@@ -209,11 +209,16 @@ public partial class Ticket{
     /// <param name="accesstoken">User's access token</param>
     /// <param name="address">Address to send the request to</param>
     /// <returns>Return TRUE if executed succesfully and FALSE when not.</returns>
-    public async Task<bool> MarkTicketComplete(Guid TicketGuid, string accesstoken, string address){
+    public async Task<bool> MarkTicketSolved(Guid TicketGuid, string accesstoken, string address){
         List<KeyValuePair<string, string>> headers = new List<KeyValuePair<string, string>>();
         headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
-
-        var result = await new Tools.APIHelper.GenericRequest().Send2<object>(Tools.APIHelper.SendMethod.GET, address, null, headers);
+        try{
+            var result = await new Tools.APIHelper.GenericRequest().Send2<object>(Tools.APIHelper.SendMethod.GET, address, null, headers);
+            Console.WriteLine(await result.Content.ReadAsStringAsync());
+        }
+        catch(Exception err){
+            Console.WriteLine("From MarkTicketSolved: " + err.Message);
+        }
         throw new NotImplementedException();
     }
 

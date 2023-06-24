@@ -65,9 +65,15 @@
     /// Mark a ticket complete and report to parent component that ticket marking has been carried out.
     /// </summary>
     /// <returns></returns>
-    protected void OnMarkTicketComplete_Click(){
+    protected async Task OnMarkTicketComplete_Click(){
+        string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/MarkTicketComplete/" + Guid;
+        string accesstoken = _accesstokenHelper.accessToken;
         try{
-            ticketMarkedComplete = true;
+            var result = await new Ticket().MarkTicketSolved(System.Guid.Parse(Guid), accesstoken, address);
+            if(result)
+                ticketMarkedComplete = true;
+            else
+                ticketMarkedComplete = false;
         }
         catch(Exception){
             ticketMarkedComplete = false;

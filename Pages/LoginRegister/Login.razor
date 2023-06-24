@@ -7,32 +7,49 @@
 @inject Tools.Misc.LocalStorageHelper _storageHelper;
 
 <div class="w3-card w3-mobile" style="width:400px;">
-    <div class="w3-cell-row">
-        <div class="w3-cell w3-container w3-mobile">
-            <div class="w3-row w3-margin-top">
-                <label>Username</label>
-                <input type="text" @bind-value="userName" class="w3-input w3-border-black" title="Your username" />
+    @if(loginStatus == 0){
+        <div class="w3-cell-row">
+            <div class="w3-cell w3-container w3-mobile">
+                <div class="w3-row w3-margin-top">
+                    <label>Username</label>
+                    <input type="text" @bind-value="userName" class="w3-input w3-border-black" title="Your username" />
+                </div>
+                <div class="w3-row w3-margin-top">
+                    <label>Password</label>
+                    <input type="password" @bind-value="password" class="w3-input w3-border-black" title="Your username" />
+                </div>
+                <div class="w3-bar w3-margin-top w3-margin-bottom">
+                    <button class="w3-bar-item w3-button w3-border w3-border-black w3-round w3-hover-black w3-ripple" @onclick="Login_ClickAsync">Login</button>
+                </div>
             </div>
-            <div class="w3-row w3-margin-top">
-                <label>Password</label>
-                <input type="password" @bind-value="password" class="w3-input w3-border-black" title="Your username" />
-            </div>
-            <div class="w3-bar w3-margin-top w3-margin-bottom">
-                <button class="w3-bar-item w3-button w3-border w3-border-black w3-round w3-hover-black w3-ripple" @onclick="Login_ClickAsync">Login</button>
+            <div class="w3-cell w3-cell-middle w3-container w3-mobile">
+                <div class="w3-bar-block">
+                    <button class="w3-bar-item w3-button w3-round w3-border w3-border-black w3-hover-black w3-ripple w3-margin-bottom" @onclick="Register_ClickAsync">Register</button>
+                    @if(enableGuest){
+                        <button class="w3-bar-item w3-button w3-round w3-border w3-border-black w3-hover-black w3-ripple w3-margin-bottom" @onclick="LoginGuest_ClickAsync">Login as Guest</button>
+                    }
+                </div>
             </div>
         </div>
-        <div class="w3-cell w3-cell-middle w3-container w3-mobile">
-            <div class="w3-bar-block">
-                <button class="w3-bar-item w3-button w3-round w3-border w3-border-black w3-hover-black w3-ripple w3-margin-bottom" @onclick="Register_ClickAsync">Register</button>
-                @if(enableGuest){
-                    <button class="w3-bar-item w3-button w3-round w3-border w3-border-black w3-hover-black w3-ripple w3-margin-bottom" @onclick="LoginGuest_ClickAsync">Login as Guest</button>
-                }
-            </div>
+    }
+    else if(loginStatus == 1){
+        <BugTracker.Components.Misc.Loading.IsLoading Message="Logging in" />
+    }
+    else if(loginStatus == -1){
+        <div class="w3-container" style="">
+            <BugTracker.Components.Misc.Errors.StandardError Message="Either username or password is wrong." Title="Unable to login" />
+            <footer class="w3-bar w3-margin-top w3-margin-bottom">
+                <button class="w3-bar-item w3-button w3-transparent w3-hover-black w3-ripple w3-round w3-border w3-border-black" @onclick="LoginRetry_Click">Retry</button>
+            </footer>
         </div>
-    </div>
+    }
 </div>
 
+
+
 @code{
+    int loginStatus = 0; // -1: Invalid credential | 0: Standby | 1: Logging in
+
     string userName = string.Empty;
     string password = string.Empty;
 
@@ -46,10 +63,10 @@
         else{
             enableGuest = false;
         }
-        Console.WriteLine("From Login.razor: " + _accesstokenHelper.accessToken);
     }
 
     protected async Task Login_ClickAsync(){
+        loginStatus = 1;
         UserLoginModel user = new ();
         user.UserName = userName;
         user.password = password;
@@ -69,6 +86,7 @@
         }
         catch(Exception err){
             Console.WriteLine(err.Message);
+            loginStatus = -1;
         }
     }
 
@@ -89,5 +107,11 @@
             Console.WriteLine(err.Message);
         }
 
+    }
+
+    protected void LoginRetry_Click(){
+        loginStatus = 0;
+        userName = string.Empty;
+        password = string.Empty;
     }
 }
