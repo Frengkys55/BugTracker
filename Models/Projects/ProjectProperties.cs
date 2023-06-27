@@ -14,6 +14,11 @@ public partial class Project{
     public string? Description {set; get;}
     public DateTime DateCreated {set; get;}
     public DateTime DateModified {set; get;}
+
+    /// <summary>
+    /// Project's icon image. Use this when reading image location from server and use this to store image data as Base64String when sending to server
+    /// </summary>
+    /// <value></value>
     public string? IconUrl {set; get;}
     public string? BackgroundImageUrl {set; get;}
 

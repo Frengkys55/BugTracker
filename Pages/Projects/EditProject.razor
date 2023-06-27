@@ -39,9 +39,9 @@
                 <h1>Preview</h1>
             </header>
             <div class="w3-container">
-                <div id="pnlProjectPreview" class="w3-display-container w3-block backgroundCover w3-block" style="height:442px; background-image:url('@project.BackgroundImageUrl');">
-                    <div class="w3-display-topleft w3-block backgroundCover" style="height:calc( 100% - 300px ); background-image:url('@project.BackgroundImageUrl');">
-                        <img class="w3-display-middle w3-image" style="height:50%;" src="@project.IconUrl" />
+                <div id="pnlProjectPreview" class="w3-display-container w3-block backgroundCover w3-block" style="height:442px; background-image:url('@backgroundImage');">
+                    <div class="w3-display-topleft w3-block backgroundCover" style="height:calc( 100% - 300px ); background-image:url('@backgroundImage);">
+                        <img class="w3-display-middle w3-image" style="height:50%;" src="@iconImage" />
                     </div>
                     <div id="pnlProjectPreviewOverviewContainer" class="w3-display-bottomleft w3-block w3-theme-d5 backdropBlur" style="height:300px;">
                         <header id="headProject2Title" class="w3-container">
@@ -131,6 +131,9 @@
     #region Project
     Project project = new Project();
 
+    string iconImage = string.Empty;
+    string backgroundImage = string.Empty;
+
     #endregion Project
 
     #region Error handling
@@ -146,7 +149,15 @@
         try{
             string address = _configuration["BugTrackerBackendAddress"] + "/Project";
             project = await new Project().ReadProject(Guid.Parse(guid), address, _accresstokenHelper.accessToken);
-            StateHasChanged();
+
+            try{
+                iconImage = project.IconUrl;
+                backgroundImage = project.BackgroundImageUrl;
+            }
+            catch(Exception err){
+                Console.WriteLine(err.Message);
+            }
+            //StateHasChanged();
         }
         catch(Exception err){
             hasProblem = true;

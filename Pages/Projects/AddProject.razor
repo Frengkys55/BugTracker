@@ -2,6 +2,7 @@
 @using System;
 @using Microsoft.AspNetCore.Components.Forms;
 @using Models;
+@using SkiaSharp;
 @using Models.Projects;
 @inject IConfiguration configuration;
 @inject NavigationManager navigationManager;
@@ -25,12 +26,12 @@
                     <InputTextArea id="txtProjectDescription" @bind-Value="newProject.Description" class="w3-input" />
                 </div>
                 <div class="w3-margin-bottom">
-                    <label>Project Image</label>
-                    <InputText id="txtImageUrl" @bind-Value="newProject.IconUrl" class="w3-input" />
+                    <label>Project Image (max 2MB)</label><br />
+                    <InputFile OnChange="OnProjectIconChange" class="w3-input" />
                 </div>
                 <div class="w3-margin-bottom">
-                    <label>Project Background</label>
-                    <InputText id="txtImageUrl" @bind-Value="newProject.BackgroundImageUrl" class="w3-input" />
+                    <label>Project Background (max 2MB)</label><br />
+                    <InputFile OnChange="OnProjectBackgroundImageChange" class="w3-input" />
                 </div>
                 <div>
                     <input type="submit" value="Add Project" class="w3-button w3-transparent w3-border w3-border-black w3-hover-black w3-round w3-ripple" title="Save project" />
@@ -43,8 +44,8 @@
             </header>
             <div class="w3-container">
                 <div id="pnlProject1" class="w3-display-container w3-block backgroundCover w3-block" style="height:442px; background-image:url('@newProject.BackgroundImageUrl');">
-                    <div class="w3-display-topleft w3-block backgroundCover" style="height:calc( 100% - 300px ); background-image:url('@newProject.BackgroundImageUrl');">
-                        <img class="w3-display-middle w3-image" style="height:50%;" src="@newProject.IconUrl" />
+                    <div class="w3-display-topleft w3-block backgroundCover" style="height:calc( 100% - 300px ); background-image:url('data:image/png;base64,@newProject.BackgroundImageUrl');">
+                        <img class="w3-display-middle w3-image" style="height:50%;" src="data:image/png;base64,@newProject.IconUrl" />
                     </div>
                     <div id="pnlProject1OverviewContainer" class="w3-display-bottomleft w3-block w3-theme-d5 backdropBlur" style="height:300px;">
                         <header id="headProject2Title" class="w3-container">
@@ -135,6 +136,12 @@
     string projectIconFilePath = string.Empty;
     string projectBackgroundImagePath = string.Empty;
 
+    #region Icon project
+
+    byte[] iconData = null;
+    SKBitmap projectIcon = null;
+
+    #endregion Icon project
     int statusCode;
 
     private async Task AddProjectToDatabase(){
@@ -177,13 +184,29 @@
 
     private async Task OnProjectIconChange(InputFileChangeEventArgs e){
         if(e.FileCount > 0){
-            projectIconFilePath = e.File.Name;
+            try{
+                using var memoryStream = new MemoryStream();
+                await e.File.OpenReadStream(2097152).CopyToAsync(memoryStream);
+
+                newProject.IconUrl = Convert.ToBase64String(memoryStream.ToArray());
+            }
+            catch(Exception err){
+                Console.WriteLine(err.Message);
+            }
         }
     }
 
     private async Task OnProjectBackgroundImageChange(InputFileChangeEventArgs e){
         if(e.FileCount > 0){
-            projectBackgroundImagePath = e.File.Name;
+            try{
+                using var memoryStream = new MemoryStream();
+                await e.File.OpenReadStream(2097152).CopyToAsync(memoryStream);
+
+                newProject.BackgroundImageUrl = Convert.ToBase64String(memoryStream.ToArray());
+            }
+            catch(Exception err){
+                Console.WriteLine(err.Message);
+            }
         }
     }
 }

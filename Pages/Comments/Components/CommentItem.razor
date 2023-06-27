@@ -8,12 +8,16 @@
             <div class="w3-col w3-right w3-mobile w3-text-gray" style="width:100px;">
                 <div class="w3-tiny">
                     <span class="">
-                        @Tools.Misc.DateTimeToStringConverter.Convert(Comment.DateCreated)
+                        @if(Comment.DateCreated != null){
+                            @Tools.Misc.DateTimeToStringConverter.Convert(Comment.DateCreated)
+                        }
                     </span>
                 </div>
                 <div>
                     <span class="">
-                        @Comment.DateCreated.ToLocalTime().ToShortTimeString()
+                        @if(Comment.DateCreated != null){
+                            @Comment.DateCreated.Value.ToLocalTime().ToShortTimeString()
+                        }
                     </span>
                 </div>
                 <div class="w3-margin-top">
