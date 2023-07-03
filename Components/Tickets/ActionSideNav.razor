@@ -69,7 +69,7 @@
         string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/MarkTicketComplete/" + Guid;
         string accesstoken = _accesstokenHelper.accessToken;
         try{
-            var result = await new Ticket().MarkTicketSolved(System.Guid.Parse(Guid), accesstoken, address);
+            var result = await new Ticket().MarkTicketSolved(System.Guid.Parse(Guid!), accesstoken, address);
             if(result)
                 ticketMarkedComplete = true;
             else
@@ -80,7 +80,7 @@
         }
         finally{
             if(OnTicketMarkStatus.HasDelegate)
-                OnTicketMarkStatus.InvokeAsync(ticketMarkedComplete);
+                await OnTicketMarkStatus.InvokeAsync(ticketMarkedComplete);
         }
     }
 

@@ -1,6 +1,8 @@
 @page "/Projects/Edit/{guid}"
 @using Models.Projects;
 @using Microsoft.AspNetCore.Components.Forms;
+@using System.Text;
+@using SkiaSharp;
 @inject IConfiguration _configuration;
 @inject Tools.Misc.AccessTokenHelper _accresstokenHelper;
 @inject NavigationManager _navigation;
@@ -23,11 +25,11 @@
                 </div>
                 <div>
                     <label>Project Image</label>
-                    <InputText id="txtProjectIcon" @bind-Value="project.IconUrl" class="w3-input" />
+                    <InputFile OnChange="OnIconFileChanged_ClickAsync" class="w3-input" />
                 </div>
                 <div>
                     <label>Project Background</label>
-                    <InputText id="txtProjectBackground" @bind-Value="project.BackgroundImageUrl" class="w3-input" />
+                    <InputFile OnChange="OnBackgroundFileChanged_ClickAsync" class="w3-input" />
                 </div>
                 <div class="w3-margin-top">
                     <input type="submit" value="Save changes" class="w3-button w3-transparent w3-border w3-border-black w3-hover-black w3-round w3-ripple" title="Save changes" />
@@ -133,6 +135,9 @@
 
     string iconImage = string.Empty;
     string backgroundImage = string.Empty;
+    
+    MemoryStream iconStream = new MemoryStream();
+    MemoryStream backgroundStream = new MemoryStream();
 
     #endregion Project
 
@@ -149,10 +154,50 @@
         try{
             string address = _configuration["BugTrackerBackendAddress"] + "/Project";
             project = await new Project().ReadProject(Guid.Parse(guid), address, _accresstokenHelper.accessToken);
+            string blobInitialString = "data:image/png;base64,";
 
+            #region Image loading
+
+            #region  icon
+            
             try{
-                iconImage = project.IconUrl;
-                backgroundImage = project.BackgroundImageUrl;
+                if(!project.IconUrl.ToLower().StartsWith("http") && project.IconUrl.ToLower().Contains("n/a")){
+                    var sb = new StringBuilder();
+                    sb.Append(blobInitialString);
+                    sb.Append(project.IconUrl);
+                    iconImage = sb.ToString();
+                }
+                else{
+                    iconImage = project.IconUrl;
+                }
+            }
+            catch(Exception){
+                iconImage = "N/A";
+            }
+
+            #endregion icon
+
+            #region background
+            try{
+                if(!project.BackgroundImageUrl.ToLower().StartsWith("http") && project.BackgroundImageUrl.ToLower().Contains("n/a")){
+                    var sb = new StringBuilder();
+                    sb.Append(blobInitialString);
+                    sb.Append(project.BackgroundImageUrl);
+                    backgroundImage = sb.ToString();
+                }
+                else{
+                    backgroundImage = project.BackgroundImageUrl;
+                }
+            }
+            catch(Exception){
+                backgroundImage = "N/A";
+            }
+            #endregion background
+
+            #endregion Image loading
+            try{
+                //iconImage = project.IconUrl;
+                //backgroundImage = project.BackgroundImageUrl;
             }
             catch(Exception err){
                 Console.WriteLine(err.Message);
@@ -169,6 +214,19 @@
     private async Task EditProjectOnDatabaseAsync(){
         project.AccessToken = _accresstokenHelper.accessToken;
         string address = _configuration["BugTrackerBackendAddress"] + "/Project";
+
+        // Update icon if there is a change. Skip when there is no change
+        if(iconImage.CompareTo(project.IconUrl) == 0){
+            iconStream.Position = 0;
+            project.IconUrl = Convert.ToBase64String(iconStream.ToArray());
+        }
+        
+        // Update background if there is a change. Skip when there is no change
+        if(backgroundImage.Contains(project.BackgroundImageUrl)){
+            backgroundStream.Position = 0;
+            project.BackgroundImageUrl =  Convert.ToBase64String(backgroundStream.ToArray());
+        }
+
         try{
             if(string.IsNullOrEmpty(project.Name))
                 throw new Exception("Oh come on! I need to know your project name!");
@@ -187,5 +245,37 @@
         hasProblem = false;
         statusCode = 0;
         problemMessage = string.Empty;
+    }
+
+    protected async Task OnIconFileChanged_ClickAsync(InputFileChangeEventArgs e){
+        string blobData = "data:image/png;base64,";
+        string iconBackup = project.IconUrl;
+        if(e.FileCount > 0){
+            await e.File.OpenReadStream(2097152).CopyToAsync(iconStream);
+
+            var sb = new StringBuilder();
+            sb.Append(blobData);
+            sb.Append(Convert.ToBase64String(iconStream.ToArray()));
+            iconImage = sb.ToString();
+        }
+        else{
+            
+        }
+    }
+
+    protected async Task OnBackgroundFileChanged_ClickAsync(InputFileChangeEventArgs e){
+        string blobData = "data:image/png;base64,";
+        
+        if(e.FileCount > 0){
+            await e.File.OpenReadStream(2097152).CopyToAsync(backgroundStream);
+
+            var sb = new StringBuilder();
+            sb.Append(blobData);
+            sb.Append(Convert.ToBase64String(backgroundStream.ToArray()));
+            backgroundImage = sb.ToString();
+        }
+        else{
+            
+        }
     }
 }

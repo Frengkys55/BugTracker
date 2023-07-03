@@ -214,12 +214,15 @@ public partial class Ticket{
         headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
         try{
             var result = await new Tools.APIHelper.GenericRequest().Send2<object>(Tools.APIHelper.SendMethod.GET, address, null, headers);
-            Console.WriteLine(await result.Content.ReadAsStringAsync());
+            if(result.StatusCode == System.Net.HttpStatusCode.OK){
+                return true;
+            }
+            else{
+                return false;
+            }
         }
-        catch(Exception err){
-            Console.WriteLine("From MarkTicketSolved: " + err.Message);
+        catch(Exception){
+            return false;
         }
-        throw new NotImplementedException();
     }
-
 }

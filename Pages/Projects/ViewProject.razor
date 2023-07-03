@@ -2,6 +2,7 @@
 
 @using Models.Projects;
 @using Models.Tickets;
+@using System.Text;
 @inject NavigationManager navManager
 @inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
 @inject IConfiguration _configuration;
@@ -11,7 +12,16 @@
     <div class="w3-row">
         <div class="w3-col m5">
             <header>
-                <h1 class="w3-container">@project.Name</h1>
+                <div class="w3-display-container backgroundCover" style="height:500px; width:100%; background-image:url(@projectBackground)">
+                    <div class="w3-display-bottomleft w3-block backdropBlur w3-theme-d5 w3-padding">
+                        <div class="w3-cell w3-padding">
+                            <img src="@projectIcon" class="" style="height: 100px;" />
+                        </div>
+                        <div class="w3-cell w3-cell-middle">
+                            <h1 class="w3-container">@project.Name</h1>
+                        </div>
+                    </div>
+                </div>
                 <div class="w3-bar">
                     <span class="w3-bar-item w3-text-grey">id: @id.ToString()</span>
                     <button @onclick="() => {btnEditTicket(project.Guid);}" class="w3-bar-item w3-button w3-transparent w3-hover-black w3-border w3-border-black w3-round w3-ripple w3-right">Edit</button>
@@ -86,15 +96,25 @@
     [SupplyParameterFromQuery]
     public Guid id{set; get;}
 
+    #region Project Information
+    
+    string projectName = string.Empty;
+    string projectIcon = string.Empty;
+    string projectBackground = string.Empty;
+    string createdDate = string.Empty;
+    
+    int ticketNumber = 0;
+    string dateCreated = DateTime.Now.Date.ToString();
+    #endregion Project Information
+
     bool hasProblem = false;
     int statusCode {get; set;}
     
     string? problemMessage {get; set;}
 
-    int ticketNumber = 0;
-    string dateCreated = DateTime.Now.Date.ToString();
-
     Models.Projects.Project project = new ();
+
+    string blobInitialString = "data:image/png;base64,";
 
     protected override async Task OnInitializedAsync(){
         if(id == Guid.Empty){
@@ -104,6 +124,28 @@
         System.Console.WriteLine(id);
         try{
             project = await new Project().ReadProject(id, address, _accesstokenHelper.accessToken);
+
+            projectName = project.Name;
+
+            if(!project.IconUrl.ToLower().StartsWith("http") && project.IconUrl.ToLower() != "n/a"){
+                var sb = new StringBuilder();
+                sb.Append(blobInitialString);
+                sb.Append(project.IconUrl);
+                projectIcon = sb.ToString();
+            }
+            else{
+                projectIcon = project.IconUrl;
+            }
+
+            if(!project.BackgroundImageUrl.ToLower().StartsWith("http") && project.BackgroundImageUrl.ToLower() != "n/a"){
+                var sb = new StringBuilder();
+                sb.Append(blobInitialString);
+                sb.Append(project.BackgroundImageUrl);
+                projectBackground = sb.ToString();
+            }
+            else{
+                projectBackground = project.BackgroundImageUrl;
+            }
         }
         catch(Exception err){
             hasProblem = true;
