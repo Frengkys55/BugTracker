@@ -18,7 +18,7 @@
             </header>
             <div class="w3-container">
                 <div class="w3-row">
-                    <div class="w3-half">
+                    <div class="w3-quarter">
                         <header>
                             <span><b>Ticket type</b></span>
                         </header>
@@ -26,12 +26,28 @@
                             @ticket.Type
                         </div>
                     </div>
-                    <div class="w3-half">
+                    <div class="w3-quarter">
                         <header>
                             <span><b>Ticket Severity</b></span>
                         </header>
                         <div>
                             @ticket.Severity
+                        </div>
+                    </div>
+                    <div class="w3-quarter">
+                        <header>
+                            <span><b>Created on</b></span>
+                        </header>
+                        <div>
+                            @(Tools.Misc.DateTimeToStringConverter.Convert(ticket.DateCreated))
+                        </div>
+                    </div>
+                    <div class="w3-quarter">
+                        <header>
+                            <span><b>Last Modified</b></span>
+                        </header>
+                        <div>
+                            @(Tools.Misc.DateTimeToStringConverter.Convert(ticket.DateModified))
                         </div>
                     </div>
                 </div>

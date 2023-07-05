@@ -135,6 +135,10 @@
 
     string iconImage = string.Empty;
     string backgroundImage = string.Empty;
+
+    string iconImageBackup = string.Empty;
+
+    string backgroundImageBackup = string.Empty;
     
     MemoryStream iconStream = new MemoryStream();
     MemoryStream backgroundStream = new MemoryStream();
@@ -158,9 +162,11 @@
 
             #region Image loading
 
-            #region  icon
+            #region icon
             
             try{
+                iconImageBackup = project.IconUrl;
+
                 if(!project.IconUrl.ToLower().StartsWith("http") && project.IconUrl.ToLower().Contains("n/a")){
                     var sb = new StringBuilder();
                     sb.Append(blobInitialString);
@@ -179,6 +185,8 @@
 
             #region background
             try{
+                backgroundImageBackup = project.BackgroundImageUrl;
+
                 if(!project.BackgroundImageUrl.ToLower().StartsWith("http") && project.BackgroundImageUrl.ToLower().Contains("n/a")){
                     var sb = new StringBuilder();
                     sb.Append(blobInitialString);
@@ -259,7 +267,7 @@
             iconImage = sb.ToString();
         }
         else{
-            
+            iconImage = project.BackgroundImageUrl;
         }
     }
 
@@ -275,7 +283,7 @@
             backgroundImage = sb.ToString();
         }
         else{
-            
+            backgroundImage = project.BackgroundImageUrl;
         }
     }
 }
