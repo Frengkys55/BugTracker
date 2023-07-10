@@ -19,7 +19,7 @@ public class GenericPost<T>{
     /// <param name="data">Your data to be send (will be put in the body of the request)</param>
     /// <param name="headers">Addidional headers you specify</param>
     /// <returns></returns>
-    public async Task<HttpResponseMessage> Send(T data, List<KeyValuePair<string, string>> headers = null){
+    public async Task<HttpResponseMessage> Send(T data, List<KeyValuePair<string, string>>? headers = default){
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri(targetAddress);
         // Add headers (if available)

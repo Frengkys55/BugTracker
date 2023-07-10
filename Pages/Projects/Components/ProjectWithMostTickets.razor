@@ -26,7 +26,7 @@
     protected override async Task OnInitializedAsync(){
         string address = _configuration["BugTrackerBackendAddress"] + "/Project/GetHighestTicketCount";
         var result = await new Project().GetProjectWithTheMostTicket(_accesstokenHelper.accessToken, address);
-        projectName = result.Name;
+        projectName = result.Name!;
         ticketCount = result.TicketCount;
     }
 }

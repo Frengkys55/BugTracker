@@ -94,6 +94,7 @@
 
 @code{
     protected override async Task OnInitializedAsync(){
+        await Task.Delay(0);
         if(_accesstokenHelper.accessToken == string.Empty){
             _navigationManager.NavigateTo("/Login");
         }

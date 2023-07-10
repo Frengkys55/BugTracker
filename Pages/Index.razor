@@ -101,6 +101,7 @@
         guidToDelete = e.guid.ToString();
         nameToDelete = e.Name;
         deleteMessage = "Confirm delete " + nameToDelete + "?";
+        await Task.Yield();
     }
 
     protected async Task ConfirmDelete(){

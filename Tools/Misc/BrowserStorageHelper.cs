@@ -11,8 +11,6 @@ namespace Tools.Misc{
         }
 
         public async Task<string> TryGetAccesstoken(){
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
             try{
                 var result = await _storageService.GetItemAsStringAsync("accesstoken");
                 result = result.Replace("\"", "");
@@ -21,8 +19,6 @@ namespace Tools.Misc{
             catch(Exception){
                 throw;
             }
-            sw.Stop();
-            System.Console.WriteLine(sw.ElapsedMilliseconds);
         }
 
         public async void AccesstokenChanged(object sender, string e){

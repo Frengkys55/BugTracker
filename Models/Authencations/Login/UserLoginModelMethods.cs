@@ -10,7 +10,7 @@ namespace Models.Authentications{
             this._accesstokenHelper = _accesstokenHelper;
         }
         public UserLoginModel(){
-
+            
         }
 
         /// <summary>
@@ -21,8 +21,8 @@ namespace Models.Authentications{
         /// <returns>User's accesstoken</returns>
         public async Task<string> Login(UserLoginModel user, string address){
             UserLoginModel hashedUser = new UserLoginModel(){
-                UserName = new Tools.Misc.Hash().SHA512(user.UserName),
-                password = new Tools.Misc.Hash().SHA512(user.password)
+                UserName = new Tools.Misc.Hash().SHA512(user.UserName!),
+                password = new Tools.Misc.Hash().SHA512(user.password!)
             };
 
             // Send user login information and get accesstoken

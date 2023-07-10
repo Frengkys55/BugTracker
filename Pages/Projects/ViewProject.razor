@@ -121,13 +121,12 @@
             navManager.NavigateTo("/Projects");
         }
         string address = _configuration["BugTrackerBackendAddress"] + "/Project";
-        System.Console.WriteLine(id);
         try{
             project = await new Project().ReadProject(id, address, _accesstokenHelper.accessToken);
 
-            projectName = project.Name;
+            projectName = project.Name!;
 
-            if(!project.IconUrl.ToLower().StartsWith("http") && project.IconUrl.ToLower() != "n/a"){
+            if(!project.IconUrl!.ToLower().StartsWith("http") && project.IconUrl.ToLower() != "n/a"){
                 var sb = new StringBuilder();
                 sb.Append(blobInitialString);
                 sb.Append(project.IconUrl);
@@ -137,7 +136,7 @@
                 projectIcon = project.IconUrl;
             }
 
-            if(!project.BackgroundImageUrl.ToLower().StartsWith("http") && project.BackgroundImageUrl.ToLower() != "n/a"){
+            if(!project.BackgroundImageUrl!.ToLower().StartsWith("http") && project.BackgroundImageUrl.ToLower() != "n/a"){
                 var sb = new StringBuilder();
                 sb.Append(blobInitialString);
                 sb.Append(project.BackgroundImageUrl);
@@ -157,6 +156,7 @@
         address = _configuration["BugTrackerBackendAddress"] + "/Ticket/" + id.ToString();
         var result = await new Ticket().GetProjectTickets(id, _accesstokenHelper.accessToken, address);
         ticketNumber = result.Count();
+        StateHasChanged();
     }
 
     protected void CloseProblem_Click(){

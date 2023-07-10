@@ -100,7 +100,7 @@
         try{
             string address = _configuration["BugTrackerBackendAddress"] + "/Ticket";
 
-            await new Ticket().DeleteTicket(new Guid(Guid), _accesstokenHelper.accessToken, address);
+            await new Ticket().DeleteTicket(new Guid(Guid!), _accesstokenHelper.accessToken, address);
             ticketDeletionComplete = true;
         }
         catch(Exception){

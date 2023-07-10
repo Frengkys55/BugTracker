@@ -30,19 +30,21 @@
 
     [Parameter]
     public EventCallback<int> OnTicketLoadingComplete {set; get;}
+
+    
     protected override async Task OnInitializedAsync(){
         if(ProjectGuid != string.Empty){
             string accesstoken = _accesstokenHelper.accessToken;
             string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/" + ProjectGuid;
+
             try{
-                var result = await new Models.Tickets.Ticket().GetProjectTickets(Guid.Parse(ProjectGuid), accesstoken, address);
+                var result = await new Models.Tickets.Ticket().GetProjectTickets(Guid.Parse(ProjectGuid!), accesstoken, address);
                 foreach(var ticket in result){
                     tickets.Add(ticket);
                 }
-                OnTicketLoadingComplete.InvokeAsync(tickets.Count);
+                await OnTicketLoadingComplete.InvokeAsync(tickets.Count);
             }
-            catch(Exception err){
-                Console.WriteLine(err.Message);
+            catch(Exception){
             }
         }
 

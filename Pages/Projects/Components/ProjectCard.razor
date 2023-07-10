@@ -100,7 +100,7 @@
         e.Name = Name;
     }
     protected override async Task OnInitializedAsync(){
-
+        System.Console.WriteLine("triggered");
         #region Image blob loading
         try{
             // Try converting to byte array (will continue if succed, will throw error if not)
@@ -112,9 +112,9 @@
             Icon = sb.ToString();
             iconType = 1;
         }
-        catch(Exception err){
+        catch(Exception){
             // Check for valid url
-            if(!Tools.Misc.UriValidator.IsValidURL(Icon)){
+            if(!Tools.Misc.UriValidator.IsValidURL(Icon!)){
                 Icon = "N/A";
                 iconType = -1;
             }
@@ -129,18 +129,17 @@
             sb.Append(Background);
             Background = sb.ToString();
         }
-        catch(Exception err){
+        catch(Exception){
             // Check for valid url
-            if(!Tools.Misc.UriValidator.IsValidURL(Background)){
+            if(!Tools.Misc.UriValidator.IsValidURL(Background!)){
                 Background = "N/A";
             }
-            System.Console.WriteLine("Background Error: " + err.Message);
         }
 
         #endregion Image blob loading
         try{
             string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/" + Guid;
-            var receivedTicket = await new Models.Tickets.Ticket().GetProjectTickets(new Guid(Guid), _accesstokenHelper.accessToken, address);
+            var receivedTicket = await new Models.Tickets.Ticket().GetProjectTickets(new Guid(Guid!), _accesstokenHelper.accessToken, address);
 
             TicketCount = receivedTicket.Count();
 
@@ -162,4 +161,7 @@
         }
     }
 
+    protected void OnRequestDelete_Click(){
+        OnClick.InvokeAsync(e);
+    }
 }

@@ -166,7 +166,7 @@
                 hasProblem = true;
                 statusCode = message.statusCode;
                 errorIcon = "error";
-                problemMessage = message.reasonPhrase;
+                problemMessage = message.reasonPhrase!;
             }
         }catch(Exception err){
             hasProblem = true;

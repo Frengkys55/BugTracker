@@ -21,7 +21,7 @@ else{
     string errorMessage = string.Empty;
     string errorImage = "images/69a6b00a04b341828841fba193a51ee5_4970450105616380596.jpg";
 
-    ICollection<TicketShortModel> tickets {set; get;}
+    ICollection<TicketShortModel>? tickets {set; get;}
     protected override async Task OnInitializedAsync(){
         string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/GetHighestSeverityTickets";
         try{

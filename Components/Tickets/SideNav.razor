@@ -30,5 +30,6 @@
     public string BackUrl {get; set;} = "#";
     protected override async Task OnParametersSetAsync(){
         ticketGuid = TicketGuid;
+        await Task.Delay(0);
     }
 }

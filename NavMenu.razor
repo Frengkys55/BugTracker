@@ -21,7 +21,7 @@
 
     protected async Task btnLogout_ClickAsync(){
         requestLogout = true;
-        
+        await Task.Yield();
     }
 
     protected async Task btnConfirmLogout_ClickAsync(){
@@ -44,5 +44,6 @@
     protected async Task btnCancelLogout_ClickAsync(){
         requestLogout = false;
         errorMessage = string.Empty;
+        await Task.Yield();
     }
 }
