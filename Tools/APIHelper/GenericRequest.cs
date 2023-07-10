@@ -1,7 +1,7 @@
 namespace Tools.APIHelper{
     public class GenericRequest{
 
-        public async Task<int> Send(SendMethod method, string address, ICollection<KeyValuePair<string, string>> headers = null){
+        public async Task<int> Send(SendMethod method, string address, ICollection<KeyValuePair<string, string>>? headers = default){
             System.Console.WriteLine("Method: " + method.ToString());
             System.Console.WriteLine("Address: " + address);
             System.Console.WriteLine("Headers: " + headers.ToList());
@@ -16,7 +16,7 @@ namespace Tools.APIHelper{
                 }
                 
                 try{
-                    HttpResponseMessage responseMessage = await client.SendAsync(request);
+                    HttpResponseMessage responseMessage = await client.SendAsync(request!);
                     if(responseMessage.StatusCode == System.Net.HttpStatusCode.OK)
                         return 1;
                     else
@@ -37,7 +37,7 @@ namespace Tools.APIHelper{
         /// <param name="headers">Additional headers to include in the request</param>
         /// <typeparam name="T">Your object type to send</typeparam>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> Send2<T>(SendMethod method, string address, T data = default, ICollection<KeyValuePair<string, string>> headers = null){
+        public async Task<HttpResponseMessage> Send2<T>(SendMethod method, string address, T? data = default, ICollection<KeyValuePair<string, string>>? headers = default){
             using(var client = new HttpClient()){
                 HttpRequestMessage request = new HttpRequestMessage(new HttpMethod(method.ToString()), address);
 

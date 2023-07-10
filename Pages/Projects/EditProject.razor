@@ -129,7 +129,7 @@
 
 @code{
     [Parameter]
-    public string guid {set; get;}
+    public string? guid {set; get;}
     #region Project
     Project project = new Project();
 
@@ -157,7 +157,7 @@
         project.Name = "Replace this placeholder text";
         try{
             string address = _configuration["BugTrackerBackendAddress"] + "/Project";
-            project = await new Project().ReadProject(Guid.Parse(guid), address, _accresstokenHelper.accessToken);
+            project = await new Project().ReadProject(Guid.Parse(guid!), address, _accresstokenHelper.accessToken);
             string blobInitialString = "data:image/png;base64,";
 
             #region Image loading
@@ -165,9 +165,9 @@
             #region icon
             
             try{
-                iconImageBackup = project.IconUrl;
+                iconImageBackup = project.IconUrl!;
 
-                if(!project.IconUrl.ToLower().StartsWith("http") && project.IconUrl.ToLower().Contains("n/a")){
+                if(!project.IconUrl!.ToLower().StartsWith("http") && project.IconUrl.ToLower().Contains("n/a")){
                     var sb = new StringBuilder();
                     sb.Append(blobInitialString);
                     sb.Append(project.IconUrl);
@@ -185,9 +185,9 @@
 
             #region background
             try{
-                backgroundImageBackup = project.BackgroundImageUrl;
+                backgroundImageBackup = project.BackgroundImageUrl!;
 
-                if(!project.BackgroundImageUrl.ToLower().StartsWith("http") && project.BackgroundImageUrl.ToLower().Contains("n/a")){
+                if(!project.BackgroundImageUrl!.ToLower().StartsWith("http") && project.BackgroundImageUrl.ToLower().Contains("n/a")){
                     var sb = new StringBuilder();
                     sb.Append(blobInitialString);
                     sb.Append(project.BackgroundImageUrl);
@@ -230,7 +230,7 @@
         }
         
         // Update background if there is a change. Skip when there is no change
-        if(backgroundImage.Contains(project.BackgroundImageUrl)){
+        if(backgroundImage.Contains(project.BackgroundImageUrl!)){
             backgroundStream.Position = 0;
             project.BackgroundImageUrl =  Convert.ToBase64String(backgroundStream.ToArray());
         }
@@ -244,7 +244,7 @@
         catch(Exception err){
             hasProblem = true;
             statusCode = 400;
-            problemMessage = err.StackTrace;
+            problemMessage = err.StackTrace!;
             throw;
         }
     }
@@ -253,11 +253,12 @@
         hasProblem = false;
         statusCode = 0;
         problemMessage = string.Empty;
+        await Task.Yield();
     }
 
     protected async Task OnIconFileChanged_ClickAsync(InputFileChangeEventArgs e){
         string blobData = "data:image/png;base64,";
-        string iconBackup = project.IconUrl;
+        string iconBackup = project.IconUrl!;
         if(e.FileCount > 0){
             await e.File.OpenReadStream(2097152).CopyToAsync(iconStream);
 
@@ -267,7 +268,7 @@
             iconImage = sb.ToString();
         }
         else{
-            iconImage = project.BackgroundImageUrl;
+            iconImage = project.BackgroundImageUrl!;
         }
     }
 
@@ -283,7 +284,7 @@
             backgroundImage = sb.ToString();
         }
         else{
-            backgroundImage = project.BackgroundImageUrl;
+            backgroundImage = project.BackgroundImageUrl!;
         }
     }
 }

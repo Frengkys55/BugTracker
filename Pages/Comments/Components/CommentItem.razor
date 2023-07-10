@@ -8,7 +8,7 @@
             <div class="w3-col w3-right w3-mobile w3-text-gray" style="width:100px;">
                 <div class="w3-tiny">
                     <span class="">
-                        @if(Comment.DateCreated != null){
+                        @if(Comment!.DateCreated != null){
                             @Tools.Misc.DateTimeToStringConverter.Convert(Comment.DateCreated)
                         }
                     </span>
@@ -36,7 +36,7 @@
 
 </div>
     @if(requestDelete){
-        <BugTracker.Components.Misc.Confirmation.ConfirmationModal Guid="@Comment.guid.ToString()" Message="This action is permanent. Are you sure you want to continue?" OnConfirm="@ConfirmDelete_ClickAsync" OnCancel="@CancelDelete_ClickASync" />
+        <BugTracker.Components.Misc.Confirmation.ConfirmationModal Guid="@Comment!.guid.ToString()" Message="This action is permanent. Are you sure you want to continue?" OnConfirm="@ConfirmDelete_ClickAsync" OnCancel="@CancelDelete_ClickASync" />
     }
 
 
@@ -61,13 +61,13 @@
     }
 
     protected async Task ConfirmDelete_ClickAsync(){
-        string address = _configuration["BugTrackerBackendAddress"] + "/Comment?id=" + Comment.guid.ToString();
+        string address = _configuration["BugTrackerBackendAddress"] + "/Comment?id=" + Comment!.guid.ToString();
         string accesstoken = _accesstokenHelper.accessToken;
 
         try{
             var result = await new Comment().DeleteComment(Comment.guid, address, accesstoken);
             if(OnDeleteConfirmed.HasDelegate){
-                OnDeleteConfirmed.InvokeAsync(Comment.guid);
+                await OnDeleteConfirmed.InvokeAsync(Comment.guid);
             }
             requestDelete = false;
         }
@@ -79,5 +79,6 @@
 
     protected async Task CancelDelete_ClickASync(){
         requestDelete = false;
+        await Task.Yield();
     }
 }

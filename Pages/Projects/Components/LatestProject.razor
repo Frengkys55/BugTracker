@@ -38,7 +38,7 @@
 
             address = _configuration["BugTrackerBackendAddress"] + "/Project";
             var project = await new Project().ReadProject(resultConverted[^1].guid, address, _accesstokenHelper.accessToken);
-            projectName = project.Name;
+            projectName = project.Name!;
             dayCreated = project.DateCreated.Day;
             monthCreated = project.DateCreated.Month.ToString();
             yearCreated = project.DateCreated.Year;

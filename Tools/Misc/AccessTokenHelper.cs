@@ -2,7 +2,7 @@ using Blazored.LocalStorage;
 
 namespace Tools.Misc{
     public sealed class AccessTokenHelper{
-        private readonly LocalStorageHelper _localStorageHelper;
+        private readonly LocalStorageHelper? _localStorageHelper;
         private string _accessToken = string.Empty;
         private bool isFirstTime = true;
         public string accessToken { get{
@@ -19,8 +19,10 @@ namespace Tools.Misc{
             _localStorageHelper = localStorageHelper;
             if(string.IsNullOrEmpty(_accessToken)){
                 try{
-                    AccesstokenChangedEventHanler += localStorageHelper.AccesstokenChanged;
-                    ReadLocalStorageAsync();
+                    AccesstokenChangedEventHanler += localStorageHelper.AccesstokenChanged!;
+                    Task.Run(async () => {
+                        await ReadLocalStorageAsync();
+                    });
                 }
                 catch(Exception err){
                     Console.WriteLine(err.Message);
