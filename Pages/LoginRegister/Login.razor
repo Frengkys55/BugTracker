@@ -65,6 +65,11 @@
         }
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await CheckCredential();
+    }
+
     protected async Task Login_ClickAsync(){
         loginStatus = 1;
         UserLoginModel user = new ();
@@ -113,5 +118,17 @@
         loginStatus = 0;
         userName = string.Empty;
         password = string.Empty;
+    }
+
+    async Task CheckCredential(){
+        if(_accesstokenHelper.accessToken == string.Empty){
+            await _accesstokenHelper.ReadLocalStorageAsync();
+            if(_accesstokenHelper.accessToken != string.Empty){
+                navigationManager.NavigateTo("/");
+            }
+        }
+        else{
+            navigationManager.NavigateTo("/");
+        }
     }
 }

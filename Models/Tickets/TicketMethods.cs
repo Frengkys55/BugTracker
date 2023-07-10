@@ -121,7 +121,7 @@ public partial class Ticket{
         }
     }
 
-    public async Task<ICollection<TicketShortModel>> GetSolvedTickets(string accesstoken, string address){
+    public async Task<ICollection<SolvedTicket>> GetSolvedTickets(string accesstoken, string address){
         if(string.IsNullOrEmpty(accesstoken) || string.IsNullOrEmpty(address)){
             throw new ArgumentException("Are you kidding me...");
         }
@@ -130,10 +130,11 @@ public partial class Ticket{
         headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
 
         try{
-            var result = await new Tools.APIHelper.GenericRequest().Send2<TicketShortModel>(Tools.APIHelper.SendMethod.GET, address, null, headers);
-            return new Tools.Misc.JsonConverter<List<TicketShortModel>>().ReadString(await result.Content.ReadAsStringAsync());
+            var result = await new Tools.APIHelper.GenericRequest().Send2<SolvedTicket>(Tools.APIHelper.SendMethod.GET, address, null, headers);
+            return new Tools.Misc.JsonConverter<List<SolvedTicket>>().ReadString(await result.Content.ReadAsStringAsync());
         }
         catch(Exception err){
+            Console.WriteLine("From GetSolvedTickets: " + err.Message);
             throw;
         }
 

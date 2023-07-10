@@ -29,15 +29,18 @@ else{
     string message = string.Empty;
 
 
-    List<TicketShortModel> tickets = new ();
+    List<SolvedTicket> tickets = new ();
     protected override async Task OnInitializedAsync(){
         string address = _configuration["BugTrackerBackendAddress"] + "/Ticket/SolvedTickets";
         try{
             var result = await new Ticket().GetSolvedTickets(_accesstokenHelper.accessToken, address);
-            
 
-            tickets = result.ToList();
-            ticketLoadingStatus = (tickets.Count == 0) ? 2 : 1;
+            int counter = 0;
+            foreach(var ticket in result.ToList()){
+                tickets.Add(ticket);
+                counter++;
+                if(counter == 3) break;
+            }
         }
         catch(Exception err){
             ticketLoadingStatus = -1;

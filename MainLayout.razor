@@ -94,11 +94,25 @@
 
 @code{
     protected override async Task OnInitializedAsync(){
-        if(string.IsNullOrEmpty(_accesstokenHelper.accessToken)){
-            _navigationManager.NavigateTo("/Login", forceLoad: true);
+        if(!await CheckCredential()){
+            _navigationManager.NavigateTo("/Login");
         }
 
         if(_localStorageHelper == null){
+        }
+    }
+    
+    async Task<bool> CheckCredential(){
+        if(_accesstokenHelper.accessToken == string.Empty){
+            // try reading from local storage first
+            await _accesstokenHelper.ReadLocalStorageAsync();
+            // if still empty, return false
+            if(_accesstokenHelper.accessToken == string.Empty)
+                return false;
+            else return true;
+        }
+        else{
+            return true;
         }
     }
 }
