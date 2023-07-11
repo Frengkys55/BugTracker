@@ -5,27 +5,100 @@
 @inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
 
 <div style="height:100%; width:100%;">
-    <Chart Config="@config" Height="200" Width="200" />
+    @if(processStatus == 1){
+        <Chart Config="@config" Height="200" Width="200" />
+    }
+    else if(processStatus == 2){
+        <BugTracker.Components.Misc.NoContent.NoContent Message="Welp! I found nothing there" Title="Welp Moment" />
+    }
+    else if(processStatus == -1){
+        <BugTracker.Pages.Errors.Components.Standard title="Test" Message="@errorMessage" />
+    }
+    else{
+        <BugTracker.Components.Misc.Loading.IsLoading Message="Still loading" />
+    }
 </div>
 
 @code{
+    int processStatus = 0; // 0: Processing | 1: Processed | 2: Processed but no result " -1: Has problem"
+    string errorTitle = string.Empty;
+    string errorMessage = string.Empty;
+
     LineConfig config = new LineConfig{
         Options = new LineOptions{
             Responsive = true,
             Title = new OptionsTitle{
-                Text = "Test"
+                Text = "Monthly solved tickets history",
+                Display = true
             },
             ShowLines = true,
-            MaintainAspectRatio = false
+            MaintainAspectRatio = false,
+            Legend = new Legend(){
+                Display = false,
+            },
         },
     };
 
     protected override async Task OnInitializedAsync()
     {
-        LineDataset<int> dataset = new ChartJs.Blazor.LineChart.LineDataset<int>();
-        for(int i = 0; i < 100; i++){
-            config.Data.Labels.Add(i.ToString());
+        string address = _configuration["BugTrackerBackendAddress"]! + "/Ticket/SolvedTickets";
+
+        try{
+            // Load list of solved tickets
+            var result = await new Models.Tickets.Ticket().GetSolvedTickets(_accesstokenHelper.accessToken, address);
+            processStatus = (result.Count > 0) ? 1 : 2;
+
+            if(processStatus == 1)
+                ProcessData(result);
+
+            StateHasChanged();
+        }
+        catch(Exception err){
+            processStatus = -1;
+            errorTitle = err.Message;
+            errorMessage = "STACK TRACE: " + err.StackTrace;
+            throw;
+        }
+    }    
+
+    protected void ProcessData(IEnumerable<SolvedTicket> tickets){
+        List<string> labels = new List<string>();
+        List<int> itemCount = new List<int>();
+
+        foreach(var ticket in tickets!){
+            try{
+                DateTime tempDate = new DateTime(ticket.DateSolved.Year, ticket.DateSolved.Month, 1);
+
+                var tempDateString = Tools.Misc.DateTimeToStringConverter.Convert(tempDate, "Day");
+
+                if(!labels.Contains(tempDateString)){
+                    labels.Add(tempDateString);
+                    itemCount.Add(1);
+                }
+                else{
+                    int labelPosition = labels.IndexOf(tempDateString);
+                    itemCount[labelPosition]++;
+                }
+            }
+            catch(Exception){
+                throw;
+            }
         }
 
-    }    
+        LineDataset<int> dataset = new ChartJs.Blazor.LineChart.LineDataset<int>();
+
+        try{
+            // Process how many tickets was solved monthly
+            for(int i = 0; i < labels.Count; i++){
+                config.Data.Labels.Add(labels[i]);
+                //config.Options.Legend.Labels.FontColor = ColorUtil.ColorHexString(Convert.ToByte(new Random().Next(0, 255)), Convert.ToByte(new Random().Next(0, 255)), Convert.ToByte(new Random().Next(0, 255)));
+                dataset.Add(itemCount[i]);
+            }   
+        }
+        catch(Exception err){
+            System.Console.WriteLine(err.StackTrace);
+        }
+        
+        config.Data.Datasets.Add(dataset);
+    }
 }
