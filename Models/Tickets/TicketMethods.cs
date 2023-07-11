@@ -131,7 +131,8 @@ public partial class Ticket{
 
         try{
             var result = await new Tools.APIHelper.GenericRequest().Send2<SolvedTicket>(Tools.APIHelper.SendMethod.GET, address, null, headers);
-            return new Tools.Misc.JsonConverter<List<SolvedTicket>>().ReadString(await result.Content.ReadAsStringAsync());
+            var convertedResult = new Tools.Misc.JsonConverter<SolvedTicket[]>().ReadString(await result.Content.ReadAsStringAsync());
+            return convertedResult;
         }
         catch(Exception err){
             Console.WriteLine("From GetSolvedTickets: " + err.Message);
