@@ -76,6 +76,16 @@
         user.UserName = userName;
         user.password = password;
 
+        if(string.IsNullOrEmpty(user.UserName)){
+            loginStatus = -1;
+            return;
+        }
+
+        if(string.IsNullOrEmpty(user.password)){
+            loginStatus = -1;
+            return;
+        }
+
         string address = configuration["BugTrackerBackendAddress"] + "/Authentication/Login";
 
         string accesstoken = string.Empty;
