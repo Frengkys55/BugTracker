@@ -153,10 +153,15 @@
         }
 
         // Count ticket
-        address = _configuration["BugTrackerBackendAddress"] + "/Ticket/" + id.ToString();
-        var result = await new Ticket().GetProjectTickets(id, _accesstokenHelper.accessToken, address);
-        ticketNumber = result.Count();
-        StateHasChanged();
+        try{
+            address = _configuration["BugTrackerBackendAddress"] + "/Ticket/" + id.ToString();
+            var result = await new Ticket().GetProjectTickets(id, _accesstokenHelper.accessToken, address);
+            ticketNumber = result.Count();
+        }
+        catch(Exception){
+            ticketNumber = 0;
+        }
+        StateHasChanged();  
     }
 
     protected void CloseProblem_Click(){
