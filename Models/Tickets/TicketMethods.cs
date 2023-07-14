@@ -152,9 +152,10 @@ public partial class Ticket{
         headers.Add(new KeyValuePair<string, string>("accesstoken", accesstoken));
 
         try{
-            var result = await new Tools.APIHelper.GenericRequest().Send(Tools.APIHelper.SendMethod.DELETE, address, headers);
-            if(result == -1)
-                throw new Exception("Error deleting ticket");
+            //var result = await new Tools.APIHelper.GenericRequest().Send(Tools.APIHelper.SendMethod.DELETE, address, headers);
+            var result = await new Tools.APIHelper.GenericRequest().Send2<object>(Tools.APIHelper.SendMethod.DELETE, address, null, headers);
+
+            Console.WriteLine(await result.Content.ReadAsStringAsync());
         }
         catch(Exception){
             throw;

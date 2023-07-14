@@ -22,6 +22,7 @@ public partial class Ticket{
     [NotNull]
     public DateTime? DateCreated {set; get;}
     public DateTime? DateModified {set; get;}
+    public DateTime? DateSolved {set; get;}
     public string? Severity {set; get;}
     public string? Type {set; get;}
 }

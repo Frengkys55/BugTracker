@@ -1,9 +1,9 @@
 namespace Tools.Misc;
 
 public static class DateTimeToStringConverter{
-    public static string Convert(DateTime? date){
+    public static string Convert(DateTime date){
 
-        DateTime input = (DateTime)date!;
+        DateTime input = date!;
         string ConvertedDate = string.Empty;
         #region Month
         if (input.Month == 1)

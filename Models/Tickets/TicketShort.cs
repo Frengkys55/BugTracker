@@ -7,5 +7,6 @@ namespace Models.Tickets{
         [NotNull]
         public string? Name {set; get;}
         public DateTime DateCreated {set; get;}
+        public DateTime? DateSolved {set; get;}
     }
 }

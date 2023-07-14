@@ -11,7 +11,7 @@
     </a>
     <button
         type="button"
-        class="w3-bar-item w3-button w3-transparent w3-hover-black w3-round w3-border w3-border-dark-grey w3-margin-top"
+        class="w3-bar-item w3-button w3-transparent w3-hover-black w3-round w3-border w3-border-dark-grey w3-margin-top @ticketCompleted"
         Title="Mark this ticket as solved"
         @onclick="OnMarkTicketComplete_Click">
         <span class="material-symbols-sharp" title="Mark this ticket as complete">check</span>
@@ -45,6 +45,8 @@
     bool ticketMarkedComplete = false;
     bool ticketDeletionComplete = false;
 
+    string? ticketCompleted = string.Empty;
+
     bool requestDelete = false;
 
     /// <summary>
@@ -70,10 +72,13 @@
         string accesstoken = _accesstokenHelper.accessToken;
         try{
             var result = await new Ticket().MarkTicketSolved(System.Guid.Parse(Guid!), accesstoken, address);
-            if(result)
+            if(result){
                 ticketMarkedComplete = true;
+                ticketCompleted = "w3-green";
+            }
             else
                 ticketMarkedComplete = false;
+
         }
         catch(Exception){
             ticketMarkedComplete = false;
@@ -98,7 +103,7 @@
     /// <returns></returns>
     protected async Task DeleteTicket_ClickAsync(){
         try{
-            string address = _configuration["BugTrackerBackendAddress"] + "/Ticket";
+            string address = _configuration["BugTrackerBackendAddress"] + "/Ticket?id=" + Guid;
 
             await new Ticket().DeleteTicket(new Guid(Guid!), _accesstokenHelper.accessToken, address);
             ticketDeletionComplete = true;
@@ -118,5 +123,21 @@
     /// <returns></returns>
     protected void CancelDeleteTicket_Click(){
         requestDelete = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string accesstoken = _accesstokenHelper.accessToken;
+        string address = _configuration["BugTrackerBackendAddress"] + "/Ticket?id=" + Guid;
+
+        try{
+            var result = await new Ticket().GetTicketDetail(System.Guid.Parse(Guid!), accesstoken, address);
+            if(result.DateSolved!.Value.CompareTo(result.DateCreated) == 1){
+                ticketCompleted = "w3-green";
+            }
+        }
+        catch(Exception){
+
+        }
     }
 }

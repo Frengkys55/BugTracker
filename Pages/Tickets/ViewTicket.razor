@@ -39,7 +39,7 @@
                             <span><b>Created on</b></span>
                         </header>
                         <div>
-                            @(Tools.Misc.DateTimeToStringConverter.Convert(ticket.DateCreated))
+                            @(Tools.Misc.DateTimeToStringConverter.Convert((DateTime)ticket.DateCreated!))
                         </div>
                     </div>
                     <div class="w3-quarter">
@@ -47,7 +47,7 @@
                             <span><b>Last Modified</b></span>
                         </header>
                         <div>
-                            @(Tools.Misc.DateTimeToStringConverter.Convert(ticket.DateModified))
+                            @(Tools.Misc.DateTimeToStringConverter.Convert((DateTime)ticket.DateModified!))
                         </div>
                     </div>
                 </div>

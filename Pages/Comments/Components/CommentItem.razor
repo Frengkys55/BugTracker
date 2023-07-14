@@ -9,7 +9,7 @@
                 <div class="w3-tiny">
                     <span class="">
                         @if(Comment!.DateCreated != null){
-                            @Tools.Misc.DateTimeToStringConverter.Convert(Comment.DateCreated)
+                            @Tools.Misc.DateTimeToStringConverter.Convert((DateTime)Comment.DateCreated)
                         }
                     </span>
                 </div>
