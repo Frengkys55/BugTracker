@@ -19,7 +19,7 @@
         <div class="w3-container" style="width: 100%; height: calc( 100% - 46.25px ); overflow-x: hidden; overflow-y:scroll;">
             <div class="w3-bar-block">
                 @foreach(var ticket in tickets!){
-                    <a href="/Tickets/ViewTicket?id=@ticket.Guid" class="w3-bar-item w3-button w3-hover-black w3-border w3-border-black w3-round" style="margin-top:16px; margin-bottom:16px;">@ticket.Name</a>
+                    <a href="/Tickets/ViewTicket?id=@ticket.Guid" class="w3-bar-item w3-button w3-hover-black w3-border w3-border-black w3-round @((ticket.DateSolved!.Value.CompareTo(ticket.DateCreated) == 1) ? "w3-green" : "")" style="margin-top:16px; margin-bottom:16px;">@ticket.Name</a>
                 }
             </div>
         </div>
