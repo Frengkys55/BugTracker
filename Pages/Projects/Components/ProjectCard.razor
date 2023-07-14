@@ -32,20 +32,34 @@
                 </div>
             </div>
             <div id="pnlProjectLatestTicketOverviewContainer_@Guid">
-                <div class="w3-bar">
-                    <label class="w3-bar-item">Tickets (@TicketCount)</label>
-                </div>
-                <div class="w3-bar-block w3-container">
-                    @if(_Tickets.Count > 0){
-                        @foreach(var ticket in _Tickets){
-                            <a href="/Tickets/ViewTicket?id=@ticket.guid" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">@ticket.Name</a>
+                @if(ticketIsLoading == 1){
+                    <div class="w3-bar">
+                        <label class="w3-bar-item">Tickets (@TicketCount)</label>
+                    </div>
+                    <div class="w3-bar-block w3-container">
+                        @if(_Tickets.Count > 0){
+                            @foreach(var ticket in _Tickets){
+                                <a href="/Tickets/ViewTicket?id=@ticket.guid" class="w3-bar-item w3-button w3-transparent w3-border w3-border-white w3-hover-white w3-round textOverflow w3-margin-bottom">@ticket.Name</a>
+                            }
                         }
-                    }
-                    else{
+                        else{
 
-                    }
-                    
-                </div>
+                        }
+                        
+                    </div>
+                }
+                else if(ticketIsLoading == 2){
+                    <div style="height:200px; width:100%;">
+                        <BugTracker.Components.Misc.NoContent.NoContent ImageUrl="images/69a6b00a04b341828841fba193a51ee5_4970450105616380596.jpg" Message="No ticket" />
+                    </div>
+                }
+                else if(ticketIsLoading == -1){
+                    <BugTracker.Components.Misc.Errors.StandardError Title="Welp Moment" Message="@errorMessage" />
+                }
+                else{
+                    <BugTracker.Components.Misc.Loading.IsLoading Message="Loading" />
+                }
+                
             </div>
         </div>
     </div>
@@ -93,6 +107,10 @@
     public EventCallback<ProjectShortEventArgs> OnClick {set; get;}
     ProjectShortEventArgs e = new ();
 
+
+    int ticketIsLoading = 0;
+    string errorMessage = string.Empty;
+
     string blobInitialString = "data:image/png;base64,";
 
     protected override void OnParametersSet(){
@@ -100,7 +118,6 @@
         e.Name = Name;
     }
     protected override async Task OnInitializedAsync(){
-        System.Console.WriteLine("triggered");
         #region Image blob loading
         try{
             // Try converting to byte array (will continue if succed, will throw error if not)
@@ -142,6 +159,8 @@
             var receivedTicket = await new Models.Tickets.Ticket().GetProjectTickets(new Guid(Guid!), _accesstokenHelper.accessToken, address);
 
             TicketCount = receivedTicket.Count();
+            if(TicketCount > 0) ticketIsLoading = 1;
+            else ticketIsLoading = 2;
 
             int counter = 0;
             foreach(var ticket in receivedTicket){
@@ -156,8 +175,9 @@
                     counter++;
             }
         }
-        catch{
-            // Skip
+        catch (Exception err){
+            ticketIsLoading = 2;
+            errorMessage = err.Message;
         }
     }
 
