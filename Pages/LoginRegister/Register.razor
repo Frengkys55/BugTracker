@@ -74,11 +74,13 @@
             }
             else{
                 hasError = true;
+                errorMessage = "Something just happeded and thus this message";
             }
 
         }
         catch(Exception err){
-            Console.WriteLine(err.Message);
+            hasError = true;
+            errorMessage = err.Message;
         }
     }
 
