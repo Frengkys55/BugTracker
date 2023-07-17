@@ -15,7 +15,7 @@
     else{
         @foreach(var ticket in tickets){
             <div class="w3-bar-block">
-                <a href="/Tickets/ViewTicket?id=@ticket.Guid" class=" w3-bar-item w3-button w3-transparent w3-hover-black w3-border w3-border-black w3-round w3-ripple w3-margin-bottom">@ticket.Name</a>
+                <a href="/Tickets/ViewTicket?id=@ticket.Guid" class=" w3-bar-item w3-button w3-transparent w3-hover-black w3-border w3-border-black w3-round w3-ripple w3-margin-bottom @((ticket.DateSolved.Value.CompareTo(ticket.DateCreated) > 0) ? "w3-green" : "")">@ticket.Name</a>
             </div>
         }
     }

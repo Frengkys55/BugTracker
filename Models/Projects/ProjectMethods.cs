@@ -125,8 +125,8 @@ public partial class Project{
     /// <param name="project">Project object to update using project.guid as a reference</param>
     public async Task UpdateProject(Project project, string address){
         if(project == null)
-            throw new NullReferenceException("Here is an error for you because you give me something onreasonable to do.");
-        
+            throw new NullReferenceException("Here is an error for you because you gave me something stupid to do.");
+
         Tools.APIHelper.GenericRequest request = new Tools.APIHelper.GenericRequest();
         try{
             HttpResponseMessage response = await new Tools.APIHelper.GenericRequest().Send2<Project>(Tools.APIHelper.SendMethod.PUT, address, project);

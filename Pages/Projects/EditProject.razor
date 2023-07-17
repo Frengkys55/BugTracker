@@ -220,22 +220,24 @@
     }
 
     private async Task EditProjectOnDatabaseAsync(){
+        string blobData = "data:image/png;base64,";
         project.AccessToken = _accresstokenHelper.accessToken;
         string address = _configuration["BugTrackerBackendAddress"] + "/Project";
 
-        // Update icon if there is a change. Skip when there is no change
-        if(iconImage.CompareTo(project.IconUrl) == 0){
-            iconStream.Position = 0;
-            project.IconUrl = Convert.ToBase64String(iconStream.ToArray());
-        }
-        
-        // Update background if there is a change. Skip when there is no change
-        if(backgroundImage.Contains(project.BackgroundImageUrl!)){
-            backgroundStream.Position = 0;
-            project.BackgroundImageUrl =  Convert.ToBase64String(backgroundStream.ToArray());
-        }
+        iconStream.Position = 0;
+        backgroundStream.Position = 0;
+
+        var iconString = Convert.ToBase64String(iconStream.ToArray());
+        var backgroundString = Convert.ToBase64String(backgroundStream.ToArray());
+
+        project.IconUrl = (!string.IsNullOrEmpty(iconString)) ? iconString : project.IconUrl;
+        project.BackgroundImageUrl = (!string.IsNullOrEmpty(backgroundString)) ? backgroundString : project.BackgroundImageUrl;
+
+        System.Console.WriteLine("project.iconurl now is: \n" + project.IconUrl);
+        System.Console.WriteLine("project.backgroundimageurl now is: \n" + project.BackgroundImageUrl);
 
         try{
+
             if(string.IsNullOrEmpty(project.Name))
                 throw new Exception("Oh come on! I need to know your project name!");
             await new Project().UpdateProject(project, address);
@@ -260,31 +262,35 @@
         string blobData = "data:image/png;base64,";
         string iconBackup = project.IconUrl!;
         if(e.FileCount > 0){
-            await e.File.OpenReadStream(2097152).CopyToAsync(iconStream);
+            await e.File.OpenReadStream(2097152).CopyToAsync(iconStream); // Copy to stream
 
             var sb = new StringBuilder();
             sb.Append(blobData);
             sb.Append(Convert.ToBase64String(iconStream.ToArray()));
             iconImage = sb.ToString();
         }
-        else{
-            iconImage = project.BackgroundImageUrl!;
-        }
     }
 
     protected async Task OnBackgroundFileChanged_ClickAsync(InputFileChangeEventArgs e){
         string blobData = "data:image/png;base64,";
-        
-        if(e.FileCount > 0){
-            await e.File.OpenReadStream(2097152).CopyToAsync(backgroundStream);
+        try{
+            // If there is change, change it (but don't change the value inside the Project object)
+            if(e.FileCount > 0){
+                await e.File.OpenReadStream(2097152).CopyToAsync(backgroundStream); // Read image data and store it in backgroundStream object
 
-            var sb = new StringBuilder();
-            sb.Append(blobData);
-            sb.Append(Convert.ToBase64String(backgroundStream.ToArray()));
-            backgroundImage = sb.ToString();
+                // Display image as preview using blob
+                var sb = new StringBuilder();
+                sb.Append(blobData);
+                sb.Append(Convert.ToBase64String(backgroundStream.ToArray()));
+                backgroundImage = sb.ToString();
+
+                System.Console.WriteLine("The blob data received for icon is: \n" + Convert.ToBase64String(iconStream.ToArray()));
+                System.Console.WriteLine("The blob data received for background is: \n" + Convert.ToBase64String(backgroundStream.ToArray()));
+            }
         }
-        else{
-            backgroundImage = project.BackgroundImageUrl!;
+        catch(Exception err){
+            Console.WriteLine(err.Message);
         }
     }
+    
 }
