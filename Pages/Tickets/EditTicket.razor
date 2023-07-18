@@ -6,6 +6,7 @@
 @inject Tools.Misc.AccessTokenHelper _accesstokenHelper;
 @inject IConfiguration _configuration;
 @inject NavigationManager _navigationManager;
+@inject IJSRuntime js;
 
 <NavMenu />
 <SideNav>
@@ -44,7 +45,7 @@
                         <label class="w3-bar-item">Description <span class="material-symbols-sharp w3-tiny" title="How severe is this ticket to the project">question_mark</span></label>
                         <div>
                             <div id="ticketDescriptionEditor">
-                                the rich text editor here
+                                <BugTracker.Components.Editor.SimpleHTMLEditor OnValueChanged="OnDescriptionTextChanged" />
                             </div>
                         </div>
                     </div>
@@ -84,8 +85,6 @@
 
         string address = _configuration["BugTrackerBackendAddress"] + "/Ticket";
         string accesstoken = _accesstokenHelper.accessToken;
-
-        Console.WriteLine(id);
 
         // Load available ticket types
         try{
@@ -128,6 +127,10 @@
         catch(Exception err){
             Console.WriteLine(err.Message);
         }
+    }
+
+    protected async Task OnDescriptionTextChanged(string e){
+        TicketForm.Description = e;
     }
     public async Task FormTicketSubmit_Click(){
         string address = _configuration["BugTrackerBackendAddress"] + "/Ticket";

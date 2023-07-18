@@ -27,7 +27,7 @@ class SimpleHTMLEditor {
     }
 
     Initialize() {
-        document.getElementById(config.WorkingPanel).style.height = "500px";
+        document.getElementById(Config.WorkingPanel).style.height = "500px";
     }
 
     Render() {
@@ -92,7 +92,7 @@ class LayoutBuilder {
         contentPanelContainer.style.height = "500px";
         contentPanelContainer.style.paddingTop = "38.5px";
         contentPanelContainer.style.border = "none";
-        contentPanelContainer.srcdoc = "<html><head><link rel=\"stylesheet\" href=\"" + config.W3CSSPath + "\" /><link rel=\"stylesheet\" href=\"" + config.LineAwesomePath + "\" /></head><body class=\"w3-container\" onload=\"document.designMode='On';\"></body></html>";
+        contentPanelContainer.srcdoc = "<html><head><link rel=\"stylesheet\" href=\"" + Config.W3CSSPath + "\" /><link rel=\"stylesheet\" href=\"" + Config.LineAwesomePath + "\" /></head><body class=\"w3-container\" onload=\"document.designMode='On';\"></body></html>";
         layout.appendChild(contentPanelContainer);
 
         // Append to panel

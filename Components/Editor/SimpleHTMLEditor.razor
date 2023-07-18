@@ -1,0 +1,22 @@
+<div>
+    <input @onchange="OnValueChangedHandler" class="w3-input" />
+</div>
+
+@code{
+    [Parameter]
+    public string Width {set; get;}
+    public string Height {set; get;}
+    [Parameter]
+    public EventCallback<string> OnValueChanged {set; get;}
+
+    protected override async Task OnInitializedAsync(){
+        
+    }
+
+
+    public async Task OnValueChangedHandler(ChangeEventArgs e){
+        if(OnValueChanged.HasDelegate){
+            await OnValueChanged.InvokeAsync(e.Value.ToString());
+        }
+    }
+}
